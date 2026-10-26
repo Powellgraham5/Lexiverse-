@@ -1,0 +1,10 @@
+// Cloudflare Workers static-assets deploy (free plan). Build with `npm run build`, then `npx wrangler deploy`.
+{
+  "name": "lexiverse",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths load index.html so the app's router can handle them.
+    "not_found_handling": "single-page-application"
+  }
+}

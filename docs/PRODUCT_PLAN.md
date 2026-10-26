@@ -1,4 +1,4 @@
-# Lexiverse — Product Plan
+# Lexiverse: Product Plan
 
 Lexiverse is a vocabulary-learning app, not just a dictionary. Every feature serves one journey:
 
@@ -17,7 +17,7 @@ Lexiverse is a vocabulary-learning app, not just a dictionary. Every feature ser
 
 ## Accessibility commitments
 
-Not a later polish pass — every screen is built to these from day one:
+Not a later polish pass: every screen is built to these from day one:
 
 - Works fully with screen readers (VoiceOver, TalkBack, NVDA): labelled controls, landmarks, headings, live announcements for results and quiz feedback, focus moved to the new screen's heading on navigation.
 - Everything readable aloud: words (US/UK, slow), meanings, quiz questions and options, translations. Optional "read words aloud" mode.

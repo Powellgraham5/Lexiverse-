@@ -1,0 +1,98 @@
+# level 3 (advanced): word|pos|definition|example|goals
+serendipity|noun|Luck in finding good things by chance.|Meeting my best friend on a delayed train was pure serendipity.|e,w
+ephemeral|adjective|Lasting a very short time.|Fame on social media is often ephemeral.|w,x
+ubiquitous|adjective|Seeming to be everywhere at the same time.|Mobile phones are now ubiquitous.|w,x
+eloquence|noun|The skill of speaking or writing well and persuasively.|The poet's eloquence brought tears to our eyes.|w,x
+quintessential|adjective|Being the most typical example of something.|Jollof rice is the quintessential party food.|w,e
+fortuitous|adjective|Happening by chance, usually in a lucky way.|Our fortuitous meeting led to a great job offer.|w,x
+magnanimous|adjective|Generous and kind, especially towards a rival or someone weaker.|The champion was magnanimous in victory.|w,x
+perfunctory|adjective|Done quickly and without real care or interest.|He gave a perfunctory nod and kept reading.|w,x
+pragmatic|adjective|Dealing with problems in a sensible, practical way.|We need a pragmatic solution, not a perfect one.|k,x,w
+ostentatious|adjective|Showing off wealth or importance to impress people.|They threw an ostentatious party with gold plates.|w,x
+laconic|adjective|Using very few words.|His laconic reply was simply "No."|w
+lucid|adjective|Clear and easy to understand; or able to think clearly.|She gave a lucid explanation of a complex topic.|w,x
+meticulousness|noun|Extreme care about every small detail.|Her meticulousness made the report flawless.|k,w
+cacophony|noun|A loud, unpleasant mix of sounds.|The market was a cacophony of horns and voices.|w
+euphemism|noun|A gentle word used instead of one that might upset or offend.|"Passed away" is a euphemism for "died".|w,x
+juxtaposition|noun|Placing two different things side by side to compare them.|The juxtaposition of old and new buildings is striking.|w,x
+equanimity|noun|Calmness, especially in a difficult situation.|She accepted the bad news with equanimity.|w
+alacrity|noun|Quick and cheerful readiness to do something.|He accepted the invitation with alacrity.|w,x
+sagacious|adjective|Wise and showing good judgement.|The sagacious elder settled the dispute fairly.|w,x
+gregarious|adjective|Enjoying the company of other people.|Gregarious people often love big parties.|e,w
+idiosyncratic|adjective|Unusual and specific to one person.|He has an idiosyncratic way of tying his shoes.|w
+impeccable|adjective|Perfect, with no faults at all.|Her manners were impeccable.|w,k
+indefatigable|adjective|Never seeming to get tired.|The indefatigable volunteers worked through the night.|w,k
+inexorable|adjective|Impossible to stop or prevent.|The inexorable rise of prices worried everyone.|w,x
+insidious|adjective|Spreading or developing slowly and secretly in a harmful way.|Stress can have an insidious effect on health.|w,x
+loquacious|adjective|Talking a lot.|Our loquacious taxi driver told us his whole life story.|w
+mellifluous|adjective|Sweet and smooth to listen to.|She has a mellifluous singing voice.|w
+nonchalant|adjective|Calm and seeming not to care or worry.|He gave a nonchalant shrug when he won.|w,e
+obfuscate|verb|To make something deliberately unclear or confusing.|The report used jargon to obfuscate the problem.|w,k,x
+pernicious|adjective|Having a harmful effect, especially gradually.|Rumours can have a pernicious effect on a team.|w,x
+recalcitrant|adjective|Refusing to obey or cooperate.|The recalcitrant goat would not leave the road.|w
+sanguine|adjective|Hopeful and positive, especially in a difficult situation.|Investors remain sanguine about the market.|w,k
+superfluous|adjective|More than is needed; unnecessary.|Cut any superfluous words from your essay.|w,x
+tenacious|adjective|Holding firmly to something; not giving up.|A tenacious reporter finally got the story.|w,k
+venerable|adjective|Respected because of age, wisdom or long history.|The venerable professor taught for fifty years.|w,x
+zealous|adjective|Showing great energy and enthusiasm for a cause.|Zealous fans waited outside the stadium all night.|w
+acquiesce|verb|To accept or agree to something, often without saying so strongly.|She acquiesced to her parents' wishes.|w,x
+ameliorate|verb|To make a bad situation better.|New laws helped to ameliorate living conditions.|w,x
+capitulate|verb|To stop resisting and agree to something.|After hours of talks, the company capitulated.|w,x
+circumvent|verb|To find a way around a rule or problem.|They tried to circumvent the security checks.|w,k,x
+corroborate|verb|To support a statement with evidence.|Witnesses corroborated her version of events.|x,w,k
+disseminate|verb|To spread information widely.|The ministry disseminated health advice across the country.|x,k,w
+exacerbate|verb|To make a problem worse.|Shouting will only exacerbate the situation.|x,w,k
+extrapolate|verb|To use known facts to guess about the future or something unknown.|We can extrapolate future sales from this year's data.|k,x
+galvanise|verb|To shock or excite people into taking action.|The speech galvanised the students into action.|w,k
+mitigate|verb|To make something less harmful or serious.|Trees help mitigate the effects of flooding.|x,k,w
+proliferate|verb|To increase quickly in number.|Fast food shops have proliferated in the city.|x,w
+repudiate|verb|To refuse to accept or be associated with something.|The leader repudiated the violent protests.|x,w
+substantiate|verb|To provide evidence that something is true.|Can you substantiate your claim with data?|x,k,w
+vindicate|verb|To prove that someone or something was right or not to blame.|The results vindicated her decision.|w,x
+ambivalent|adjective|Having mixed feelings about something.|I'm ambivalent about moving to a new city.|w,x
+anomaly|noun|Something that is different from what is normal or expected.|The low score was an anomaly in her excellent record.|x,w,k
+dichotomy|noun|A division into two very different or opposite things.|There is a dichotomy between what he says and what he does.|x,w
+ephemera|noun|Things that are useful or enjoyed for only a short time, such as tickets and posters.|The museum collects concert ephemera.|w
+hubris|noun|Too much pride and confidence, which often leads to failure.|His hubris made him ignore every warning.|w,x
+paradigm|noun|A typical model or pattern; a set of ideas that explain something.|The internet created a new paradigm for business.|x,k,w
+pragmatism|noun|A practical way of dealing with problems.|Her pragmatism helped the team reach a decision.|k,w
+quandary|noun|A state of not knowing what to do in a difficult situation.|I'm in a quandary about which job to accept.|w,e
+reverie|noun|A pleasant state of daydreaming.|The phone rang and broke her reverie.|w
+schadenfreude|noun|Pleasure felt at someone else's bad luck.|He felt a little schadenfreude when his rival lost.|w
+solace|noun|Comfort in a time of sadness or worry.|She found solace in music after the loss.|w,e
+tenacity|noun|The quality of not giving up easily.|Her tenacity helped her pass the exam on the third try.|k,w,x
+verisimilitude|noun|The quality of seeming real or true.|The film's verisimilitude made it feel like a documentary.|w
+zeitgeist|noun|The general mood or ideas of a particular time.|The song captured the zeitgeist of the 1990s.|w,x
+benign|adjective|Kind and gentle; or not harmful.|The doctor said the lump was benign.|x,w
+candour|noun|The quality of being open and honest.|I appreciated the candour of her feedback.|k,w
+cogent|adjective|Clear, logical and convincing.|She presented a cogent case for the new policy.|x,w,k
+conundrum|noun|A confusing and difficult problem.|Finding parking in the city is a daily conundrum.|w,e
+debilitating|adjective|Making someone very weak or unable to act normally.|Malaria can be a debilitating disease.|x,w
+didactic|adjective|Intended to teach, sometimes in a way that is too obvious.|The novel was too didactic for my taste.|w,x
+eclectic|adjective|Including many different styles or sources.|Her taste in music is eclectic.|w,e
+egregious|adjective|Extremely bad in a way that is easy to notice.|It was an egregious mistake to ignore the warning.|w,x
+enigmatic|adjective|Mysterious and difficult to understand.|The Mona Lisa's enigmatic smile fascinates visitors.|w
+esoteric|adjective|Understood by only a small number of people with special knowledge.|The lecture was full of esoteric terms.|w,x
+fastidious|adjective|Very careful that everything is correct, clean or tidy.|He is fastidious about keeping his desk clean.|w
+gratuitous|adjective|Done without a good reason; unnecessary.|The film had too much gratuitous violence.|w,x
+imminent|adjective|About to happen very soon.|Dark clouds suggested a storm was imminent.|x,w
+incongruous|adjective|Strange because it does not fit with what is around it.|A modern sofa looked incongruous in the old palace.|w
+innocuous|adjective|Not harmful or offensive.|It was an innocuous question, but she got upset.|w,x
+intransigent|adjective|Refusing to change your opinion or behaviour.|Both sides remained intransigent during the talks.|x,w,k
+lethargic|adjective|Having little energy; feeling sleepy and slow.|The heat made everyone lethargic.|e,w
+myriad|adjective|Very many; too many to count.|The night sky held a myriad of stars.|w
+nefarious|adjective|Wicked or criminal.|The villain had a nefarious plan.|w
+obsequious|adjective|Too eager to please or obey someone important.|The obsequious waiter kept bowing to the minister.|w
+palpable|adjective|So strong that it can almost be touched or felt.|The excitement in the stadium was palpable.|w
+parsimonious|adjective|Very unwilling to spend money.|The parsimonious landlord refused to fix the roof.|w
+precocious|adjective|Showing adult abilities at an unusually early age.|The precocious girl was reading novels at six.|w
+quixotic|adjective|Hopeful and romantic but not practical.|His quixotic plan was to walk around the world.|w
+reticent|adjective|Not willing to share thoughts or feelings.|He was reticent about his childhood.|w,x
+salient|adjective|Most important or noticeable.|Summarise the salient points of the article.|x,k,w
+taciturn|adjective|Saying very little; not talkative.|Her taciturn father rarely spoke at dinner.|w
+ubiquity|noun|The fact of being everywhere.|The ubiquity of smartphones has changed how we talk.|w,x
+unequivocal|adjective|Completely clear, leaving no doubt.|The answer was an unequivocal yes.|x,w,k
+vicarious|adjective|Felt through the experiences of someone else.|I get vicarious joy from my friend's travel photos.|w
+whimsical|adjective|Playful, unusual and a little silly.|The children's book has whimsical drawings.|w,e
+wistful|adjective|Sadly thinking about something you want or have lost.|She gave a wistful look at the old house.|w
+zenith|noun|The highest or most successful point.|The empire reached its zenith in the 15th century.|w,x

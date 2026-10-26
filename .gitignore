@@ -3,3 +3,4 @@ dist/
 dev-dist/
 tests/e2e/shots/
 *.log
+scripts/.cache/

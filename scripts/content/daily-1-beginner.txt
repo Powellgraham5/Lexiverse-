@@ -1,0 +1,99 @@
+# level 1 (beginner): word|pos|definition|example|goals (e everyday, x exam, w writing, k work)
+grateful|adjective|Feeling thankful for something someone did for you.|I'm so grateful for your help with the move.|e,w
+curious|adjective|Wanting to know or learn about something.|The curious child asked why the sky is blue.|e,w
+patient|adjective|Able to wait calmly without getting upset.|Be patient, the bus will come soon.|e,k
+honest|adjective|Telling the truth and not trying to trick people.|Thank you for giving me an honest answer.|e,k
+generous|adjective|Happy to give your time, money or help to others.|My generous neighbour shared her lunch with me.|e
+brave|adjective|Ready to do something difficult or dangerous without showing fear.|It was brave of you to speak in front of everyone.|e,w
+polite|adjective|Speaking and acting in a kind, respectful way.|It is polite to say thank you when someone helps you.|e,k
+nervous|adjective|Worried or a little afraid about something that is going to happen.|I always feel nervous before an exam.|e,x
+delighted|adjective|Very pleased and happy.|We were delighted to hear your good news.|e,w
+exhausted|adjective|Extremely tired.|After the long walk home, I was exhausted.|e
+confident|adjective|Feeling sure that you can do something well.|She felt confident after practising her speech.|e,k,x
+reliable|adjective|Able to be trusted to do what you need or expect.|He is a reliable friend who always shows up.|e,k
+cheerful|adjective|Happy and positive, and showing it.|The cheerful waiter made our day better.|e,w
+anxious|adjective|Worried and unable to relax.|She was anxious about her mother's health.|e,w
+ordinary|adjective|Normal and not special in any way.|It was an ordinary Tuesday until the phone rang.|e,w
+familiar|adjective|Known to you because you have seen or heard it before.|Her face looked familiar, but I couldn't remember her name.|e
+achieve|verb|To succeed in doing something after working hard.|You can achieve your goals if you keep going.|e,x,k
+improve|verb|To make something better, or to become better.|Reading every day will improve your vocabulary.|e,x,k
+encourage|verb|To give someone confidence or hope to do something.|My teacher encouraged me to enter the competition.|e,w
+celebrate|verb|To do something enjoyable because of a special day or event.|We celebrated her birthday with a big dinner.|e
+apologise|verb|To say you are sorry for something you did.|He apologised for arriving late.|e,k
+borrow|verb|To take something for a short time and give it back later.|Can I borrow your pen for a minute?|e
+explain|verb|To make something clear and easy to understand.|Can you explain how this machine works?|e,x,k
+suggest|verb|To offer an idea for someone to think about.|I suggest we leave early to avoid traffic.|e,k
+prefer|verb|To like one thing more than another.|I prefer tea to coffee in the morning.|e
+remind|verb|To help someone remember something.|Please remind me to call my mum tonight.|e,k
+recommend|verb|To say that something is good and that someone should try it.|Can you recommend a good book to read?|e,k
+complain|verb|To say that you are unhappy or annoyed about something.|The customers complained about the cold food.|e,k
+describe|verb|To say what someone or something is like.|Describe your perfect weekend in three sentences.|e,x,w
+discover|verb|To find or learn something for the first time.|We discovered a small café behind the market.|e,w
+manage|verb|To succeed in doing something difficult; or to be in charge of people or work.|She managed to finish the report on time.|e,k
+pretend|verb|To act as if something is true when it is not.|The children pretended to be pirates.|e
+realise|verb|To suddenly understand or become aware of something.|I realised I had left my keys at home.|e,w
+hesitate|verb|To pause before you do or say something because you are not sure.|Don't hesitate to ask if you need help.|e,k
+appreciate|verb|To be thankful for something; or to understand how good something is.|I really appreciate your kind words.|e,k
+recover|verb|To get better after an illness, injury or hard time.|He recovered quickly after the operation.|e
+whisper|verb|To speak very quietly, using your breath.|She whispered the answer so the others wouldn't hear.|e,w
+wander|verb|To walk around slowly without a clear direction.|We wandered through the old streets of the town.|e,w
+gather|verb|To come together in one place, or to collect things.|Families gathered in the square for the festival.|e,w
+rescue|verb|To save someone from danger.|Firefighters rescued a cat from the roof.|e,w
+deserve|verb|To have earned something because of what you did.|You worked hard and you deserve a rest.|e
+pollute|verb|To make air, water or land dirty and harmful.|Factories should not pollute the river.|e,x
+opportunity|noun|A chance to do something good or useful.|This job is a great opportunity to learn.|e,k,x
+experience|noun|Knowledge or skill you get from doing something; or something that happens to you.|Travelling alone was an amazing experience.|e,k,x
+advice|noun|An opinion about what someone should do.|My grandmother gave me good advice about saving money.|e
+attitude|noun|The way you think and feel about something.|A positive attitude makes hard work easier.|e,k
+habit|noun|Something you do often, usually without thinking.|Reading before bed is a good habit.|e
+challenge|noun|Something difficult that tests your ability.|Learning a new language is a fun challenge.|e,k
+journey|noun|A trip from one place to another, usually a long one.|The journey from Lagos to Abuja took all day.|e,w
+memory|noun|Something you remember from the past; or the ability to remember.|My favourite memory is swimming at the beach with my dad.|e,w
+neighbour|noun|A person who lives next to you or near you.|Our neighbour waters our plants when we travel.|e
+relief|noun|A good feeling when something bad or worrying stops.|It was a relief to find my lost phone.|e,w
+patience|noun|The ability to wait or keep trying without getting angry.|Teaching small children takes a lot of patience.|e,k
+argument|noun|An angry talk between people who disagree; or reasons for an opinion.|They had an argument about who should drive.|e,x,w
+mistake|noun|Something that is wrong or done wrongly.|Everyone makes mistakes when learning.|e
+purpose|noun|The reason why something is done or made.|What is the purpose of this meeting?|e,k,w
+skill|noun|The ability to do something well, usually after practice.|Cooking is a useful skill to learn.|e,k
+temperature|noun|How hot or cold something is.|The temperature dropped quickly at night.|e,x
+environment|noun|The air, water and land where people, animals and plants live.|We should protect the environment for future generations.|e,x
+community|noun|A group of people who live in the same area or share something.|The whole community helped clean the park.|e,x,w
+decision|noun|A choice you make after thinking.|Moving abroad was a big decision.|e,k
+surprise|noun|An unexpected event or feeling.|The party was a complete surprise.|e
+fortune|noun|Luck, or a very large amount of money.|By good fortune, the rain stopped just before the wedding.|e,w
+ancient|adjective|Very old; from a long time ago.|We visited the ancient walls of Benin City.|e,w,x
+awkward|adjective|Uncomfortable or embarrassing; or difficult to use.|There was an awkward silence after his joke.|e,w
+crowded|adjective|Full of people.|The market is always crowded on Saturdays.|e
+delicious|adjective|Tasting very good.|The jollof rice was delicious.|e
+enormous|adjective|Extremely big.|An enormous tree stood in the middle of the field.|e,w
+fragile|adjective|Easily broken or damaged.|Be careful, the glass vase is fragile.|e,w
+gentle|adjective|Kind and calm; not rough or strong.|He was gentle with the baby.|e,w
+humble|adjective|Not thinking you are better than other people.|Despite her success, she stayed humble.|e,w
+loyal|adjective|Always supporting a person or group.|The dog was loyal to its owner for years.|e,w
+peaceful|adjective|Quiet and calm, without trouble.|The village is peaceful in the early morning.|e,w
+precious|adjective|Very valuable or very important to you.|Time with family is precious.|e,w
+rare|adjective|Not common; not happening often.|It's rare to see snow here.|e,x
+sensible|adjective|Showing good judgement.|Wearing a helmet is a sensible choice.|e,k
+silent|adjective|Making no sound at all.|The classroom went silent when the head teacher walked in.|e,w
+stubborn|adjective|Refusing to change your mind.|My brother is too stubborn to admit he's wrong.|e,w
+thoughtful|adjective|Thinking about other people's feelings; or thinking deeply.|It was thoughtful of you to bring flowers.|e,w
+tidy|adjective|Neat and in order.|Please keep your room tidy.|e
+urgent|adjective|Needing to be dealt with immediately.|I have an urgent message for the manager.|e,k
+vivid|adjective|Very clear, bright or detailed.|I had a vivid dream about flying.|e,w
+wealthy|adjective|Having a lot of money.|A wealthy businessman paid for the new library.|e,x
+furious|adjective|Extremely angry.|She was furious when someone scratched her car.|e,w
+puzzled|adjective|Confused because you cannot understand something.|He looked puzzled by the question.|e,w
+proud|adjective|Pleased about something you or someone close to you did.|My parents were proud when I graduated.|e
+eager|adjective|Wanting very much to do or have something.|The students were eager to start the trip.|e,w
+calm|adjective|Relaxed and not worried or excited.|Stay calm and read the instructions again.|e
+brief|adjective|Lasting a short time; using few words.|She gave a brief speech to thank everyone.|e,k,w
+essential|adjective|Completely necessary; extremely important.|Water is essential for life.|e,x,k
+obvious|adjective|Easy to see or understand.|It was obvious that he was tired.|e,x
+suitable|adjective|Right or acceptable for a particular purpose.|This film is not suitable for young children.|e,x,k
+available|adjective|Able to be used or got; free to talk or meet.|Are you available for a call this afternoon?|e,k
+accurate|adjective|Correct and exact, without mistakes.|The weather forecast was accurate today.|e,x,k
+convenient|adjective|Easy to use or suitable for your plans.|Is Friday a convenient time to meet?|e,k
+efficient|adjective|Working well without wasting time or energy.|The new system is much more efficient.|k,x
+flexible|adjective|Able to change easily; able to bend.|My job has flexible working hours.|k,e
+independent|adjective|Not needing help or control from others.|She became independent after moving to the city.|e,x

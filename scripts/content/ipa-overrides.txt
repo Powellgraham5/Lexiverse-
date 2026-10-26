@@ -1,0 +1,14 @@
+# word|IPA, used when the free dictionary has no pronunciation for a daily word
+explain|/ɪkˈspleɪn/
+resilient|/rɪˈzɪl.i.ənt/
+adequate|/ˈæd.ɪ.kwət/
+nostalgic|/nɒˈstæl.dʒɪk/
+fluctuate|/ˈflʌk.tʃu.eɪt/
+scarcity|/ˈskeə.sə.ti/
+milestone|/ˈmaɪl.stəʊn/
+serendipity|/ˌsɛr.ənˈdɪp.ɪ.ti/
+pragmatic|/præɡˈmæt.ɪk/
+meticulousness|/məˈtɪk.jə.ləs.nəs/
+idiosyncratic|/ˌɪd.i.əʊ.sɪŋˈkræt.ɪk/
+circumvent|/ˌsɜː.kəmˈvent/
+vindicate|/ˈvɪn.dɪ.keɪt/

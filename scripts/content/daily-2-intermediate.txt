@@ -1,0 +1,96 @@
+# level 2 (intermediate): word|pos|definition|example|goals
+benevolent|adjective|Kind and wanting to help other people.|The benevolent doctor treated poor patients for free.|e,w,x
+resilient|adjective|Able to recover quickly after something difficult.|Children are often more resilient than we think.|e,w,x,k
+curious|adjective|Eager to learn or know something.|A curious mind keeps asking questions.|e,w
+diligent|adjective|Working hard and carefully.|A diligent student reviews her notes every day.|x,k,w
+eloquent|adjective|Able to speak or write clearly and persuasively.|Her eloquent speech moved the whole audience.|w,x,k
+ambiguous|adjective|Having more than one possible meaning, so not clear.|The instructions were ambiguous, so we asked again.|x,w,k
+inevitable|adjective|Certain to happen and impossible to avoid.|Change is inevitable, so we may as well prepare.|x,w
+plausible|adjective|Seeming reasonable or likely to be true.|His excuse was plausible, but I still had doubts.|x,w
+reluctant|adjective|Not wanting to do something.|She was reluctant to lend him more money.|e,w,x
+vulnerable|adjective|Easily hurt, harmed or attacked.|Old people are more vulnerable to the cold.|x,w
+spontaneous|adjective|Happening naturally, without planning.|We made a spontaneous trip to the beach.|e,w
+meticulous|adjective|Very careful about every small detail.|He keeps meticulous notes in every meeting.|k,w,x
+candid|adjective|Honest and direct, even when the truth is uncomfortable.|Thank you for your candid feedback on my work.|k,w
+frugal|adjective|Careful not to spend more money than needed.|Being frugal helped them save for a house.|e,w
+tedious|adjective|Boring because it is long, slow or repetitive.|Filling in the forms was tedious but necessary.|e,k,w
+versatile|adjective|Able to do many different things well, or to be used in many ways.|A versatile player can play in any position.|k,w,x
+obsolete|adjective|No longer used because something newer exists.|Fax machines are almost obsolete.|x,k
+genuine|adjective|Real and true, not fake or pretended.|Her smile was warm and genuine.|e,w
+prominent|adjective|Important and well known; or easy to see.|She is a prominent lawyer in Lagos.|x,w,k
+substantial|adjective|Large in amount, size or importance.|The company made a substantial profit this year.|x,k,w
+adequate|adjective|Good enough or enough in amount.|Make sure you get adequate sleep before the exam.|x,k
+coherent|adjective|Clear and logical, with parts that fit together.|Write a coherent argument with a clear conclusion.|x,w
+concise|adjective|Saying a lot in few words.|Keep your email concise and polite.|w,k,x
+feasible|adjective|Possible and practical to do.|Is it feasible to finish the project by Friday?|k,x
+hostile|adjective|Unfriendly and ready to fight or argue.|The crowd became hostile when the match was cancelled.|x,w
+inherent|adjective|Being a basic, natural part of something.|There are risks inherent in any new business.|x,w,k
+nostalgic|adjective|Feeling happy and a little sad when you think about the past.|Old photos always make me nostalgic.|e,w
+optimistic|adjective|Expecting good things to happen.|We are optimistic about the results.|e,k
+pessimistic|adjective|Expecting bad things to happen.|He is pessimistic about the economy.|e,x
+persistent|adjective|Continuing to try, even when it is difficult; or lasting a long time.|Her persistent effort finally paid off.|k,x,w
+profound|adjective|Very great or deep; showing deep understanding.|The book had a profound effect on me.|w,x
+rigid|adjective|Stiff and hard to bend; or not willing to change.|The school has rigid rules about uniforms.|x,w,k
+sceptical|adjective|Doubting that something is true or useful.|I'm sceptical about diets that promise quick results.|e,x,w
+subtle|adjective|Not obvious; small but important.|There's a subtle difference between the two colours.|w,x
+trivial|adjective|Small and unimportant.|Don't argue about trivial things.|e,w,x
+vague|adjective|Not clear or detailed.|He gave a vague answer about his plans.|e,x,w
+abundant|adjective|Existing in large amounts; more than enough.|The region has abundant natural resources.|x,w
+authentic|adjective|Real and true to its origin; not a copy.|This restaurant serves authentic Yoruba dishes.|e,w
+crucial|adjective|Extremely important; deciding what happens next.|The next few days are crucial for the project.|k,x,w
+diverse|adjective|Including many different types of people or things.|Lagos is a diverse and busy city.|x,w
+evident|adjective|Clear and easy to see or understand.|It was evident that she had practised a lot.|x,w
+keen|adjective|Very interested and eager.|He is keen to learn how to code.|e,k
+mundane|adjective|Ordinary and not interesting.|Even mundane tasks can be fun with good music.|e,w
+naive|adjective|Too ready to believe things because of little experience.|It was naive to think the job would be easy.|e,w
+notorious|adjective|Famous for something bad.|The road is notorious for traffic jams.|e,w,x
+radiant|adjective|Full of happiness or love, so you seem to shine; or shining brightly.|The bride looked radiant on her wedding day.|e,w
+sincere|adjective|Honest and meaning what you say.|Please accept my sincere apologies.|e,k,w
+tranquil|adjective|Calm, quiet and peaceful.|The lake was tranquil in the early morning.|w,e
+anticipate|verb|To expect something and often prepare for it.|We anticipate a large crowd at the concert.|k,x,w
+clarify|verb|To make something clearer or easier to understand.|Could you clarify what you mean by "soon"?|k,x
+collaborate|verb|To work together with others on something.|Two schools collaborated on the science project.|k,x
+compromise|verb|To agree by each side accepting less than they wanted.|We compromised and ate at a place we both liked.|k,e
+contemplate|verb|To think carefully about something for a long time.|She contemplated moving abroad for work.|w,x
+deteriorate|verb|To become worse.|His health deteriorated during the winter.|x,w
+emphasise|verb|To show that something is especially important.|The coach emphasised the need for teamwork.|k,x,w
+enhance|verb|To improve the quality or value of something.|Good lighting can enhance a photo.|k,x
+evaluate|verb|To judge how good, useful or successful something is.|Teachers evaluate students in different ways.|x,k
+fluctuate|verb|To change often between higher and lower levels.|Prices fluctuate depending on the season.|x,k
+illustrate|verb|To explain something by giving examples; or to add pictures to a book.|Let me illustrate my point with a story.|x,w,k
+justify|verb|To give a good reason for something.|How can you justify spending so much on shoes?|x,w,k
+negotiate|verb|To talk with others to reach an agreement.|They negotiated a better price for the car.|k
+overcome|verb|To succeed in dealing with a problem or difficulty.|She overcame her fear of flying.|e,w,x
+persuade|verb|To make someone agree to do or believe something.|He persuaded his parents to let him go to the party.|e,k,w
+postpone|verb|To move an event to a later time.|The match was postponed because of the rain.|e,k
+prioritise|verb|To decide which things are most important and do them first.|Learn to prioritise your tasks each morning.|k
+reconcile|verb|To make two people friends again after an argument; or to make two ideas fit together.|The sisters reconciled after years apart.|w,x
+scrutinise|verb|To look at or examine something very carefully.|The manager scrutinised every line of the budget.|k,x
+undermine|verb|To make something or someone weaker, often gradually.|Constant criticism can undermine a child's confidence.|x,w,k
+advocate|verb|To publicly support an idea or plan.|She advocates free education for all children.|x,w
+alleviate|verb|To make pain or a problem less severe.|This medicine will alleviate the headache.|x,w
+dilemma|noun|A situation where you must make a difficult choice.|I faced a dilemma: work late or miss my sister's play.|e,w,x
+empathy|noun|The ability to understand and share another person's feelings.|Good nurses show empathy to their patients.|e,w,k
+integrity|noun|Being honest and having strong moral principles.|We need a leader with integrity.|k,w,x
+perspective|noun|A particular way of thinking about something.|Travel gives you a new perspective on life.|w,x,k
+consequence|noun|A result of something, often a bad one.|Every choice has consequences.|x,w
+initiative|noun|The ability to act without being told; or a new plan.|She took the initiative and fixed the problem herself.|k,x
+incentive|noun|Something that encourages you to do something.|The bonus is an incentive to work harder.|k,x
+nuance|noun|A very small difference in meaning, feeling or colour.|Translators must understand every nuance of a text.|w,x
+obstacle|noun|Something that blocks your way or makes progress difficult.|Lack of money was the biggest obstacle.|x,w,k
+paradox|noun|A situation or statement that seems impossible because it has two opposite facts.|It's a paradox that the more you learn, the less you feel you know.|w,x
+phenomenon|noun|Something that happens or exists, especially something unusual.|Northern lights are a natural phenomenon.|x,w
+precaution|noun|An action taken to prevent something bad from happening.|Take an umbrella as a precaution.|e,k
+reluctance|noun|Not wanting to do something.|He agreed, but with obvious reluctance.|w,x
+scarcity|noun|A lack of something that is needed.|The scarcity of water is a serious problem.|x,w
+setback|noun|Something that delays or stops progress.|The injury was a setback, but she recovered.|k,w
+threshold|noun|The level at which something starts to happen; or the floor at a doorway.|She paused at the threshold before entering.|w,x
+versatility|noun|The ability to do or be used for many different things.|The chef is known for his versatility.|k,w
+dedication|noun|Giving a lot of time and effort to something you believe in.|Her dedication to her patients is inspiring.|k,w
+enthusiasm|noun|A strong feeling of excitement and interest.|The class showed great enthusiasm for the trip.|e,k
+hypothesis|noun|An idea that has not yet been proved, which you test.|Test your hypothesis with a simple experiment.|x
+insight|noun|A clear, deep understanding of something.|The interview gave us insight into her life.|w,k,x
+legacy|noun|Something left behind by a person or event for the future.|His legacy is the school he built.|w,x
+milestone|noun|An important event or stage in a process.|Finishing the first draft was a big milestone.|k,w
+momentum|noun|The force that keeps something moving or developing.|The campaign gained momentum after the debate.|k,x,w
+ritual|noun|A set of actions always done in the same way.|Morning tea is my favourite ritual.|e,w

@@ -1,0 +1,174 @@
+/*
+ * Lexiverse design tokens: Orbit direction.
+ * Light is the default. Dark and high contrast are switched with
+ * data-theme / data-contrast on <html>; "auto" follows the OS setting.
+ */
+
+:root {
+  /* Ground and surfaces */
+  --lx-bg: #EEF0FF;
+  --lx-surface: #FFFFFF;
+  --lx-raised: #EEF0FF;
+  --lx-line: #ECEAF8;
+  --lx-line-strong: #CFCAF2;
+  --lx-orbit: #B9B4F5;
+
+  /* Text */
+  --lx-ink: #14123A;
+  --lx-muted: #3B3866;
+  --lx-link: #4A2FE0;
+
+  /* Brand */
+  --lx-primary: #4A2FE0;
+  --lx-primary-soft: #E4DFFF;
+  --lx-on-primary: #FFFFFF;
+  --lx-cta: #14123A;
+  --lx-on-cta: #FFFFFF;
+  --lx-flame: #FF6B3D;
+  --lx-coral: #FF8A65;
+
+  /* Meaning tints: always paired with an icon or symbol, never colour alone */
+  --lx-similar-bg: #FFFFFF;     /* ≈ similar */
+  --lx-opposite-bg: #FFD9CC;    /* ≠ opposite */
+  --lx-opposite-ink: #9A2E0E;
+  --lx-family-bg: #D7F5E6;      /* + same family */
+  --lx-family-ink: #14613F;
+  --lx-note-bg: #FFF3B8;
+  --lx-note-ink: #5C4605;
+  --lx-info-bg: #CFE8FF;
+
+  /* Feedback */
+  --lx-success: #1F9D63;
+  --lx-success-bg: #D7F5E6;
+  --lx-error: #E2553A;
+  --lx-error-bg: #FFD9CC;
+  --lx-error-ink: #9A2E0E;
+  --lx-focus: #1D4ED8;
+
+  /* Skeleton */
+  --lx-skeleton-a: #E2DEFA;
+  --lx-skeleton-b: #F4F2FF;
+
+  /* Type */
+  --lx-font-display: "Unbounded", system-ui, sans-serif;
+  --lx-font-body: "Inter", system-ui, sans-serif;
+  --lx-font-reading: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --lx-text-scale: 1;
+
+  /* Shape and spacing */
+  --lx-radius-sm: 14px;
+  --lx-radius-md: 20px;
+  --lx-radius-lg: 28px;
+  --lx-radius-pill: 999px;
+  --lx-tap: 44px;
+  --lx-gutter: 20px;
+
+  /* Motion */
+  --lx-ease-out: cubic-bezier(.2, .8, .2, 1);
+  --lx-fast: 150ms;
+  --lx-base: 300ms;
+  --lx-slow: 600ms;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --lx-bg: #07061A;
+  --lx-surface: #131130;
+  --lx-raised: #1C1A42;
+  --lx-line: #2A2752;
+  --lx-line-strong: #3A3670;
+  --lx-orbit: #3A3670;
+  --lx-ink: #F3F1FF;
+  --lx-muted: #B4B0DA;
+  --lx-link: #A99BFF;
+  --lx-primary: #5B43F0;
+  --lx-primary-soft: #2A2470;
+  --lx-cta: #5B43F0;
+  --lx-similar-bg: #131130;
+  --lx-opposite-bg: #3A1D14;
+  --lx-opposite-ink: #FFB79E;
+  --lx-family-bg: #0F3324;
+  --lx-family-ink: #8EE6B8;
+  --lx-note-bg: #3A3010;
+  --lx-note-ink: #F5D77A;
+  --lx-info-bg: #10284A;
+  --lx-success-bg: #0F3324;
+  --lx-error-bg: #3A1D14;
+  --lx-error-ink: #FFB79E;
+  --lx-focus: #FFD23F;
+  --lx-skeleton-a: #1C1A42;
+  --lx-skeleton-b: #2A2752;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --lx-bg: #07061A;
+    --lx-surface: #131130;
+    --lx-raised: #1C1A42;
+    --lx-line: #2A2752;
+    --lx-line-strong: #3A3670;
+    --lx-orbit: #3A3670;
+    --lx-ink: #F3F1FF;
+    --lx-muted: #B4B0DA;
+    --lx-link: #A99BFF;
+    --lx-primary: #5B43F0;
+    --lx-primary-soft: #2A2470;
+    --lx-cta: #5B43F0;
+    --lx-similar-bg: #131130;
+    --lx-opposite-bg: #3A1D14;
+    --lx-opposite-ink: #FFB79E;
+    --lx-family-bg: #0F3324;
+    --lx-family-ink: #8EE6B8;
+    --lx-note-bg: #3A3010;
+    --lx-note-ink: #F5D77A;
+    --lx-info-bg: #10284A;
+    --lx-success-bg: #0F3324;
+    --lx-error-bg: #3A1D14;
+    --lx-error-ink: #FFB79E;
+    --lx-focus: #FFD23F;
+    --lx-skeleton-a: #1C1A42;
+    --lx-skeleton-b: #2A2752;
+    color-scheme: dark;
+  }
+}
+
+/* High contrast: pure black and white, thick outlines, no tints */
+:root[data-contrast="high"] {
+  --lx-bg: #FFFFFF;
+  --lx-surface: #FFFFFF;
+  --lx-raised: #FFFFFF;
+  --lx-line: #000000;
+  --lx-line-strong: #000000;
+  --lx-ink: #000000;
+  --lx-muted: #000000;
+  --lx-link: #0000EE;
+  --lx-primary: #000000;
+  --lx-cta: #000000;
+  --lx-opposite-bg: #FFFFFF;
+  --lx-family-bg: #FFFFFF;
+  --lx-note-bg: #FFFFFF;
+  --lx-focus: #0000EE;
+}
+
+:root[data-font="reading"] { --lx-font-body: var(--lx-font-reading); }
+
+/* Skeleton shimmer, shared by every loading state */
+.lx-skeleton {
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--lx-skeleton-a) 25%, var(--lx-skeleton-b) 50%, var(--lx-skeleton-a) 75%);
+  background-size: 200% 100%;
+  animation: lx-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes lx-shimmer { to { background-position: -200% 0; } }
+
+:focus-visible { outline: 3px solid var(--lx-focus); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+:root[data-motion="reduce"] *, :root[data-motion="reduce"] *::before, :root[data-motion="reduce"] *::after {
+  animation: none !important;
+  transition: none !important;
+}

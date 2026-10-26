@@ -14,3 +14,9 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
 - What really works in the prototype: navigation, search modes, the pronunciation buttons (they use the browser's text-to-speech), voice search (Chrome), quizzes, flashcards, lists, notes, settings (theme, text size, font, contrast), export/import, and the share image card.
 
 See [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md) for the product plan, accessibility commitments and build phases.
+
+## For developers
+
+- [docs/STATES.md](docs/STATES.md): every screen's loading, empty, error, offline and success states, timing rules and accessibility rules.
+- [design/tokens.css](design/tokens.css): the Orbit design tokens (colour, type, radius, motion) for light, dark and high contrast.
+- [src/lib/request-state.js](src/lib/request-state.js): turns any data load into those UI states with the agreed timings. Run its tests with `npm test` (Node 20+).

@@ -12,7 +12,7 @@ export default defineConfig({
       manifest: false,
       workbox: {
         // Only Latin font subsets are precached; other scripts load on demand.
-        globPatterns: ['**/*.{js,css,html,svg,webmanifest}', 'icons/*.png', 'assets/*latin*.woff2', 'data/*.json'],
+        globPatterns: ['**/*.{js,css,html,svg,webmanifest}', 'icons/*.png', 'assets/*latin*.woff2', 'data/*.json', 'data/*.txt'],
         navigateFallback: '/index.html',
         runtimeCaching: [
           {

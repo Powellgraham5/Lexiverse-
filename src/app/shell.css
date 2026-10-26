@@ -36,6 +36,9 @@
 .lx-nav li a[aria-current="page"] { background: var(--lx-primary-soft); color: var(--lx-link); }
 :root[data-contrast="high"] .lx-nav li a[aria-current="page"] { background: var(--lx-ink); color: var(--lx-bg); }
 
+/* Full-screen flows: no tab bar, so no room left for it */
+.lx-app.bare #main { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+
 @media (min-width: 600px) {
   #main { max-width: 36rem; }
 }
@@ -55,5 +58,6 @@
   .lx-brand b { color: var(--lx-link); font-weight: 700; }
   .lx-nav ul { display: flex; flex-direction: column; gap: .25rem; }
   .lx-nav li a { flex-direction: row; justify-content: flex-start; gap: .875rem; min-height: 3rem; padding: 0 1rem; font-size: 1rem; }
-  #main { max-width: 45rem; margin-left: max(15rem, calc(15rem + (100% - 15rem - 45rem) / 2)); padding: 2rem 2rem 3rem; }
+  .lx-app:not(.bare) #main { max-width: 45rem; margin-left: max(15rem, calc(15rem + (100% - 15rem - 45rem) / 2)); padding: 2rem 2rem 3rem; }
+  .lx-app.bare #main { max-width: 32rem; padding-top: 2.5rem; }
 }

@@ -1,0 +1,5 @@
+.lx-error-card { display: flex; flex-direction: column; gap: .625rem; padding: 1.125rem; border-radius: var(--lx-radius-lg); background: var(--lx-error-bg); color: var(--lx-ink); }
+.lx-error-card b { display: flex; align-items: center; gap: .5rem; font-size: 1.0625rem; }
+.lx-error-card b svg { flex: none; color: var(--lx-error-ink); }
+.lx-error-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.lx-error-code { font-size: .8125rem; color: var(--lx-muted); }

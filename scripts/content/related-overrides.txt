@@ -1,0 +1,8 @@
+# word|similar,...|opposite,...|family,...   Hand-picked related words where the automatic ones read badly.
+benevolent|kind,generous,charitable|malevolent,cruel|benevolence
+resilient|tough,strong,hardy|fragile,weak|resilience
+calm|peaceful,relaxed,quiet|anxious,nervous|calmly
+persuade|convince,influence,coax|discourage,deter|persuasion,persuasive
+serendipity|luck,chance,fortune||serendipitous
+curious|inquisitive,interested,eager|indifferent|curiosity,curiously
+ephemeral|fleeting,brief,temporary|permanent,lasting|

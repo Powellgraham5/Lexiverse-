@@ -8,6 +8,8 @@ export function useOnline() {
     const off = () => setOnline(false);
     addEventListener('online', on);
     addEventListener('offline', off);
+    // The connection may have changed between first render and now.
+    setOnline(navigator.onLine !== false);
     return () => { removeEventListener('online', on); removeEventListener('offline', off); };
   }, []);
   return online;

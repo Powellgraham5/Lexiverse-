@@ -5,16 +5,21 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { BLOCKLIST } from '../src/lib/blocklist.js';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const CACHE = join(ROOT, 'scripts/.cache');
 mkdirSync(CACHE, { recursive: true });
 
 const lines = (f) => readFileSync(join(ROOT, f), 'utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
-const block = new Set(lines('scripts/content/blocklist.txt'));
+const block = BLOCKLIST;
 const ranked = lines('public/data/words.txt');
 const rank = new Map(ranked.map((w, i) => [w, i]));
 const ipaOverrides = new Map(lines('scripts/content/ipa-overrides.txt').map((l) => l.split('|')));
+const relatedOverrides = new Map(lines('scripts/content/related-overrides.txt').map((l) => {
+  const [w, syn, ant, fam] = l.split('|').map((x) => (x || '').split(',').filter(Boolean));
+  return [w[0], { syn, ant, fam }];
+}));
 
 async function cachedJson(url) {
   const file = join(CACHE, createHash('sha1').update(url).digest('hex') + '.json');
@@ -40,11 +45,15 @@ const usable = (w, self) => /^[a-z]+$/.test(w) && !block.has(w) && w !== self &&
 // Word family: same base plus real English suffixes (grateful -> gratefully, diligent -> diligence).
 const SUFFIXES = ['ation', 'ition', 'ness', 'ment', 'ence', 'ance', 'ency', 'ancy', 'ity', 'ous', 'ive', 'ful', 'less', 'able', 'ible', 'ent', 'ant', 'ion', 'ism', 'ist', 'ise', 'ize', 'ate', 'al', 'ic', 'ly', 'ed', 'ing', 'er', 'y', 'e', 's'];
 const isSuffixChain = (rest) => rest === '' || SUFFIXES.some((x) => rest.startsWith(x) && isSuffixChain(rest.slice(x.length)));
+// anticipates, anticipated, anticipating are forms of the same word, not new family members.
+const isInflection = (word, x) => ['s', 'es', 'd', 'ed', 'ing'].some((end) => x === word + end || (word.endsWith('e') && x === word.slice(0, -1) + end))
+  || (word.endsWith('y') && ['ies', 'ied'].some((end) => x === word.slice(0, -1) + end));
 function familyOf(word) {
   const suffix = SUFFIXES.find((x) => word.endsWith(x) && word.length - x.length >= 4);
   const base = suffix ? word.slice(0, -suffix.length) : word;
   return ranked.filter((x) => x !== word && x.length > base.length + 1 && x.startsWith(base) && !block.has(x)
-    && isSuffixChain(x.slice(base.length)) && !word.startsWith(x)).slice(0, 2);
+    && isSuffixChain(x.slice(base.length)) && !word.startsWith(x) && !isInflection(word, x))
+    .filter((x, _, all) => !all.some((y) => y !== x && isInflection(y, x))).slice(0, 2);
 }
 
 function phonetics(entries) {
@@ -76,25 +85,34 @@ for (const f of files) {
 let done = 0;
 async function enrich(item) {
   const enc = encodeURIComponent(item.w);
-  const [dict, syn, ml, ant] = await Promise.all([
+  const [dict, syn, ml, ant, self] = await Promise.all([
     cachedJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc}`),
     cachedJson(`https://api.datamuse.com/words?rel_syn=${enc}&max=20`),
     cachedJson(`https://api.datamuse.com/words?ml=${enc}&max=20&md=p`),
-    cachedJson(`https://api.datamuse.com/words?rel_ant=${enc}&max=10`)
+    cachedJson(`https://api.datamuse.com/words?rel_ant=${enc}&max=10`),
+    cachedJson(`https://api.datamuse.com/words?sp=${enc}&md=p&max=1`)
   ]);
+  // Every part of speech the word can take (calm is an adjective, a noun and a verb), used by the daily challenge.
+  const POS = { n: 'noun', v: 'verb', adj: 'adjective', adv: 'adverb' };
+  const allPos = [...new Set([item.pos, ...((self?.[0]?.word === item.w && self[0].tags) || []).map((t) => POS[t]).filter(Boolean)])];
   let ph = phonetics(dict);
   // British spellings are often missing from the dictionary; borrow the US entry's pronunciation.
   const us = item.w.replace(/is(e|ed|ing|ation)$/, 'iz$1').replace(/our$/, 'or').replace(/^sceptic/, 'skeptic');
   if (!ph.ipa && us !== item.w) ph = phonetics(await cachedJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(us)}`));
   // True synonyms first; "means like" words only fill gaps and must share the part of speech.
   const posTag = { noun: 'n', verb: 'v', adjective: 'adj', adverb: 'adv' }[item.pos];
+  // Order by "means like" relevance (Datamuse's synonym list is unordered: anticipate -> call, occur),
+  // keep real synonyms of the same part of speech first, then any leftover synonyms.
+  const synSet = new Set((syn || []).map((x) => x.word));
   const close = (ml || []).filter((x) => (x.tags || []).includes(posTag)).map((x) => x.word);
-  const similar = [...new Set([...(syn || []).map((x) => x.word), ...close])].filter((x) => usable(x, item.w)).slice(0, 3);
+  const ranked = [...close.filter((w) => synSet.has(w) || (ml.find((x) => x.word === w)?.tags || []).includes('syn')), ...close, ...synSet];
+  const similar = [...new Set(ranked)].filter((x) => usable(x, item.w)).slice(0, 3);
   const opposite = (ant || []).map((x) => x.word).filter((x) => usable(x, item.w)).slice(0, 2);
   const family = familyOf(item.w);
   done++;
   if (done % 25 === 0) console.log(`${done}/${items.length}`);
-  return { ...item, ipa: ph.ipa || ipaOverrides.get(item.w) || null, audio: { us: ph.us, uk: ph.uk }, syn: similar, ant: opposite, fam: family, rank: rank.get(item.w) ?? null };
+  const fix = relatedOverrides.get(item.w);
+  return { ...item, allPos, ipa: ph.ipa || ipaOverrides.get(item.w) || null, audio: { us: ph.us, uk: ph.uk }, syn: fix?.syn ?? similar, ant: fix?.ant ?? opposite, fam: fix?.fam ?? family, rank: rank.get(item.w) ?? null };
 }
 
 // Three at a time, so the free APIs aren't flooded.

@@ -17,8 +17,12 @@ const TABS = [
 
 const isActive = (href, path) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
 
+// Focused flows fill the screen without the tab bar.
+const FULLSCREEN = ['/welcome', '/challenge'];
+
 export function Shell({ children }) {
   const { path } = useLocation();
+  const bare = FULLSCREEN.includes(path);
   const first = useRef(true);
 
   // After in-app navigation the new screen focuses its heading (see usePage) and the page starts at the top.
@@ -32,8 +36,8 @@ export function Shell({ children }) {
     <>
       <a class="lx-skip" href="#main">Skip to content</a>
       <Starfield />
-      <div class="lx-app">
-        <nav class="lx-nav" aria-label="Main">
+      <div class={`lx-app ${bare ? 'bare' : ''}`}>
+        {!bare && <nav class="lx-nav" aria-label="Main">
           <a class="lx-brand" href="/" aria-label="Lexiverse home">
             <img src="/favicon.svg" alt="" width="36" height="36" />
             <span>lexi<b>verse</b></span>
@@ -48,7 +52,7 @@ export function Shell({ children }) {
               </li>
             ))}
           </ul>
-        </nav>
+        </nav>}
         <main id="main">
           <OfflineBanner />
           {children}

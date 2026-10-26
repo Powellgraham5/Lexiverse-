@@ -44,6 +44,7 @@
     if (s.font && s.font !== 'inter') r.dataset.font = s.font;
     if (s.motion) r.dataset.motion = 'reduce';
     if (s.textScale) r.style.setProperty('--lx-text-scale', s.textScale);
+    if (s.textScale >= 1.4) r.dataset.largeText = '';
   } catch (e) {}
 </script>
 </head>

@@ -15,6 +15,10 @@ const Search = lazy(() => import('./screens/Search/Search.jsx'));
 const Words = lazy(() => import('./screens/Words/Words.jsx'));
 const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
 const Me = lazy(() => import('./screens/Me/Me.jsx'));
+const Onboarding = lazy(() => import('./screens/Onboarding/Onboarding.jsx'));
+const Challenge = lazy(() => import('./screens/Challenge/Challenge.jsx'));
+const WordSoon = lazy(() => import('./screens/Soon/WordSoon.jsx'));
+const TranslateSoon = lazy(() => import('./screens/Soon/TranslateSoon.jsx'));
 const NotFound = lazy(() => import('./screens/NotFound/NotFound.jsx'));
 
 function App() {
@@ -29,6 +33,10 @@ function App() {
               <Route path="/words" component={Words} />
               <Route path="/learn" component={Learn} />
               <Route path="/me" component={Me} />
+              <Route path="/welcome" component={Onboarding} />
+              <Route path="/challenge" component={Challenge} />
+              <Route path="/word/:word" component={WordSoon} />
+              <Route path="/translate" component={TranslateSoon} />
               <Route default component={NotFound} />
             </Router>
           </Shell>

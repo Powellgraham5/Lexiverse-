@@ -36,6 +36,8 @@ export function applySettings(root, s) {
   if (s.font !== 'inter') root.dataset.font = s.font; else delete root.dataset.font;
   if (s.motion) root.dataset.motion = 'reduce'; else delete root.dataset.motion;
   root.style.setProperty('--lx-text-scale', String(s.textScale));
+  // Large text: playful absolute layouts (orbits) switch to simple flowing lists.
+  if (s.textScale >= 1.4) root.dataset.largeText = ''; else delete root.dataset.largeText;
 }
 
 export function loadSettings(storage = globalThis.localStorage) {

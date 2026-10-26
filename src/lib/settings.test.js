@@ -25,7 +25,7 @@ test('text scale rounds to one decimal', () => {
 test('applySettings sets and clears html attributes', () => {
   const root = fakeRoot();
   applySettings(root, normalize({ theme: 'dark', contrast: true, font: 'reading', motion: true, textScale: 1.5 }));
-  assert.deepEqual(root.dataset, { theme: 'dark', contrast: 'high', font: 'reading', motion: 'reduce' });
+  assert.deepEqual(root.dataset, { theme: 'dark', contrast: 'high', font: 'reading', motion: 'reduce', largeText: '' });
   assert.equal(root.props['--lx-text-scale'], '1.5');
   applySettings(root, normalize({ theme: 'light' }));
   assert.deepEqual(root.dataset, { theme: 'light' });

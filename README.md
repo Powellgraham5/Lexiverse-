@@ -6,11 +6,17 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
 
 ## Status
 
-**Building, phase 0 of 7 done (foundations).** It is a PWA only: people install it from the browser, with no app store.
+**Building, phases 0 and 1 of 7 done.** It is a PWA only: people install it from the browser, with no app store.
 
 - Run it: `npm install`, then `npm run dev`. Hosting and install steps are in [docs/DEPLOY.md](docs/DEPLOY.md).
-- Done: app shell (bottom tabs on phones, side rail on computers), light, dark and auto themes with the dark-mode starfield, high contrast, reading font, text size up to 200%, reduce motion, offline support and install, local storage, toasts and the offline banner.
-- Next: phase 1, Discover (onboarding, Today, Search, daily challenge).
+- Phase 0 (foundations): app shell, themes with the dark-mode starfield, high contrast, reading font, text up to 200%, reduce motion, offline support and install.
+- Phase 1 (discover):
+  - onboarding with goal, level and comfort settings;
+  - Today with the word of the day in orbit, its similar, opposite and family words, and streaks;
+  - the daily challenge;
+  - Search with Word, Meaning, Pattern, Rhymes and Letters modes, "did you mean", recent searches, and loading, empty, error and offline states.
+- Word content: 289 hand-written daily words in three levels (`scripts/content/`), enriched by `scripts/build-daily.mjs`. A 25,000-word frequency list (`scripts/build-frequency.py`) gives level badges and the offline Letters search.
+- Next: phase 2, Understand (word page, translator, share a word).
 - `prototype/` is the old clickable prototype, kept for reference until the real screens replace it.
 
 See [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md) for the product plan, accessibility commitments and build phases.

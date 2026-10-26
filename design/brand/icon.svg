@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="i-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6A52FF"/><stop offset="1" stop-color="#2E17B0"/></linearGradient></defs>
+  <rect width="512" height="512" rx="116" fill="url(#i-bg)"/><path transform="translate(112 116) scale(2.2)" d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10z" fill="#FFFFFF"/><path transform="translate(404 112) scale(1.3)" d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10z" fill="#FFF3B8"/><path transform="translate(392 410) scale(1.6)" d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10z" fill="#FFFFFF"/>
+  <defs>
+    <clipPath id="i-front"><rect x="0" y="256" width="512" height="256"/></clipPath>
+    <radialGradient id="i-planet" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#F1EEFF"/><stop offset="1" stop-color="#C9C0FF"/></radialGradient>
+  </defs>
+  <g transform="rotate(-22 256 256)">
+    <ellipse cx="256" cy="256" rx="190" ry="58" fill="none" stroke="#D96A48" stroke-width="24"/>
+  </g>
+  <circle cx="256" cy="256" r="104" fill="url(#i-planet)"/>
+  <g transform="rotate(-22 256 256)">
+    <ellipse cx="256" cy="256" rx="190" ry="58" fill="none" stroke="#FF8A65" stroke-width="24" clip-path="url(#i-front)"/>
+    <circle cx="420" cy="285" r="26" fill="#FFF3B8"/>
+  </g></svg>

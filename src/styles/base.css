@@ -1,0 +1,84 @@
+@import '../../design/tokens.css';
+
+/* Dark + high contrast: pure black and white, no tints */
+:root[data-theme="dark"][data-contrast="high"] {
+  --lx-bg: #000000; --lx-surface: #000000; --lx-raised: #000000;
+  --lx-line: #FFFFFF; --lx-line-strong: #FFFFFF; --lx-orbit: #FFFFFF;
+  --lx-ink: #FFFFFF; --lx-muted: #FFFFFF; --lx-link: #FFD23F;
+  --lx-primary: #FFFFFF; --lx-primary-soft: #000000; --lx-on-primary: #000000;
+  --lx-cta: #FFFFFF; --lx-on-cta: #000000;
+  --lx-opposite-bg: #000000; --lx-family-bg: #000000; --lx-note-bg: #000000; --lx-info-bg: #000000;
+  --lx-opposite-ink: #FFFFFF; --lx-family-ink: #FFFFFF; --lx-note-ink: #FFFFFF;
+  --lx-focus: #FFD23F;
+}
+:root[data-contrast="high"] { --lx-on-primary: #FFFFFF; --lx-primary-soft: #FFFFFF; }
+:root[data-theme="dark"][data-contrast="high"] { --lx-on-primary: #000000; --lx-primary-soft: #000000; }
+:root[data-font="system"] { --lx-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+/* Extra tokens the app shell needs */
+:root {
+  --lx-nav-bg: var(--lx-surface);
+  --lx-nav-shadow: 0 8px 24px rgba(20, 18, 58, .12);
+  --lx-card-shadow: 0 2px 0 rgba(20, 18, 58, .04);
+  --lx-banner-bg: #14123A;
+  --lx-banner-ink: #FFFFFF;
+}
+:root[data-theme="dark"] { --lx-nav-shadow: 0 8px 24px rgba(0, 0, 0, .45); --lx-banner-bg: #1C1A42; }
+@media (prefers-color-scheme: dark) { :root[data-theme="auto"] { --lx-nav-shadow: 0 8px 24px rgba(0, 0, 0, .45); --lx-banner-bg: #1C1A42; } }
+:root[data-contrast="high"] { --lx-nav-shadow: none; --lx-card-shadow: none; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  font-size: calc(100% * var(--lx-text-scale));
+  -webkit-text-size-adjust: 100%;
+  background: var(--lx-bg);
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--lx-bg);
+  color: var(--lx-ink);
+  font-family: var(--lx-font-body);
+  font-size: 1rem;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3 { font-family: var(--lx-font-display); line-height: 1.2; margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--lx-link); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+img, svg { display: block; }
+:root[data-contrast="high"] :is(button, a, input, select, textarea, .lx-card):not(.lx-nav a, .lx-seg button, .lx-switch) { outline: 2px solid var(--lx-line); outline-offset: -2px; }
+:root[data-contrast="high"] .lx-seg { outline: 2px solid var(--lx-line); }
+:root[data-contrast="high"] :focus-visible { outline: 4px solid var(--lx-focus); outline-offset: 2px; }
+
+/* Screen-reader-only text */
+.lx-sr {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.lx-skip {
+  position: fixed; left: 12px; top: -80px; z-index: 100;
+  padding: 12px 18px; border-radius: var(--lx-radius-pill);
+  background: var(--lx-cta); color: var(--lx-on-cta); font-weight: 700; text-decoration: none;
+}
+.lx-skip:focus { top: 12px; }
+
+/* Shared building blocks */
+.lx-card { background: var(--lx-surface); border-radius: var(--lx-radius-md); box-shadow: var(--lx-card-shadow); }
+.lx-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 3.5rem; padding: 0 1.5rem; border: 0; border-radius: var(--lx-radius-pill);
+  background: var(--lx-cta); color: var(--lx-on-cta); font-weight: 700; font-size: 1.0625rem; text-decoration: none;
+  transition: transform var(--lx-fast);
+}
+.lx-btn:active { transform: scale(.97); }
+.lx-btn.secondary { background: var(--lx-surface); color: var(--lx-ink); }
+.lx-btn.ghost { background: transparent; color: var(--lx-link); min-height: 3rem; }
+.lx-btn.small { min-height: 3rem; font-size: 1rem; padding: 0 1.25rem; }
+
+@keyframes lx-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.lx-rise { animation: lx-rise .5s var(--lx-ease-out) both; }
+.lx-d1 { animation-delay: .08s; } .lx-d2 { animation-delay: .16s; } .lx-d3 { animation-delay: .24s; } .lx-d4 { animation-delay: .32s; }

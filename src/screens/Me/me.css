@@ -1,0 +1,15 @@
+.lx-me-hero {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1.25rem; border-radius: var(--lx-radius-lg);
+  background: #14123A; color: #FFFFFF;
+}
+:root[data-theme="dark"] .lx-me-hero { background: var(--lx-raised); }
+@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .lx-me-hero { background: var(--lx-raised); } }
+.lx-me-hero div { flex: 1 1 12rem; }
+.lx-me-hero b { display: block; font-size: 1.0625rem; }
+.lx-me-hero div span { font-size: .875rem; color: #C9C5F0; }
+.lx-me-planet { position: relative; flex: none; width: 3.75rem; height: 3.75rem; border-radius: 50%; background: #4A2FE0; }
+.lx-me-ring { position: absolute; inset: -8px; border-radius: 50%; border: 2px dashed #8E80FF; animation: lx-spin 24s linear infinite; }
+.lx-me-ring span { position: absolute; left: 50%; top: -5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--lx-coral); }
+.lx-me-h2 { margin-top: .5rem; font-size: 1.0625rem; }
+:root[data-contrast="high"] .lx-me-hero { background: #000000; outline: 2px solid var(--lx-ink); }
+@keyframes lx-spin { to { transform: rotate(360deg); } }

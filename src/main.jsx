@@ -1,0 +1,42 @@
+import { render } from 'preact';
+import { LocationProvider, Router, Route, lazy, ErrorBoundary } from 'preact-iso';
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/unbounded/wght.css';
+import '@fontsource/atkinson-hyperlegible/400.css';
+import '@fontsource/atkinson-hyperlegible/700.css';
+import './styles/base.css';
+import { SettingsProvider } from './app/settings-context.jsx';
+import { Shell } from './app/Shell.jsx';
+import { registerServiceWorker } from './app/sw.js';
+import Today from './screens/Today/Today.jsx';
+
+// Today loads with the app; every other screen is split into its own chunk.
+const Search = lazy(() => import('./screens/Search/Search.jsx'));
+const Words = lazy(() => import('./screens/Words/Words.jsx'));
+const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
+const Me = lazy(() => import('./screens/Me/Me.jsx'));
+const NotFound = lazy(() => import('./screens/NotFound/NotFound.jsx'));
+
+function App() {
+  return (
+    <SettingsProvider>
+      <LocationProvider>
+        <ErrorBoundary>
+          <Shell>
+            <Router>
+              <Route path="/" component={Today} />
+              <Route path="/search" component={Search} />
+              <Route path="/words" component={Words} />
+              <Route path="/learn" component={Learn} />
+              <Route path="/me" component={Me} />
+              <Route default component={NotFound} />
+            </Router>
+          </Shell>
+        </ErrorBoundary>
+      </LocationProvider>
+    </SettingsProvider>
+  );
+}
+
+render(<App />, document.getElementById('app'));
+registerServiceWorker();

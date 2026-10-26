@@ -1,0 +1,11 @@
+.lx-page-title { font-size: 1.75rem; }
+.lx-placeholder { display: flex; flex-direction: column; align-items: center; gap: .75rem; padding: 2rem 1.25rem; text-align: center; }
+.lx-placeholder-phase { color: var(--lx-muted); font-size: .875rem; font-weight: 600; }
+@keyframes lx-spin { to { transform: rotate(360deg); } }
+.lx-placeholder-orbit {
+  position: relative; width: 6rem; height: 6rem; border-radius: 50%; border: 2px dashed var(--lx-orbit);
+  animation: lx-spin 20s linear infinite;
+}
+.lx-placeholder-orbit span {
+  position: absolute; left: 50%; top: -7px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--lx-coral);
+}

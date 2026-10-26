@@ -1,0 +1,23 @@
+.lx-starfield { display: none; position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+:root[data-theme="dark"]:not([data-contrast="high"]) .lx-starfield { display: block; }
+@media (prefers-color-scheme: dark) { :root[data-theme="auto"]:not([data-contrast="high"]) .lx-starfield { display: block; } }
+
+@keyframes lx-twinkle { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@keyframes lx-drift { from { transform: translateY(0); } to { transform: translateY(-40px); } }
+@keyframes lx-shoot {
+  0%, 86% { opacity: 0; transform: translate(0, 0) rotate(-28deg); }
+  89% { opacity: 1; }
+  97%, 100% { opacity: 0; transform: translate(-190px, 100px) rotate(-28deg); }
+}
+.lx-sky { position: absolute; inset: -40px 0 0 0; }
+.lx-sky.far { animation: lx-drift 60s linear infinite alternate; }
+.lx-sky.near { animation: lx-drift 34s linear infinite alternate; }
+.lx-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #FFFFFF; animation: lx-twinkle 3s ease-in-out infinite; }
+.lx-star.s { width: 1px; height: 1px; opacity: .6; }
+.lx-star.l { width: 3px; height: 3px; box-shadow: 0 0 6px rgba(255, 255, 255, .7); }
+.lx-star.c { background: #C9BFFF; }
+.lx-star.w { background: #FFD9CC; }
+.lx-shoot {
+  position: absolute; right: 8%; top: 12%; width: 80px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, #FFFFFF, rgba(255, 255, 255, 0)); animation: lx-shoot 9s ease-in 2s infinite;
+}

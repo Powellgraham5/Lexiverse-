@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexiverse Prototype</title>
+<meta name="description" content="Clickable design prototype for Lexiverse, a vocabulary learning app.">
+<meta name="theme-color" content="#FBF8F3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Lexend:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF8F3; --surface:#FFFFFF; --surface-2:#F3EEE6; --line:#E3DBCE;
+  --ink:#1B2A41; --ink-2:#3F4B5E; --muted:#5F6B7A;
+  --accent:#C2410C; --on-accent:#FFFFFF; --accent-soft:#FCE9DC;
+  --good:#166534; --good-soft:#DCFCE7; --bad:#B91C1C; --bad-soft:#FEE2E2;
+  --focus:#1D4ED8;
+  --font-body:"Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-display:"Fraunces", Georgia, serif;
+  --radius:20px; --gutter:16px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#11151D; --surface:#1A202B; --surface-2:#242C39; --line:#323C4C;
+  --ink:#F4F1EB; --ink-2:#D3D9E2; --muted:#A6B0BE;
+  --accent:#FB923C; --on-accent:#1A1206; --accent-soft:#3A2516;
+  --good:#4ADE80; --good-soft:#123222; --bad:#F87171; --bad-soft:#3B1717;
+  --focus:#93C5FD; color-scheme:dark;
+}
+:root[data-contrast="high"]{ --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#FFFFFF; --line:#000; --ink:#000; --ink-2:#000; --muted:#000; --accent:#8A2A05; --accent-soft:#FFFFFF; --focus:#0000EE; }
+:root[data-theme="dark"][data-contrast="high"]{ --bg:#000; --surface:#000; --surface-2:#000; --line:#FFF; --ink:#FFF; --ink-2:#FFF; --muted:#FFF; --accent:#FFB070; --on-accent:#000; --accent-soft:#000; --focus:#FFFF00; }
+:root[data-font="lexend"]{ --font-body:"Lexend", system-ui, sans-serif; }
+:root[data-font="system"]{ --font-body:system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.0625rem;line-height:1.55}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+img,svg{display:block}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:8px}
+[tabindex="-1"]:focus{outline:none}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;z-index:100}
+.skip:focus{top:8px}
+
+/* prototype strip */
+.proto{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--ink);color:var(--bg);padding:8px var(--gutter);font-size:.8rem}
+.proto strong{letter-spacing:.06em;text-transform:uppercase}
+.proto select{background:var(--bg);color:var(--ink);border:0;border-radius:8px;padding:6px 8px;max-width:60vw}
+.offline{background:var(--accent-soft);color:var(--ink);padding:10px var(--gutter);text-align:center;font-weight:700}
+
+.app{max-width:520px;margin:0 auto;padding:8px var(--gutter) 120px;min-height:100dvh;outline:none}
+.app.no-tabs{padding-bottom:40px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:16px 0 8px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0}
+.bar .actions{display:flex;gap:4px}
+.display{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;line-height:1.1;margin:0}
+h1.display{font-size:2rem}
+.xl{font-size:clamp(2.4rem,11vw,3.2rem)}
+.xl a{text-decoration:none}
+.h2{font-size:1.25rem;line-height:1.3;margin:4px 0 12px}
+.h3{font-size:1.1rem;margin:0 0 4px}
+.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.muted{color:var(--muted)}
+.lead{font-size:1.15rem;margin:8px 0}
+.small{font-size:.9rem}
+section{margin:16px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:16px 0}
+.card.flat{background:var(--surface-2);border-color:transparent}
+blockquote{margin:12px 0;padding-left:14px;border-left:3px solid var(--accent);color:var(--ink-2);font-style:italic}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stack>*+*{margin-top:12px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid transparent;font-weight:700;text-decoration:none;cursor:pointer;background:var(--surface-2);transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn svg{width:20px;height:20px}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-ghost{background:transparent;border-color:var(--line)}
+.btn-block{width:100%}
+.icon-btn{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:999px;border:0;background:transparent;cursor:pointer;text-decoration:none}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn svg{width:24px;height:24px}
+.icon-btn[aria-pressed="true"] svg{fill:var(--accent);stroke:var(--accent)}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);text-decoration:none;cursor:pointer;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--surface-2);font-size:.82rem;font-weight:700;color:var(--ink-2)}
+.tag.accent{background:var(--accent-soft);color:var(--accent)}
+
+/* streak */
+.streak{display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;text-decoration:none}
+.streak svg{width:22px;height:22px}
+
+/* forms */
+.field{display:flex;align-items:center;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px 4px 4px 16px}
+.field:focus-within{border-color:var(--focus)}
+.field input{flex:1;min-width:0;border:0;background:transparent;font-size:1.15rem;padding:10px 0;outline:none}
+.field>svg{width:22px;height:22px;color:var(--muted)}
+textarea,.select,input[type=text]{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+textarea{min-height:96px;resize:vertical}
+label.lbl{display:block;font-weight:700;margin:12px 0 6px}
+
+/* lists */
+.list{list-style:none;margin:0;padding:0}
+.list li+li{border-top:1px solid var(--line)}
+.list a,.list .li{display:flex;align-items:center;gap:12px;padding:14px 4px;text-decoration:none;min-height:56px}
+.list .grow{flex:1;min-width:0}
+.list .w{font-weight:700;font-size:1.1rem}
+.list .d{color:var(--muted);font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list svg{width:20px;height:20px;color:var(--muted);flex:none}
+.hscroll{display:flex;gap:12px;overflow-x:auto;list-style:none;padding:4px 2px 12px;margin:0;scroll-snap-type:x mandatory}
+.hscroll li{flex:0 0 150px;scroll-snap-align:start}
+.hscroll a{display:block;padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-decoration:none;min-height:100px}
+.hscroll .display{font-size:1.25rem;margin-top:8px}
+
+/* review cta */
+.cta{display:flex;align-items:center;gap:16px;text-decoration:none}
+.cta .ic{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--accent-soft);color:var(--accent);flex:none}
+.cta .ic svg{width:26px;height:26px}
+.cta>svg{width:22px;height:22px;color:var(--muted);margin-left:auto;flex:none}
+.cta p{margin:0;color:var(--muted)}
+
+/* options / quiz */
+.options{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:56px;padding:12px 16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);cursor:pointer;font-weight:600}
+.opt .key{display:grid;place-items:center;width:30px;height:30px;border-radius:999px;background:var(--surface-2);font-size:.85rem;flex:none}
+.opt.correct{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.feedback{margin:12px 0 0;padding:14px 16px;border-radius:14px;background:var(--surface-2)}
+.feedback:empty{display:none}
+.feedback strong{display:block}
+.progressbar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.progressbar span{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+
+/* word page */
+.entry-head{padding:8px 0 4px}
+.ipa{color:var(--ink-2);margin:8px 0 0;font-size:1.05rem}
+.syl{letter-spacing:.04em}
+.audio{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
+.jump{display:flex;gap:8px;overflow-x:auto;padding:8px 0;margin:8px calc(-1*var(--gutter));padding-inline:var(--gutter);position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.jump a{flex:none;min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;text-decoration:none;font-weight:600;color:var(--ink-2)}
+.jump a:hover{background:var(--surface-2)}
+.senses{list-style:none;padding:0;margin:0;counter-reset:s}
+.senses>li{counter-increment:s;position:relative;padding:16px 0 16px 40px;border-bottom:1px solid var(--line)}
+.senses>li:last-child{border-bottom:0}
+.senses>li::before{content:counter(s);position:absolute;left:0;top:16px;width:28px;height:28px;border-radius:999px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.def{font-size:1.12rem;margin:6px 0 10px}
+.ex{margin:8px 0;color:var(--ink-2)}
+.ex .ctx{display:inline-block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-right:6px}
+.sense-actions{display:flex;gap:4px;margin-top:4px}
+.sense-actions .icon-btn{width:44px;height:44px}
+.sense-actions svg{width:20px;height:20px}
+dl.forms{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0}
+dl.forms dt{color:var(--muted)}
+dl.forms dd{margin:0;font-weight:700}
+.translation{font-size:1.6rem;font-family:var(--font-display);margin:12px 0 4px}
+.note{font-size:.88rem;color:var(--muted)}
+
+/* skeleton */
+.sk{background:linear-gradient(90deg,var(--surface-2) 25%,var(--line) 50%,var(--surface-2) 75%);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:10px}
+@keyframes sh{to{background-position:-200% 0}}
+
+/* flashcard */
+.fc-wrap{perspective:1200px;margin:16px 0}
+.fc{position:relative;width:100%;min-height:300px;border:0;padding:0;background:none;cursor:pointer;transform-style:preserve-3d;transition:transform .5s}
+.fc.flipped{transform:rotateY(180deg)}
+.fc .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;border-radius:24px;background:var(--surface);border:1px solid var(--line);backface-visibility:hidden;text-align:center}
+.fc .back{transform:rotateY(180deg)}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rate .btn{flex-direction:column;gap:0;min-height:64px;border-radius:16px;padding:8px}
+.rate .btn small{font-weight:400;font-size:.8rem;color:inherit;opacity:.85}
+
+/* stats */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.tile b{display:block;font-family:var(--font-display);font-size:2rem;line-height:1.1}
+.bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:140px;margin-top:12px}
+.bars div{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;font-size:.8rem;color:var(--muted)}
+.bars span{width:100%;border-radius:8px 8px 4px 4px;background:var(--accent);min-height:4px}
+.bars .zero span{background:var(--line)}
+.ms{display:flex;gap:12px;align-items:center}
+.ms .dot{display:grid;place-items:center;width:40px;height:40px;border-radius:999px;background:var(--surface-2);flex:none}
+.ms .dot.done{background:var(--good);color:#fff}
+.ms svg{width:20px;height:20px}
+
+/* settings */
+.set{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;min-height:56px}
+.set+.set{border-top:1px solid var(--line)}
+.set .grow{flex:1}
+.set p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.switch{position:relative;width:56px;height:32px;flex:none;border-radius:999px;border:2px solid var(--line);background:var(--surface-2);cursor:pointer;padding:0}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:999px;background:var(--muted);transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}
+.switch[aria-checked="true"]::after{transform:translateX(24px);background:var(--on-accent)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:4px}
+.seg button{min-height:40px;padding:0 14px;border-radius:999px;border:0;background:transparent;font-weight:700;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgb(0 0 0/.15)}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+
+/* choice cards (onboarding) */
+.choices{display:grid;gap:10px}
+.choice{display:flex;gap:14px;align-items:center;text-align:left;padding:16px;border-radius:18px;border:2px solid var(--line);background:var(--surface);cursor:pointer;min-height:64px;width:100%}
+.choice[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.choice b{display:block}
+.choice span{color:var(--muted);font-size:.92rem}
+.steps{display:flex;gap:6px;margin:16px 0}
+.steps i{flex:1;height:6px;border-radius:9px;background:var(--line)}
+.steps i.on{background:var(--accent)}
+.hero-word{font-family:var(--font-display);font-size:clamp(3rem,16vw,4.5rem);line-height:1;margin:40px 0 8px}
+
+/* tabbar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20}
+.tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;min-height:60px;text-decoration:none;font-size:.78rem;font-weight:700;color:var(--muted);border-radius:14px}
+.tabbar a .pill{display:grid;place-items:center;width:56px;height:32px;border-radius:999px}
+.tabbar svg{width:24px;height:24px}
+.tabbar a[aria-current="page"]{color:var(--ink)}
+.tabbar a[aria-current="page"] .pill{background:var(--accent-soft);color:var(--accent)}
+.tabbar[hidden]{display:none}
+
+/* toast + sheet */
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+dialog.sheet{border:0;padding:0;margin:auto auto 0;width:min(520px,100%);max-width:100%;border-radius:24px 24px 0 0;background:var(--surface);color:var(--ink)}
+dialog.sheet::backdrop{background:rgb(0 0 0/.45)}
+.sheet-in{padding:20px var(--gutter) calc(24px + env(safe-area-inset-bottom))}
+.check{display:flex;align-items:center;gap:12px;min-height:52px;cursor:pointer}
+.check input{width:24px;height:24px;accent-color:var(--accent)}
+
+.empty{text-align:center;padding:32px 8px}
+.empty .big{font-family:var(--font-display);font-size:1.5rem;margin:8px 0}
+.dym{padding:14px 16px;border-radius:14px;background:var(--accent-soft)}
+.dym a{font-weight:700;color:var(--accent)}
+
+[data-motion="reduce"] *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.fade{animation:fade .25s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" id="skip">Skip to content</a>
+<div class="proto" role="region" aria-label="Prototype controls">
+  <strong>Lexiverse · design prototype</strong>
+  <label>Screen <select id="jump" aria-label="Jump to screen">
+    <option value="welcome">Onboarding</option>
+    <option value="today">Today</option>
+    <option value="search">Search</option>
+    <option value="word/serendipity">Word page</option>
+    <option value="translate">Translator</option>
+    <option value="lists">My Words</option>
+    <option value="list/exam">Word list</option>
+    <option value="learn">Learn</option>
+    <option value="flash">Flashcards</option>
+    <option value="quiz">Quiz</option>
+    <option value="progress">Progress</option>
+    <option value="me">Me &amp; settings</option>
+  </select></label>
+</div>
+<div id="offline" class="offline" role="status" hidden>You're offline. Saved words and lists still work.</div>
+<main id="main" class="app" tabindex="-1"></main>
+<nav class="tabbar" id="tabbar" aria-label="Main">
+  <a href="#today" data-tab="today"><span class="pill" data-icon="sun"></span>Today</a>
+  <a href="#search" data-tab="search"><span class="pill" data-icon="search"></span>Search</a>
+  <a href="#lists" data-tab="lists"><span class="pill" data-icon="bookmark"></span>My Words</a>
+  <a href="#learn" data-tab="learn"><span class="pill" data-icon="cap"></span>Learn</a>
+  <a href="#me" data-tab="me"><span class="pill" data-icon="user"></span>Me</a>
+</nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<dialog id="sheet" class="sheet" aria-labelledby="sheet-h"></dialog>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('lexi:' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('lexi:' + k, JSON.stringify(v)); } catch {} }
+};
+
+const ICONS = {
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  volume:'<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
+  bookmark:'<path d="M6 3h12v18l-6-4-6 4z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  cap:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  flame:'<path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-5 5-5 8-1-1-2-2-2-4-2 2-2 5-2 8 0 4 3 7 7 7z"/>',
+  copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+  share:'<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13"/>',
+  lang:'<path d="M4 5h8M8 3v2M6 5c0 4 3 7 6 8M10 5c0 3-3 7-6 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  chev:'<path d="m9 6 6 6-6 6"/>',
+  back:'<path d="m15 6-6 6 6 6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  swap:'<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',
+  pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  cards:'<rect x="3" y="7" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>',
+  quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  ear:'<path d="M6 9a6 6 0 1 1 12 0c0 4-4 5-4 9a3 3 0 0 1-6 0"/><path d="M9 9a3 3 0 0 1 6 0"/>',
+  download:'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
+  upload:'<path d="M12 21V9M7 14l5-5 5 5M4 3h16"/>',
+  read:'<path d="M2 5h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/>'
+};
+const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+
+/* ---------- sample data (prototype only) ---------- */
+const WORDS = {
+  serendipity:{ipa:'/ˌsɛr.ənˈdɪp.ɪ.ti/',syl:['ser','en','dip','i','ty'],level:'B2',freq:'Uncommon',register:'Neutral',
+    senses:[{pos:'noun',def:'The luck of finding something good or useful without looking for it.',ex:[['Everyday','Meeting my best friend on a delayed train was pure serendipity.'],['Academic','Several scientific discoveries, such as penicillin, owe something to serendipity.']]},
+            {pos:'noun',def:'A single happy accident of this kind.',ex:[['Professional','The partnership was a serendipity that began with a misdirected email.']]}],
+    syn:['chance','luck','fortune','coincidence'],ant:['misfortune'],rel:['fortuitous','serendipitous'],
+    forms:[['Adjective','serendipitous'],['Adverb','serendipitously'],['Plural','serendipities']],
+    origin:'Coined in 1754 by the English writer Horace Walpole. He took it from the Persian fairy tale “The Three Princes of Serendip”, whose heroes kept discovering things by accident. Serendip is an old name for Sri Lanka.',
+    idioms:['by sheer serendipity','a stroke of serendipity'],
+    tr:{fr:'sérendipité',es:'serendipia',yo:'oríire àìròtẹ́lẹ̀',ha:'sa’a ba-zato',ig:'ihe ọma na-atụghị anya',ar:'صدفة سعيدة',zh:'意外的好运'}},
+  benevolent:{ipa:'/bəˈnɛv.əl.ənt/',syl:['be','nev','o','lent'],level:'C1',freq:'Less common',register:'Formal',
+    senses:[{pos:'adjective',def:'Kind and wanting to help other people.',ex:[['Everyday','A benevolent neighbour left groceries on our doorstep.'],['Professional','The scholarship is funded by a benevolent trust.']]},
+            {pos:'adjective',def:'Set up to help people rather than to make money.',ex:[['Academic','Benevolent societies were common in nineteenth-century cities.']]}],
+    syn:['kind','generous','charitable','compassionate'],ant:['malevolent','cruel'],rel:['benevolence','benefit'],
+    forms:[['Noun','benevolence'],['Adverb','benevolently']],
+    origin:'From Latin bene “well” + volens “wishing”, through Old French. Literally “wishing well” to others.',
+    idioms:['a benevolent dictator','benevolent neglect'],
+    tr:{fr:'bienveillant',es:'benévolo',yo:'onínúure',ha:'mai alheri',ig:'obiọma',ar:'خيّر',zh:'仁慈的'}},
+  eloquent:{ipa:'/ˈɛl.ə.kwənt/',syl:['el','o','quent'],level:'B2',freq:'Common',register:'Neutral',
+    senses:[{pos:'adjective',def:'Able to speak or write clearly and in a way that persuades people.',ex:[['Academic','Her eloquent essay won the national prize.'],['Everyday','He gave an eloquent speech at the wedding.']]},
+            {pos:'adjective',def:'Showing a feeling clearly without words.',ex:[['Everyday','She gave him an eloquent look and he stopped talking.']]}],
+    syn:['articulate','fluent','persuasive','expressive'],ant:['inarticulate'],rel:['eloquence','eloquently'],
+    forms:[['Noun','eloquence'],['Adverb','eloquently']],
+    origin:'From Latin eloqui “to speak out”: e- “out” + loqui “to speak”.',
+    idioms:['eloquent silence','speak eloquently of'],
+    tr:{fr:'éloquent',es:'elocuente',yo:'olóye ọ̀rọ̀',ha:'mai iya magana',ig:'onye okwu ọma',ar:'بليغ',zh:'雄辩的'}},
+  resilient:{ipa:'/rɪˈzɪl.i.ənt/',syl:['re','sil','i','ent'],level:'B2',freq:'Common',register:'Neutral',
+    senses:[{pos:'adjective',def:'Able to recover quickly after something difficult happens.',ex:[['Everyday','Children are often more resilient than we expect.'],['Professional','We need a resilient supply chain.']]},
+            {pos:'adjective',def:'Able to return to its original shape after being bent or stretched.',ex:[['Academic','Rubber is a resilient material.']]}],
+    syn:['tough','adaptable','strong'],ant:['fragile','vulnerable'],rel:['resilience'],
+    forms:[['Noun','resilience'],['Adverb','resiliently']],
+    origin:'From Latin resilire “to leap back”: re- “back” + salire “to jump”.',
+    idioms:['bounce back'],
+    tr:{fr:'résilient',es:'resiliente',yo:'onífaradà',ha:'mai juriya',ig:'onye na-anaghị ada mbà',ar:'مرن',zh:'有韧性的'}}
+};
+const LEX = [['serendipity','luck in finding good things by chance'],['benevolent','kind and wanting to help others'],['eloquent','speaking clearly and persuasively'],['resilient','recovering quickly from difficulty'],
+ ['ephemeral','lasting a very short time'],['meticulous','very careful about small details'],['ubiquitous','found everywhere'],['candid','honest and direct'],['diligent','hard-working and careful'],
+ ['pragmatic','dealing with things in a practical way'],['ambiguous','having more than one possible meaning'],['tenacious','not giving up easily'],['serene','calm and peaceful'],
+ ['fortuitous','happening by lucky chance'],['coincidence','events happening together by chance'],['luck','success that comes by chance'],['chance','something that happens without a plan'],['fortune','luck, or a large amount of money'],
+ ['misfortune','bad luck'],['vivid','bright and very clear'],['concise','short and clear'],['empathy','understanding how others feel'],['nostalgia','fond longing for the past'],['curious','eager to know or learn'],
+ ['cat','a small furry pet animal'],['cot','a small bed for a baby'],['cut','to divide with a blade'],['predict','to say what will happen'],['prepare','to make ready'],['precise','exact and accurate'],['prefer','to like one thing more'],
+ ['listen','to pay attention to sound'],['silent','making no sound'],['enlist','to join, especially the army'],['tinsel','shiny decoration'],['notes','short written records'],['stone','a hard piece of rock'],['tones','qualities of sound'],['onset','the beginning of something'],
+ ['heart','the organ that pumps blood'],['earth','the planet we live on'],['light','the brightness that lets us see'],['bright','full of light'],['night','the dark part of the day'],['delight','great pleasure'],['insight','a deep understanding'],
+ ['kind','caring and friendly'],['generous','happy to give'],['charitable','giving help to those in need'],['compassionate','feeling for others who suffer'],['malevolent','wanting to harm others'],['cruel','causing pain on purpose'],
+ ['articulate','able to express ideas clearly'],['fluent','speaking easily and well'],['persuasive','good at making people agree'],['expressive','showing feelings clearly'],['inarticulate','unable to express ideas clearly'],
+ ['tough','strong and hard to break'],['adaptable','able to change to suit new situations'],['strong','having power'],['fragile','easily broken'],['vulnerable','easily hurt'],['resilience','the ability to recover quickly'],
+ ['benevolence','kindness'],['eloquence','persuasive speaking'],['serendipitous','happening by happy chance'],['benefit','an advantage or help']];
+const SHORT = Object.fromEntries(LEX);
+const LANGS = {fr:'French',es:'Spanish',yo:'Yoruba',ha:'Hausa',ig:'Igbo',ar:'Arabic',zh:'Chinese'};
+const SPEECH_LANG = {en:'en-GB',fr:'fr-FR',es:'es-ES',yo:'yo-NG',ha:'ha-NG',ig:'ig-NG',ar:'ar-SA',zh:'zh-CN'};
+const PHRASES = {
+  'Good morning':{fr:'Bonjour',es:'Buenos días',yo:'Ẹ káàárọ̀',ha:'Ina kwana',ig:'Ụtụtụ ọma',ar:'صباح الخير',zh:'早上好'},
+  'Thank you':{fr:'Merci',es:'Gracias',yo:'Ẹ ṣé',ha:'Na gode',ig:'Daalụ',ar:'شكرًا',zh:'谢谢'},
+  'Welcome':{fr:'Bienvenue',es:'Bienvenido',yo:'Ẹ káàbọ̀',ha:'Barka da zuwa',ig:'Nnọọ',ar:'أهلًا وسهلًا',zh:'欢迎'}
+};
+
+/* ---------- state ---------- */
+const S = {
+  settings: store.get('settings', {theme:'auto',size:100,font:'atkinson',contrast:false,motion:false,accent:'en-US',rate:1,autoread:false,lang:'yo',reminder:true}),
+  lists: store.get('lists', [{id:'exam',name:'Exam preparation',words:['eloquent','resilient','benevolent','ambiguous']},{id:'writing',name:'Words for writing',words:['serendipity','vivid','concise']},{id:'work',name:'Work vocabulary',words:['pragmatic','diligent']}]),
+  history: store.get('history', ['serendipity','resilient','ephemeral']),
+  notes: store.get('notes', {}),
+  onboarded: store.get('onboarded', false),
+  profile: store.get('profile', {goal:'everyday',level:'intermediate'})
+};
+const persist = () => ['settings','lists','history','notes','onboarded','profile'].forEach(k => store.set(k, S[k]));
+const isSaved = w => S.lists.some(l => l.words.includes(w));
+
+/* ---------- settings ---------- */
+const mq = matchMedia('(prefers-color-scheme: dark)');
+function applySettings() {
+  const s = S.settings, r = document.documentElement;
+  r.dataset.theme = s.theme === 'auto' ? (mq.matches ? 'dark' : 'light') : s.theme;
+  r.dataset.font = s.font;
+  r.dataset.contrast = s.contrast ? 'high' : 'normal';
+  r.dataset.motion = s.motion ? 'reduce' : 'full';
+  r.style.fontSize = s.size + '%';
+  $('meta[name=theme-color]').content = getComputedStyle(r).getPropertyValue('--bg').trim();
+}
+mq.addEventListener?.('change', applySettings);
+
+/* ---------- speech ---------- */
+function speak(text, lang = S.settings.accent, rate = S.settings.rate) {
+  if (!('speechSynthesis' in window)) { toast('Audio is not available in this browser'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang; u.rate = rate;
+  const v = speechSynthesis.getVoices().find(v => v.lang.replace('_','-').startsWith(lang));
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ---------- screens ---------- */
+const greet = () => { const h = new Date().getHours(); return h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'; };
+const today = new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+
+const screens = {};
+
+screens.welcome = () => {
+  const step = screens.welcome.step || 1;
+  const goals = [['everyday','Everyday English','Talk and understand with confidence'],['exam','Exam preparation','IELTS, WAEC, SAT and more'],['writing','Better writing','Essays, reports and stories'],['work','Work and career','Emails, meetings and interviews']];
+  const levels = [['beginner','Beginner','I know basic words'],['intermediate','Intermediate','I read most everyday English'],['advanced','Advanced','I want rich, precise vocabulary']];
+  const choice = (key, [v,t,d]) => `<button class="choice" data-pick="${key}" data-v="${v}" aria-pressed="${S.profile[key]===v}"><div><b>${t}</b><span>${d}</span></div></button>`;
+  let body;
+  if (step === 1) body = `<p class="hero-word">Lexi<span style="color:var(--accent)">verse</span></p>
+    <p class="lead">Discover a word, understand it, practise it and remember it.</p>
+    <h1 class="h2" id="h">What brings you here?</h1><div class="choices" role="group" aria-labelledby="h">${goals.map(g => choice('goal', g)).join('')}</div>`;
+  else if (step === 2) body = `<h1 class="display" id="h" style="margin-top:24px">How confident is your English?</h1><p class="muted">We'll pick words at the right level. You can change this later.</p>
+    <div class="choices" role="group" aria-labelledby="h">${levels.map(l => choice('level', l)).join('')}</div>`;
+  else body = `<h1 class="display" style="margin-top:24px">Make it comfortable</h1><p class="muted">Everything here is also in Me → Settings.</p>
+    ${settingsAccess()}`;
+  return {title:'Welcome', tabs:false, html:`
+    <div class="steps" aria-label="Step ${step} of 3">${[1,2,3].map(i => `<i class="${i<=step?'on':''}"></i>`).join('')}</div>
+    ${body}
+    <div class="row" style="margin-top:24px">
+      ${step>1?`<button class="btn btn-ghost" data-step="${step-1}">Back</button>`:''}
+      <button class="btn btn-primary" style="flex:1" data-step="${step+1}">${step===3?'Start learning':'Continue'}</button>
+    </div>
+    ${step===1?`<p class="small muted" style="text-align:center;margin-top:16px">No account needed. <a href="#me">Sign in</a> later to sync across devices.</p>`:''}`,
+  after(m) {
+    m.addEventListener('click', e => {
+      const p = e.target.closest('[data-pick]');
+      if (p) { S.profile[p.dataset.pick] = p.dataset.v; persist(); $$(`[data-pick=${p.dataset.pick}]`, m).forEach(b => b.setAttribute('aria-pressed', b === p)); }
+      const st = e.target.closest('[data-step]');
+      if (st) { const n = +st.dataset.step; if (n > 3) { S.onboarded = true; persist(); location.hash = 'today'; } else { screens.welcome.step = n; render(); } }
+    });
+    bindSettings(m);
+  }};
+};
+
+screens.today = () => {
+  const w = WORDS.benevolent;
+  return {title:'Today', html:`
+  <header class="top">
+    <div><p class="eyebrow">${today}</p><h1 class="display">Good ${greet()}</h1></div>
+    <a class="streak" href="#progress" aria-label="6 day streak. View progress">${icon('flame')}6</a>
+  </header>
+  <section class="card" aria-labelledby="wotd">
+    <p class="eyebrow" id="wotd">Word of the day</p>
+    <h2 class="display xl"><a href="#word/benevolent">benevolent</a></h2>
+    <p class="ipa">${w.ipa} · adjective · <span class="tag">${w.level}</span></p>
+    <p class="lead">${w.senses[0].def}</p>
+    <blockquote>${w.senses[0].ex[0][1]}</blockquote>
+    <div class="row">
+      <button class="btn" data-speak="benevolent">${icon('volume')}Listen</button>
+      <a class="btn btn-primary" href="#word/benevolent">See full entry</a>
+      <button class="icon-btn" data-save="benevolent" aria-label="Save benevolent to a list" aria-pressed="${isSaved('benevolent')}">${icon('bookmark')}</button>
+    </div>
+  </section>
+  <section class="card" aria-labelledby="ch">
+    <p class="eyebrow">Daily challenge · 1 minute</p>
+    <h2 class="h2" id="ch">Which sentence uses <em>benevolent</em> correctly?</h2>
+    ${options('daily', [
+      'The benevolent storm destroyed the village.',
+      'She made a benevolent gift to the children’s hospital.',
+      'He was benevolent, so he refused to help anyone.'], 1,
+      'Benevolent describes a kind person or act that helps others. A storm can’t be kind, and refusing to help is the opposite.')}
+    <details style="margin-top:16px"><summary class="btn btn-ghost">${icon('pen')}Write your own sentence</summary>
+      <label class="lbl" for="own">Your sentence with “benevolent”</label>
+      <textarea id="own" placeholder="e.g. My benevolent aunt paid for my first dictionary."></textarea>
+      <button class="btn btn-primary" style="margin-top:8px" data-own>Save to my notes</button>
+    </details>
+  </section>
+  <a class="card cta" href="#flash">
+    <span class="ic">${icon('cards')}</span>
+    <span><span class="h3" style="display:block">8 words ready for review</span><p>About 3 minutes · keeps your streak going</p></span>${icon('chev')}
+  </a>
+  <section aria-labelledby="arch">
+    <h2 class="h3" id="arch">Earlier words of the day</h2>
+    <ul class="hscroll">${[['Yesterday','resilient'],['Saturday','eloquent'],['Friday','serendipity'],['Thursday','ephemeral']].map(([d,x]) =>
+      `<li><a href="#word/${x}"><span class="eyebrow">${d}</span><p class="display">${x}</p></a></li>`).join('')}</ul>
+  </section>`,
+  after(m) {
+    bindOptions(m);
+    $('[data-own]', m).onclick = () => { const v = $('#own', m).value.trim(); if (!v) return toast('Write a sentence first'); S.notes.benevolent = v; persist(); toast('Saved to your notes on “benevolent”'); };
+  }};
+};
+
+function options(id, opts, correct, why) {
+  return `<div class="options" role="group" aria-label="Answers" data-q="${id}" data-correct="${correct}" data-why="${esc(why)}">
+    ${opts.map((o,i) => `<button class="opt" data-i="${i}"><span class="key" aria-hidden="true">${'ABCD'[i]}</span><span>${o}</span></button>`).join('')}
+  </div><div class="feedback" aria-live="polite"></div>`;
+}
+function bindOptions(m, onAnswer) {
+  $$('.options', m).forEach(g => g.addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+    const ok = +b.dataset.i === +g.dataset.correct;
+    $$('.opt', g).forEach(o => { o.disabled = true; if (+o.dataset.i === +g.dataset.correct) o.classList.add('correct'); });
+    if (!ok) b.classList.add('wrong');
+    const fb = g.nextElementSibling;
+    fb.innerHTML = `<strong>${ok ? 'Correct!' : 'Not quite.'}</strong>${g.dataset.why}`;
+    onAnswer?.(ok);
+  }));
+}
+
+/* search */
+const lev = (a, b) => { const d = Array.from({length:a.length+1}, (_, i) => [i]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[a.length][b.length]; };
+const sortL = s => [...s].sort().join('');
+const MODES = {
+  word:['Word','Start typing a word. Spelling mistakes are fine.'],
+  meaning:['Meaning','Describe it and we’ll find the word, e.g. “happy accident”.'],
+  pattern:['Pattern','Use ? for one letter and * for many, e.g. c?t or pre*.'],
+  rhymes:['Rhymes','Type a word to find words that rhyme.'],
+  letters:['Letters','Scrabble and Wordle helper: type your letters.']
+};
+function searchResults(q, mode) {
+  q = q.trim().toLowerCase(); if (!q) return {items:[]};
+  const words = LEX.map(x => x[0]);
+  if (mode === 'word') {
+    const items = words.filter(w => w.startsWith(q)).concat(words.filter(w => !w.startsWith(q) && w.includes(q))).slice(0, 8);
+    let dym = null;
+    if (!items.length) { const best = words.map(w => [w, lev(q, w)]).sort((a,b) => a[1]-b[1])[0]; if (best && best[1] <= 3) dym = best[0]; }
+    return {items, dym};
+  }
+  if (mode === 'meaning') {
+    const toks = q.split(/\W+/).filter(t => t.length > 2);
+    return {items: LEX.map(([w,d]) => [w, toks.filter(t => d.includes(t) || w.includes(t)).length]).filter(x => x[1]).sort((a,b) => b[1]-a[1]).slice(0, 8).map(x => x[0])};
+  }
+  if (mode === 'pattern') {
+    const re = new RegExp('^' + q.replace(/[^a-z?*]/g,'').replace(/\?/g,'.').replace(/\*/g,'.*') + '$');
+    return {items: words.filter(w => re.test(w))};
+  }
+  if (mode === 'rhymes') { const end = q.slice(-3); return {items: words.filter(w => w !== q && w.endsWith(end))}; }
+  if (mode === 'letters') {
+    const exact = words.filter(w => w !== q && sortL(w) === sortL(q));
+    const fits = w => { const pool = [...q]; return [...w].every(c => { const i = pool.indexOf(c); if (i < 0) return false; pool.splice(i,1); return true; }); };
+    const sub = words.filter(w => w.length >= 3 && !exact.includes(w) && w !== q && fits(w)).sort((a,b) => b.length - a.length);
+    return {items: exact.concat(sub), note: exact.length ? `${exact.length} full anagram${exact.length>1?'s':''}, then shorter words` : 'Words you can make from these letters'};
+  }
+}
+screens.search = () => {
+  const mode = screens.search.mode || 'word';
+  return {title:'Search', html:`
+  <header class="top"><h1 class="display">Search</h1></header>
+  <div class="field" role="search">
+    ${icon('search')}
+    <label for="q" class="sr-only">Search words</label>
+    <input id="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mode==='meaning'?'Describe a meaning…':'Type a word…'}" aria-describedby="hint">
+    <button class="icon-btn" id="mic" aria-label="Search by voice">${icon('mic')}</button>
+  </div>
+  <div class="chips" role="group" aria-label="Search type" style="margin:12px 0 4px">
+    ${Object.entries(MODES).map(([k,[l]]) => `<button class="chip" data-mode="${k}" aria-pressed="${k===mode}">${l}</button>`).join('')}
+  </div>
+  <p id="hint" class="small muted">${MODES[mode][1]}</p>
+  <p class="sr-only" id="count" aria-live="polite"></p>
+  <div id="results"></div>
+  <div id="idle">
+    <section aria-labelledby="rec">
+      <div class="bar"><h2 class="h3" id="rec">Recent searches</h2>${S.history.length ? '<button class="btn btn-ghost" id="clear">Clear</button>' : ''}</div>
+      ${S.history.length ? `<ul class="list">${S.history.map(w => `<li><a href="#word/${w}"><span class="grow"><span class="w">${w}</span><br><span class="d">${SHORT[w]||''}</span></span>${icon('chev')}</a></li>`).join('')}</ul>`
+        : `<p class="muted">Words you look up will appear here.</p>`}
+    </section>
+    <section aria-labelledby="tools">
+      <h2 class="h3" id="tools">Tools</h2>
+      <a class="card cta" href="#translate"><span class="ic">${icon('lang')}</span><span><span class="h3" style="display:block">Translator</span><p>English ↔ Yoruba, Hausa, Igbo, French and more</p></span>${icon('chev')}</a>
+    </section>
+  </div>`,
+  after(m) {
+    const q = $('#q', m), res = $('#results', m), idle = $('#idle', m);
+    const run = () => {
+      const r = searchResults(q.value, mode); idle.hidden = !!q.value.trim();
+      if (!q.value.trim()) { res.innerHTML = ''; $('#count', m).textContent = ''; return; }
+      $('#count', m).textContent = r.items.length ? `${r.items.length} results` : 'No results';
+      res.innerHTML = (r.dym ? `<p class="dym">No exact match. Did you mean <a href="#word/${r.dym}">${r.dym}</a>?</p>` : '')
+        + (r.note && r.items.length ? `<p class="small muted">${r.note}</p>` : '')
+        + (r.items.length ? `<ul class="list">${r.items.map(w => `<li><a href="#word/${w}"><span class="grow"><span class="w">${w}</span><br><span class="d">${SHORT[w]}</span></span>${icon('chev')}</a></li>`).join('')}</ul>`
+          : r.dym ? '' : `<div class="empty"><p class="big">Nothing found</p><p class="muted">Try another spelling, or switch to “Meaning” and describe the word.</p></div>`);
+    };
+    q.addEventListener('input', run);
+    q.addEventListener('keydown', e => { if (e.key === 'Enter') { const a = $('a', res); if (a) location.hash = a.getAttribute('href'); } if (e.key === 'ArrowDown') { e.preventDefault(); $('a', res)?.focus(); } });
+    $$('[data-mode]', m).forEach(b => b.onclick = () => { screens.search.mode = b.dataset.mode; render(); $('#q').value = q.value; $('#q').focus(); $('#q').dispatchEvent(new Event('input')); });
+    $('#clear', m)?.addEventListener('click', () => { S.history = []; persist(); render(); toast('Search history cleared'); });
+    $('#mic', m).onclick = () => {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) return toast('Voice search isn’t supported in this browser');
+      const r = new SR(); r.lang = S.settings.accent; toast('Listening… say a word');
+      r.onresult = e => { q.value = e.results[0][0].transcript.toLowerCase().replace(/[.?!]/g,''); run(); };
+      r.onerror = () => toast('Couldn’t hear that. Try again.'); r.start();
+    };
+    if (!matchMedia('(pointer:coarse)').matches) q.focus();
+  }};
+};
+
+/* word page */
+screens.word = (w) => {
+  w = decodeURIComponent(w || 'serendipity').toLowerCase();
+  const d = WORDS[w];
+  S.history = [w, ...S.history.filter(x => x !== w)].slice(0, 50); persist();
+  const bar = `<div class="bar"><button class="icon-btn" onclick="history.length>1?history.back():location.hash='search'" aria-label="Back">${icon('back')}</button>
+    <div class="actions">
+      <button class="icon-btn" data-save="${w}" aria-label="Save ${w} to a list" aria-pressed="${isSaved(w)}">${icon('bookmark')}</button>
+      <button class="icon-btn" data-share="${w}" aria-label="Share ${w} as an image">${icon('share')}</button>
+    </div></div>`;
+  if (!d) return {title:w, html: bar + `
+    <h1 class="display xl">${esc(w)}</h1>
+    ${SHORT[w] ? `<p class="lead">${SHORT[w]}</p>` : ''}
+    <div class="card flat empty"><p class="big">Sample data only</p>
+    <p class="muted">This prototype has full entries for <a href="#word/serendipity">serendipity</a>, <a href="#word/benevolent">benevolent</a>, <a href="#word/eloquent">eloquent</a> and <a href="#word/resilient">resilient</a>. In the real app every word loads here.</p></div>`};
+  const tl = S.settings.lang;
+  return {title:w, skeleton:true, html: bar + `
+  <section class="entry-head" aria-labelledby="wh">
+    <div class="row"><span class="tag accent">${d.level}</span><span class="tag">${d.freq}</span><span class="tag">${d.register}</span></div>
+    <h1 class="display xl" id="wh" style="margin-top:12px">${w}</h1>
+    <p class="ipa">${d.ipa} · <span class="syl" aria-label="Syllables: ${d.syl.join(', ')}">${d.syl.join('·')}</span></p>
+    <div class="audio" role="group" aria-label="Pronunciation">
+      <button class="btn" data-speak="${w}" data-lang="en-US">${icon('volume')}US</button>
+      <button class="btn" data-speak="${w}" data-lang="en-GB">${icon('volume')}UK</button>
+      <button class="btn btn-ghost" data-speak="${w}" data-rate="0.5">Slow</button>
+      <button class="btn btn-ghost" data-readall>${icon('read')}Read entry aloud</button>
+    </div>
+  </section>
+  <nav class="jump" aria-label="Sections of this entry">
+    <a href="#s-mean" data-anchor>Meanings</a><a href="#s-tr" data-anchor>Translate</a><a href="#s-syn" data-anchor>Similar</a><a href="#s-forms" data-anchor>Forms</a><a href="#s-origin" data-anchor>Origin</a><a href="#s-notes" data-anchor>Notes</a>
+  </nav>
+  <section id="s-mean" aria-labelledby="mh"><h2 class="h2" id="mh">Meanings <span class="small muted">most common first</span></h2>
+    <ol class="senses">${d.senses.map((s,i) => `<li>
+      <span class="tag">${s.pos}</span>
+      <p class="def">${s.def}</p>
+      ${s.ex.map(([c,t]) => `<p class="ex"><span class="ctx">${c}</span>${t}</p>`).join('')}
+      <div class="sense-actions">
+        <button class="icon-btn" data-speak="${esc(s.def)}" aria-label="Listen to meaning ${i+1}">${icon('volume')}</button>
+        <button class="icon-btn" data-copy="${esc(w + ' (' + s.pos + '): ' + s.def)}" aria-label="Copy meaning ${i+1}">${icon('copy')}</button>
+      </div></li>`).join('')}</ol>
+  </section>
+  <section class="card" id="s-tr" aria-labelledby="th">
+    <h2 class="h2" id="th">${icon('lang').replace('<svg','<svg style="display:inline;width:22px;vertical-align:-4px;margin-right:6px"')}Translate</h2>
+    <label class="lbl" for="tl">Language</label>
+    <select class="select" id="tl">${Object.entries(LANGS).map(([k,v]) => `<option value="${k}" ${k===tl?'selected':''}>${v}</option>`).join('')}</select>
+    <div class="row" style="justify-content:space-between"><p class="translation" id="tout" lang="${tl}">${d.tr[tl]}</p>
+    <button class="icon-btn" id="tspeak" aria-label="Listen to translation">${icon('volume')}</button></div>
+    <p class="note">Sample translations for the prototype, not yet checked by native speakers.</p>
+  </section>
+  <section id="s-syn" aria-labelledby="sh"><h2 class="h2" id="sh">Similar and opposite</h2>
+    <h3 class="eyebrow" style="margin:8px 0">Synonyms</h3><div class="chips">${d.syn.map(x => `<a class="chip" href="#word/${x}">${x}</a>`).join('')}</div>
+    <h3 class="eyebrow" style="margin:16px 0 8px">Antonyms</h3><div class="chips">${d.ant.map(x => `<a class="chip" href="#word/${x}">${x}</a>`).join('')}</div>
+    <h3 class="eyebrow" style="margin:16px 0 8px">Related</h3><div class="chips">${d.rel.map(x => `<a class="chip" href="#word/${x}">${x}</a>`).join('')}</div>
+  </section>
+  <section id="s-forms" class="card" aria-labelledby="fh"><h2 class="h2" id="fh">Word forms</h2>
+    <dl class="forms">${d.forms.map(([k,v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+    <h3 class="eyebrow" style="margin:20px 0 8px">Phrases</h3>
+    <ul class="list">${d.idioms.map(x => `<li><span class="li">${x}</span></li>`).join('')}</ul>
+  </section>
+  <section id="s-origin" aria-labelledby="oh"><h2 class="h2" id="oh">Where it comes from</h2><p>${d.origin}</p></section>
+  <section id="s-notes" class="card" aria-labelledby="nh"><h2 class="h2" id="nh">My notes</h2>
+    <label class="sr-only" for="note">Your notes on ${w}</label>
+    <textarea id="note" placeholder="Add a note, a memory trick, or your own sentence">${esc(S.notes[w] || '')}</textarea>
+    <p class="note" id="nst" aria-live="polite">Saved on this device.</p>
+  </section>
+  <button class="btn btn-primary btn-block" data-save="${w}">${icon('bookmark')}${isSaved(w) ? 'Saved · change lists' : 'Save to a list'}</button>`,
+  after(m) {
+    const sel = $('#tl', m), out = $('#tout', m);
+    sel.onchange = () => { S.settings.lang = sel.value; persist(); out.textContent = d.tr[sel.value]; out.lang = sel.value; };
+    $('#tspeak', m).onclick = () => speak(out.textContent, SPEECH_LANG[sel.value]);
+    let nt; $('#note', m).oninput = e => { clearTimeout(nt); nt = setTimeout(() => { S.notes[w] = e.target.value; persist(); $('#nst', m).textContent = 'Saved.'; }, 400); };
+    $('[data-readall]', m).onclick = () => speak(`${w}. ${d.senses.map((s,i) => `Meaning ${i+1}, ${s.pos}: ${s.def} For example: ${s.ex[0][1]}`).join(' ')}`);
+    $$('[data-anchor]', m).forEach(a => a.onclick = e => { e.preventDefault(); const t = $(a.getAttribute('href')); t.scrollIntoView({behavior:S.settings.motion?'auto':'smooth'}); t.setAttribute('tabindex','-1'); t.focus({preventScroll:true}); });
+    if (S.settings.autoread) speak(w);
+  }};
+};
+
+/* translator */
+screens.translate = () => {
+  const tl = S.settings.lang;
+  return {title:'Translator', html:`
+  <div class="bar"><a class="icon-btn" href="#search" aria-label="Back to search">${icon('back')}</a></div>
+  <h1 class="display">Translator</h1>
+  <div class="row" style="margin:16px 0;flex-wrap:nowrap">
+    <span class="chip" style="flex:1;justify-content:center" aria-label="From English">English</span>
+    <button class="icon-btn" id="swap" aria-label="Swap languages">${icon('swap')}</button>
+    <label class="sr-only" for="to">Translate to</label>
+    <select id="to" class="select" style="flex:1;border-radius:999px;min-height:44px">${Object.entries(LANGS).map(([k,v]) => `<option value="${k}" ${k===tl?'selected':''}>${v}</option>`).join('')}</select>
+  </div>
+  <label class="lbl" for="src">Text to translate</label>
+  <textarea id="src" placeholder="Type or paste text…"></textarea>
+  <div class="chips" style="margin:10px 0" aria-label="Try a phrase">${Object.keys(PHRASES).map(p => `<button class="chip" data-phrase="${p}">${p}</button>`).join('')}</div>
+  <div class="row"><button class="btn btn-primary" id="go" style="flex:1">${icon('lang')}Translate</button><button class="icon-btn" id="tmic" aria-label="Speak text to translate">${icon('mic')}</button></div>
+  <section class="card" aria-live="polite" id="outc" hidden>
+    <p class="eyebrow" id="olang"></p><p class="translation" id="out"></p>
+    <div class="row"><button class="btn" id="ospeak">${icon('volume')}Listen</button><button class="btn btn-ghost" id="ocopy">${icon('copy')}Copy</button></div>
+    <p class="note">In the real app this uses a translation service. Short phrases here are samples.</p>
+  </section>`,
+  after(m) {
+    const src = $('#src', m), to = $('#to', m);
+    const go = () => {
+      const t = src.value.trim(); if (!t) return toast('Type something to translate');
+      to.value && (S.settings.lang = to.value, persist());
+      const hit = Object.entries(PHRASES).find(([k]) => k.toLowerCase() === t.toLowerCase());
+      $('#outc', m).hidden = false;
+      $('#olang', m).textContent = LANGS[to.value];
+      $('#out', m).textContent = hit ? hit[1][to.value] : WORDS[t.toLowerCase()]?.tr[to.value] || '(The prototype only knows the sample phrases.)';
+      $('#out', m).lang = to.value;
+    };
+    $('#go', m).onclick = go;
+    $$('[data-phrase]', m).forEach(b => b.onclick = () => { src.value = b.dataset.phrase; go(); });
+    $('#ospeak', m).onclick = () => speak($('#out', m).textContent, SPEECH_LANG[to.value]);
+    $('#ocopy', m).onclick = () => copy($('#out', m).textContent);
+    $('#swap', m).onclick = () => toast('Translating into English is part of the full build');
+    $('#tmic', m).onclick = () => $('#mic') ? 0 : toast('Voice input works the same way as voice search');
+  }};
+};
+
+/* my words */
+screens.lists = () => ({title:'My Words', html:`
+  <header class="top"><h1 class="display">My Words</h1><button class="btn btn-ghost" id="newlist">${icon('plus')}New list</button></header>
+  <div class="field" role="search">${icon('search')}<label class="sr-only" for="lq">Search your saved words</label><input id="lq" type="search" placeholder="Search your saved words"></div>
+  <div id="lres"></div>
+  <section aria-labelledby="lh"><h2 class="h3 sr-only" id="lh">Your lists</h2>
+    <div id="lcards">${S.lists.map(l => `<a class="card cta" href="#list/${l.id}"><span class="ic">${icon('bookmark')}</span>
+      <span><span class="h3" style="display:block">${esc(l.name)}</span><p>${l.words.length} word${l.words.length===1?'':'s'} · ${l.words.slice(0,3).join(', ')}${l.words.length>3?'…':''}</p></span>${icon('chev')}</a>`).join('')}</div>
+  </section>
+  <section aria-labelledby="hh"><div class="bar"><h2 class="h3" id="hh">History</h2><a class="btn btn-ghost" href="#search">See all</a></div>
+    <ul class="list">${S.history.slice(0,5).map(w => `<li><a href="#word/${w}"><span class="grow"><span class="w">${w}</span><br><span class="d">${SHORT[w]||''}</span></span>${icon('chev')}</a></li>`).join('')}</ul>
+  </section>
+  <section class="card flat"><h2 class="h3">Keep them everywhere</h2><p class="muted" style="margin:4px 0 12px">Your words are saved on this device. Sign in to sync your lists across your phone and computer.</p><a class="btn" href="#me">Sign in or create account</a></section>`,
+  after(m) {
+    $('#newlist', m).onclick = () => { const n = prompt('Name your new list'); if (!n) return; S.lists.push({id:'l'+Date.now(), name:n, words:[]}); persist(); render(); toast(`List “${n}” created`); };
+    $('#lq', m).oninput = e => {
+      const q = e.target.value.trim().toLowerCase(); const all = [...new Set(S.lists.flatMap(l => l.words))].filter(w => w.includes(q));
+      $('#lres', m).innerHTML = q ? (all.length ? `<ul class="list">${all.map(w => `<li><a href="#word/${w}"><span class="grow"><span class="w">${w}</span><br><span class="d">${SHORT[w]||''}</span></span>${icon('chev')}</a></li>`).join('')}</ul>` : '<p class="muted">None of your saved words match.</p>') : '';
+      $('#lcards', m).hidden = !!q;
+    };
+  }});
+
+screens.list = (id) => {
+  const l = S.lists.find(x => x.id === id) || S.lists[0];
+  return {title:l.name, html:`
+  <div class="bar"><a class="icon-btn" href="#lists" aria-label="Back to My Words">${icon('back')}</a>
+    <div class="actions"><button class="icon-btn" id="exp" aria-label="Export this list as CSV">${icon('download')}</button></div></div>
+  <h1 class="display">${esc(l.name)}</h1><p class="muted">${l.words.length} words</p>
+  <div class="row" style="margin:16px 0"><a class="btn btn-primary" href="#flash" style="flex:1">${icon('cards')}Practise this list</a><a class="btn" href="#quiz">${icon('quiz')}Quiz</a></div>
+  ${l.words.length ? `<ul class="list">${l.words.map(w => `<li><div class="li"><a href="#word/${w}" class="grow" style="padding:0;min-height:0"><span><span class="w">${w}</span><br><span class="d">${SHORT[w]||''}</span></span></a>
+    <button class="icon-btn" data-speak="${w}" aria-label="Listen to ${w}">${icon('volume')}</button>
+    <button class="icon-btn" data-rm="${w}" aria-label="Remove ${w} from this list">${icon('trash')}</button></div></li>`).join('')}</ul>`
+  : `<div class="empty"><p class="big">This list is empty</p><p class="muted">Tap the bookmark on any word to add it here.</p><a class="btn btn-primary" href="#search">Find words</a></div>`}`,
+  after(m) {
+    $$('[data-rm]', m).forEach(b => b.onclick = () => { l.words = l.words.filter(w => w !== b.dataset.rm); persist(); render(); toast(`Removed “${b.dataset.rm}”`); });
+    $('#exp', m).onclick = () => download(`${l.name}.csv`, 'word,meaning\n' + l.words.map(w => `${w},"${(SHORT[w]||'').replace(/"/g,'""')}"`).join('\n'), 'text/csv');
+  }};
+};
+
+/* learn */
+screens.learn = () => ({title:'Learn', html:`
+  <header class="top"><h1 class="display">Learn</h1><a class="streak" href="#progress" aria-label="6 day streak. View progress">${icon('flame')}6</a></header>
+  <section class="card" aria-labelledby="rv">
+    <p class="eyebrow">Today’s review</p>
+    <h2 class="h2" id="rv">8 words are due</h2>
+    <div class="progressbar" role="progressbar" aria-label="Daily goal" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><span style="width:40%"></span></div>
+    <p class="small muted">Daily goal: 4 of 10 words reviewed</p>
+    <a class="btn btn-primary btn-block" href="#flash" style="margin-top:8px">Start review</a>
+  </section>
+  <h2 class="h3">Practise</h2>
+  <a class="card cta" href="#flash"><span class="ic">${icon('cards')}</span><span><span class="h3" style="display:block">Flashcards</span><p>See the word, recall the meaning</p></span>${icon('chev')}</a>
+  <a class="card cta" href="#quiz"><span class="ic">${icon('quiz')}</span><span><span class="h3" style="display:block">Quick quiz</span><p>Meanings, synonyms, gaps and spelling</p></span>${icon('chev')}</a>
+  <a class="card cta" href="#quiz"><span class="ic">${icon('ear')}</span><span><span class="h3" style="display:block">Listen and spell</span><p>Hear a word, type it. Great for eyes-free practice.</p></span>${icon('chev')}</a>
+  <a class="card cta" href="#progress"><span class="ic">${icon('chart')}</span><span><span class="h3" style="display:block">Your progress</span><p>42 words saved · 84% review accuracy</p></span>${icon('chev')}</a>
+  <section class="card flat"><h2 class="h3">How review works</h2><p class="muted" style="margin:4px 0 0">Words you find hard come back sooner. Words you know well come back less often, so your practice time goes where it’s needed.</p></section>`});
+
+const DECK = ['serendipity','eloquent','resilient','ephemeral','meticulous'];
+screens.flash = () => {
+  const st = screens.flash.st ||= {i:0, res:[]};
+  if (st.i >= DECK.length) {
+    const c = k => st.res.filter(x => x === k).length;
+    return {title:'Review done', html:`
+      <div class="bar"><a class="icon-btn" href="#learn" aria-label="Back to Learn">${icon('back')}</a></div>
+      <div class="empty"><p class="hero-word" style="margin-top:16px">Nice work</p><p class="lead">You reviewed ${DECK.length} words.</p></div>
+      <div class="tiles"><div class="tile"><b>${c('easy')}</b>Easy · back in 7 days</div><div class="tile"><b>${c('practice')}</b>Needs practice · 2 days</div><div class="tile"><b>${c('again')}</b>Not remembered · later today</div><div class="tile"><b>7</b>Day streak</div></div>
+      <div class="row" style="margin-top:20px"><button class="btn btn-ghost" id="again" style="flex:1">Review again</button><a class="btn btn-primary" href="#quiz" style="flex:1">Take a quiz</a></div>`,
+      after(m) { $('#again', m).onclick = () => { screens.flash.st = null; render(); }; }};
+  }
+  const w = DECK[st.i], d = WORDS[w];
+  return {title:'Flashcards', html:`
+  <div class="bar"><a class="icon-btn" href="#learn" aria-label="Stop review">${icon('x')}</a><span class="muted" aria-live="polite">Card ${st.i+1} of ${DECK.length}</span><span style="width:48px"></span></div>
+  <div class="progressbar" aria-hidden="true"><span style="width:${st.i/DECK.length*100}%"></span></div>
+  <div class="fc-wrap"><button class="fc" id="fc" aria-label="Flashcard for ${w}. Press to show the meaning.">
+    <span class="face front"><span class="eyebrow">What does it mean?</span><span class="display xl">${w}</span><span class="muted">Tap or press Space to reveal</span></span>
+    <span class="face back" aria-hidden="true"><span class="display" style="font-size:1.6rem">${w}</span><span class="lead">${d ? d.senses[0].def : SHORT[w]}</span>${d ? `<span class="muted"><i>${d.senses[0].ex[0][1]}</i></span>` : ''}</span>
+  </button></div>
+  <div class="row" style="justify-content:center"><button class="btn btn-ghost" data-speak="${w}">${icon('volume')}Hear it</button></div>
+  <p class="sr-only" id="reveal" aria-live="polite"></p>
+  <div class="rate" id="rate" hidden style="margin-top:16px" role="group" aria-label="How well did you know it?">
+    <button class="btn" data-r="again">Not remembered<small>later today</small></button>
+    <button class="btn" data-r="practice">Needs practice<small>in 2 days</small></button>
+    <button class="btn btn-primary" data-r="easy">Easy<small>in 7 days</small></button>
+  </div>`,
+  after(m) {
+    const fc = $('#fc', m);
+    fc.onclick = () => {
+      fc.classList.add('flipped'); $('#rate', m).hidden = false;
+      $('.front', fc).setAttribute('aria-hidden','true'); $('.back', fc).removeAttribute('aria-hidden');
+      $('#reveal', m).textContent = `${w}: ${d ? d.senses[0].def : SHORT[w]}`;
+      if (S.settings.autoread) speak(d ? d.senses[0].def : SHORT[w]);
+      $('[data-r]', m).focus();
+    };
+    $$('[data-r]', m).forEach(b => b.onclick = () => { st.res.push(b.dataset.r); st.i++; render(); });
+  }};
+};
+
+const QUIZ = [
+  {type:'Meaning', q:'What does <b>ephemeral</b> mean?', o:['Lasting a very short time','Very large','Easy to see','Kind to others'], c:0, why:'Ephemeral comes from Greek ephēmeros, “lasting a day”. Think of a soap bubble.'},
+  {type:'Synonym', q:'Pick a word that means the same as <b>resilient</b>.', o:['fragile','tough','silent','vivid'], c:1, why:'Resilient people or things recover after difficulty, so “tough” is closest. “Fragile” is the opposite.'},
+  {type:'Fill the gap', q:'Her ___ speech moved the whole audience.', o:['ambiguous','ephemeral','eloquent','fortuitous'], c:2, why:'Eloquent means speaking clearly and persuasively, which is what moves an audience.'},
+  {type:'Spelling', q:'Which spelling is correct?', o:['serendipidy','serendipity','serindipity','serendipitty'], c:1, why:'ser·en·dip·i·ty: five syllables, one t at the end.'},
+  {type:'Listen and spell', listen:'meticulous', q:'Listen, then type the word you hear.', why:'Meticulous: me·tic·u·lous. It means very careful about small details.'},
+  {type:'Opposite', q:'Pick the opposite of <b>benevolent</b>.', o:['malevolent','generous','charitable','kind'], c:0, why:'Bene- means “well” and male- means “badly”. Malevolent means wanting to harm others.'}
+];
+screens.quiz = () => {
+  const st = screens.quiz.st ||= {i:0, score:0};
+  if (st.i >= QUIZ.length) return {title:'Quiz results', html:`
+    <div class="bar"><a class="icon-btn" href="#learn" aria-label="Back to Learn">${icon('back')}</a></div>
+    <div class="empty"><p class="hero-word" style="margin-top:16px">${st.score}/${QUIZ.length}</p><p class="lead">${st.score >= 5 ? 'Excellent!' : st.score >= 3 ? 'Good progress.' : 'Keep practising, you’re getting there.'}</p>
+    <p class="muted">Words you missed have been added to your next review.</p></div>
+    <div class="row"><button class="btn btn-ghost" id="retry" style="flex:1">Try again</button><a class="btn btn-primary" href="#progress" style="flex:1">See progress</a></div>`,
+    after(m) { $('#retry', m).onclick = () => { screens.quiz.st = null; render(); }; }};
+  const q = QUIZ[st.i];
+  return {title:'Quiz', html:`
+  <div class="bar"><a class="icon-btn" href="#learn" aria-label="Stop quiz">${icon('x')}</a><span class="muted">Question ${st.i+1} of ${QUIZ.length}</span><button class="icon-btn" id="rq" aria-label="Read question aloud">${icon('read')}</button></div>
+  <div class="progressbar" aria-hidden="true"><span style="width:${st.i/QUIZ.length*100}%"></span></div>
+  <p class="eyebrow" style="margin-top:24px">${q.type}</p>
+  <h1 class="h2" style="font-size:1.4rem" id="qh">${q.q}</h1>
+  ${q.listen ? `
+    <button class="btn btn-block" data-speak="${q.listen}" style="margin:12px 0">${icon('volume')}Play the word</button>
+    <label class="lbl" for="spell">Your spelling</label>
+    <input type="text" id="spell" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:1.3rem">
+    <button class="btn btn-primary btn-block" id="check" style="margin-top:12px">Check</button>
+    <div class="feedback" aria-live="polite"></div>`
+  : options('q'+st.i, q.o, q.c, q.why)}
+  <button class="btn btn-primary btn-block" id="next" style="margin-top:16px" hidden>${st.i === QUIZ.length-1 ? 'See results' : 'Next question'}</button>`,
+  after(m) {
+    const next = $('#next', m);
+    const done = ok => { if (ok) st.score++; next.hidden = false; next.focus(); };
+    bindOptions(m, done);
+    $('#rq', m).onclick = () => speak($('#qh', m).textContent + (q.o ? '. Options: ' + q.o.map((o,i) => `${'ABCD'[i]}, ${o}`).join('. ') : ''));
+    if (q.listen) {
+      $('#check', m).onclick = () => {
+        const v = $('#spell', m).value.trim().toLowerCase(); if (!v) return toast('Type what you heard first');
+        const ok = v === q.listen; $('#check', m).disabled = true;
+        $('.feedback', m).innerHTML = `<strong>${ok ? 'Correct!' : `Not quite. It’s spelled “${q.listen}”.`}</strong>${q.why}`;
+        done(ok);
+      };
+      $('#spell', m).onkeydown = e => e.key === 'Enter' && $('#check', m).click();
+    }
+    next.onclick = () => { st.i++; render(); };
+  }};
+};
+
+screens.progress = () => {
+  const week = [['Mon',5],['Tue',8],['Wed',0],['Thu',12],['Fri',6],['Sat',9],['Sun',4]];
+  const ms = [['First quiz completed',1,1],['10 words saved',1,1],['7-day streak',6,7],['Review 50 words',31,50],['Learn 100 words',42,100]];
+  return {title:'Progress', html:`
+  <div class="bar"><button class="icon-btn" onclick="history.back()" aria-label="Back">${icon('back')}</button></div>
+  <h1 class="display">Your progress</h1>
+  <div class="tiles" style="margin-top:16px">
+    <div class="tile"><b>6</b>day streak</div><div class="tile"><b>42</b>words saved</div>
+    <div class="tile"><b>12</b>quizzes done</div><div class="tile"><b>84%</b>review accuracy</div>
+  </div>
+  <section class="card" aria-labelledby="wk"><h2 class="h3" id="wk">Minutes practised this week</h2>
+    <div class="bars" role="img" aria-label="${week.map(([d,v]) => `${d} ${v} minutes`).join(', ')}">
+      ${week.map(([d,v]) => `<div class="${v?'':'zero'}"><span style="height:${v/12*100}%"></span>${d}</div>`).join('')}</div>
+  </section>
+  <section aria-labelledby="msh"><h2 class="h3" id="msh">Milestones</h2>
+    <ul class="list">${ms.map(([t,a,b]) => `<li><div class="li ms"><span class="dot ${a>=b?'done':''}">${a>=b?icon('check'):''}</span><span class="grow"><b>${t}</b><br><span class="d">${a>=b?'Done':`${a} of ${b}`}</span></span></div></li>`).join('')}</ul>
+  </section>`};
+};
+
+/* me + settings */
+function settingsAccess() {
+  const s = S.settings;
+  return `
+  <div class="set"><div class="grow"><b id="lsz">Text size</b><p>${s.size}%</p></div></div>
+  <input type="range" min="100" max="160" step="10" value="${s.size}" data-set="size" aria-labelledby="lsz">
+  <p style="font-size:1.1em" class="muted">The quick brown fox learns a new word.</p>
+  <div class="set"><div class="grow"><b id="lfont">Reading font</b><p>Atkinson Hyperlegible is designed for low vision.</p></div></div>
+  <div class="seg" role="group" aria-labelledby="lfont">${[['atkinson','Hyperlegible'],['lexend','Lexend'],['system','System']].map(([v,l]) => `<button data-seg="font" data-v="${v}" aria-pressed="${s.font===v}">${l}</button>`).join('')}</div>
+  ${sw('contrast','High contrast','Stronger colours and borders')}
+  ${sw('autoread','Read words aloud','Speak each word and meaning when it opens')}
+  ${sw('motion','Reduce motion','Turn off animations')}`;
+}
+const sw = (k, t, d) => `<div class="set"><div class="grow"><b id="sw-${k}">${t}</b><p>${d}</p></div><button class="switch" role="switch" aria-checked="${!!S.settings[k]}" data-sw="${k}" aria-labelledby="sw-${k}"></button></div>`;
+function bindSettings(m) {
+  m.addEventListener('click', e => {
+    const t = e.target.closest('[data-sw]'); if (t) { const k = t.dataset.sw; S.settings[k] = !S.settings[k]; t.setAttribute('aria-checked', S.settings[k]); persist(); applySettings(); }
+    const g = e.target.closest('[data-seg]'); if (g) { S.settings[g.dataset.seg] = g.dataset.v; $$(`[data-seg=${g.dataset.seg}]`, m).forEach(b => b.setAttribute('aria-pressed', b === g)); persist(); applySettings(); }
+  });
+  m.addEventListener('input', e => {
+    const r = e.target.closest('[data-set]'); if (!r) return;
+    S.settings[r.dataset.set] = r.type === 'range' ? +r.value : r.value; persist(); applySettings();
+    if (r.dataset.set === 'size') r.previousElementSibling.querySelector('p').textContent = r.value + '%';
+    if (r.dataset.set === 'rate') $('#ratev').textContent = r.value + '×';
+  });
+}
+screens.me = () => {
+  const s = S.settings;
+  return {title:'Me', html:`
+  <header class="top"><h1 class="display">Me</h1></header>
+  <section class="card"><div class="row" style="flex-wrap:nowrap;gap:16px">
+    <span class="cta"><span class="ic">${icon('user')}</span></span>
+    <div><b>Learning on this device</b><p class="small muted" style="margin:2px 0 0">Goal: ${({everyday:'Everyday English',exam:'Exam preparation',writing:'Better writing',work:'Work and career'})[S.profile.goal]} · ${S.profile.level}</p></div></div>
+    <div class="row" style="margin-top:16px"><button class="btn btn-primary" style="flex:1" data-soon="Sign in">Sign in to sync</button><a class="btn btn-ghost" href="#welcome" id="redo">Change goal</a></div>
+  </section>
+  <a class="card cta" href="#progress"><span class="ic">${icon('chart')}</span><span><span class="h3" style="display:block">Progress</span><p>6-day streak · 42 words</p></span>${icon('chev')}</a>
+
+  <h2 class="h2" style="margin-top:28px">Seeing and reading</h2>
+  <div class="card">
+    <div class="set"><div class="grow"><b id="lth">Theme</b></div>
+      <div class="seg" role="group" aria-labelledby="lth">${[['auto','Auto'],['light','Light'],['dark','Dark']].map(([v,l]) => `<button data-seg="theme" data-v="${v}" aria-pressed="${s.theme===v}">${l}</button>`).join('')}</div></div>
+    ${settingsAccess()}
+  </div>
+
+  <h2 class="h2">Listening</h2>
+  <div class="card">
+    <div class="set"><div class="grow"><b id="lac">Default accent</b></div>
+      <div class="seg" role="group" aria-labelledby="lac">${[['en-US','US'],['en-GB','UK']].map(([v,l]) => `<button data-seg="accent" data-v="${v}" aria-pressed="${s.accent===v}">${l}</button>`).join('')}</div></div>
+    <div class="set"><div class="grow"><b id="lrt">Speaking speed</b><p id="ratev">${s.rate}×</p></div><button class="btn btn-ghost" data-speak="Lexiverse">${icon('volume')}Test</button></div>
+    <input type="range" min="0.5" max="1.5" step="0.25" value="${s.rate}" data-set="rate" aria-labelledby="lrt">
+  </div>
+
+  <h2 class="h2">Language and reminders</h2>
+  <div class="card">
+    <label class="lbl" for="tlang" style="margin-top:0">Translate words into</label>
+    <select class="select" id="tlang" data-set="lang">${Object.entries(LANGS).map(([k,v]) => `<option value="${k}" ${k===s.lang?'selected':''}>${v}</option>`).join('')}</select>
+    ${sw('reminder','Word of the day reminder','A gentle notification at 8:00 each morning')}
+  </div>
+
+  <h2 class="h2">Your data</h2>
+  <div class="card">
+    <div class="row"><button class="btn" id="ejson">${icon('download')}Export JSON</button><button class="btn" id="ecsv">${icon('download')}Export CSV</button>
+    <label class="btn btn-ghost">${icon('upload')}Import<input type="file" id="imp" accept=".json,application/json" class="sr-only"></label></div>
+    <p class="note" style="margin-top:12px">Your lists, history and notes stay on this device unless you sign in.</p>
+  </div>
+  <p class="small muted" style="text-align:center">Lexiverse prototype · definitions in the final app from Free Dictionary API, Datamuse and Wiktionary</p>`,
+  after(m) {
+    bindSettings(m);
+    $('#ejson', m).onclick = () => download('lexiverse.json', JSON.stringify({lists:S.lists, history:S.history, notes:S.notes}, null, 2), 'application/json');
+    $('#ecsv', m).onclick = () => download('lexiverse.csv', 'list,word,meaning\n' + S.lists.flatMap(l => l.words.map(w => `"${l.name}",${w},"${SHORT[w]||''}"`)).join('\n'), 'text/csv');
+    $('#imp', m).onchange = async e => { try { const d = JSON.parse(await e.target.files[0].text()); if (d.lists) S.lists = d.lists; if (d.history) S.history = d.history; if (d.notes) S.notes = d.notes; persist(); toast('Imported your words'); } catch { toast('That file couldn’t be read'); } };
+    $('#redo', m).onclick = () => { screens.welcome.step = 1; };
+  }};
+};
+
+/* ---------- shared actions ---------- */
+function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast(`Downloaded ${name}`); }
+async function copy(t) { try { await navigator.clipboard.writeText(t); toast('Copied'); } catch { toast('Couldn’t copy'); } }
+
+function openSave(w) {
+  const dlg = $('#sheet');
+  dlg.innerHTML = `<form method="dialog" class="sheet-in">
+    <div class="bar"><h2 class="h2" id="sheet-h" style="margin:0">Save “${esc(w)}”</h2><button class="icon-btn" value="cancel" aria-label="Close">${icon('x')}</button></div>
+    <fieldset style="border:0;padding:0;margin:0"><legend class="sr-only">Choose lists</legend>
+    ${S.lists.map(l => `<label class="check"><input type="checkbox" value="${l.id}" ${l.words.includes(w)?'checked':''}>${esc(l.name)}</label>`).join('')}</fieldset>
+    <label class="lbl" for="nl">Or create a new list</label><input type="text" id="nl" placeholder="e.g. Words to practise">
+    <button class="btn btn-primary btn-block" value="ok" style="margin-top:16px">Done</button></form>`;
+  dlg.onclose = () => {
+    if (dlg.returnValue !== 'ok') return;
+    const checked = $$('input[type=checkbox]', dlg).filter(c => c.checked).map(c => c.value);
+    S.lists.forEach(l => { const has = l.words.includes(w); if (checked.includes(l.id) && !has) l.words.push(w); if (!checked.includes(l.id) && has) l.words = l.words.filter(x => x !== w); });
+    const n = $('#nl', dlg).value.trim(); if (n) S.lists.push({id:'l'+Date.now(), name:n, words:[w]});
+    persist(); $$(`[data-save="${w}"].icon-btn`).forEach(b => b.setAttribute('aria-pressed', isSaved(w)));
+    toast(isSaved(w) ? `Saved “${w}”` : `Removed “${w}” from your lists`);
+  };
+  dlg.showModal();
+}
+
+async function shareCard(w) {
+  const d = WORDS[w]; const def = d ? d.senses[0].def : SHORT[w] || '';
+  const c = document.createElement('canvas'); c.width = c.height = 1080; const x = c.getContext('2d');
+  try { await document.fonts.load('700 120px Fraunces'); } catch {}
+  x.fillStyle = '#FBF8F3'; x.fillRect(0, 0, 1080, 1080);
+  x.fillStyle = '#C2410C'; x.fillRect(0, 0, 1080, 16);
+  x.fillStyle = '#1B2A41'; x.font = '700 130px Fraunces, Georgia, serif'; x.fillText(w, 90, 420);
+  x.fillStyle = '#5F6B7A'; x.font = '44px "Atkinson Hyperlegible", sans-serif'; if (d) x.fillText(`${d.ipa}  ·  ${d.senses[0].pos}`, 90, 500);
+  x.fillStyle = '#1B2A41'; x.font = '52px "Atkinson Hyperlegible", sans-serif';
+  let line = '', y = 620; for (const word of def.split(' ')) { if (x.measureText(line + word).width > 900) { x.fillText(line, 90, y); line = ''; y += 70; } line += word + ' '; } x.fillText(line, 90, y);
+  x.fillStyle = '#C2410C'; x.font = '700 40px Fraunces, serif'; x.fillText('Lexiverse', 90, 980);
+  c.toBlob(async b => {
+    const f = new File([b], `${w}.png`, {type:'image/png'});
+    if (navigator.canShare?.({files:[f]})) { try { await navigator.share({files:[f], title:w}); return; } catch {} }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `${w}.png`; a.click(); toast('Word card downloaded');
+  });
+}
+
+document.addEventListener('click', e => {
+  const sp = e.target.closest('[data-speak]'); if (sp) { speak(sp.dataset.speak, sp.dataset.lang || S.settings.accent, sp.dataset.rate ? +sp.dataset.rate : S.settings.rate); }
+  const sv = e.target.closest('[data-save]'); if (sv) openSave(sv.dataset.save);
+  const sh = e.target.closest('[data-share]'); if (sh) shareCard(sh.dataset.share);
+  const cp = e.target.closest('[data-copy]'); if (cp) copy(cp.dataset.copy);
+  const so = e.target.closest('[data-soon]'); if (so) toast(`${so.dataset.soon} comes with the full build`);
+});
+document.addEventListener('keydown', e => { if (e.key === ' ' && document.activeElement?.id === 'fc') { e.preventDefault(); $('#fc').click(); } });
+
+/* ---------- router ---------- */
+const TAB = {today:'today',search:'search',word:'search',translate:'search',lists:'lists',list:'lists',learn:'learn',flash:'learn',quiz:'learn',progress:'me',me:'me'};
+function render() {
+  let [name, arg] = (location.hash.slice(1) || (S.onboarded ? 'today' : 'welcome')).split('/');
+  if (!screens[name]) name = 'today';
+  if (name !== 'flash') screens.flash.st = screens.flash.st?.i >= DECK.length ? null : screens.flash.st;
+  const s = screens[name](arg), m = $('#main');
+  const show = () => {
+    m.innerHTML = s.html; m.className = 'app fade' + (s.tabs === false ? ' no-tabs' : '');
+    s.after?.(m);
+    document.title = `${s.title} · Lexiverse`;
+    (m.querySelector('h1') || m).setAttribute('tabindex', '-1');
+    if (render.moved) (m.querySelector('h1') || m).focus({preventScroll:true});
+  };
+  $('#tabbar').hidden = s.tabs === false;
+  $$('#tabbar a').forEach(a => a.dataset.tab === TAB[name] ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'));
+  $('#jump').value = [...$('#jump').options].some(o => o.value === location.hash.slice(1)) ? location.hash.slice(1) : name;
+  window.scrollTo(0, 0);
+  if (s.skeleton && !S.settings.motion) {
+    m.innerHTML = `<div aria-busy="true" aria-label="Loading word"><div class="sk" style="height:48px;width:100%;margin:8px 0 20px"></div><div class="sk" style="height:56px;width:70%"></div><div class="sk" style="height:20px;width:50%;margin:16px 0"></div><div class="sk" style="height:48px;width:90%;margin:24px 0"></div><div class="sk" style="height:120px;margin-top:24px"></div></div>`;
+    setTimeout(show, 350);
+  } else show();
+}
+window.addEventListener('hashchange', () => { render.moved = true; if (location.hash === '#welcome') screens.welcome.step = screens.welcome.step || 1; render(); });
+$('#jump').onchange = e => { if (e.target.value === 'welcome') screens.welcome.step = 1; location.hash = e.target.value; };
+$('#skip').onclick = e => { e.preventDefault(); $('#main').focus(); };
+const net = () => $('#offline').hidden = navigator.onLine; addEventListener('online', net); addEventListener('offline', net); net();
+$$('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
+applySettings();
+render();
+</script>
+</body>
+</html>

@@ -29,6 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/ielts', 'path-soon'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -907,6 +908,162 @@ await check('phase 4 screens with data: overflow, axe and 200% text', async () =
           assert.deepEqual(await overflow(p), [], `${route} overflows at 200%`);
         }
         await p.screenshot({ path: `${SHOTS}progress-390-text-200.png`, fullPage: true });
+      }
+      await c.close();
+    }
+  }
+});
+
+
+// Learning paths
+await check('paths: four categories, each with its own destination', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn');
+  await p.click('a:text("Explore learning paths")');
+  await p.waitForURL('**/learn/paths');
+  for (const [name, desc] of [['Everyday English', 'Talk and understand with confidence'], ['Exam preparation', 'IELTS, WAEC, SAT and more'], ['Better writing', 'Essays, reports and stories'], ['Work and career', 'Emails, meetings and interviews']]) {
+    await p.waitForSelector(`.pt-cat:has(h2:text("${name}")):has-text("${desc}")`);
+  }
+  assert.equal(await p.getAttribute('.pt-cat:has(h2:text("Everyday English")) a', 'href'), '/learn');
+  const titles = {};
+  for (const [cat, row, id] of [['Exam preparation', 'WAEC / NECO English', 'waec'], ['Better writing', 'Essays', 'essays'], ['Work and career', 'Emails', 'emails']]) {
+    await p.goto(BASE + '/learn/paths');
+    await p.click(`.pt-cat:has(h2:text("${cat}")) a.pt-row:has-text("${row}")`);
+    await p.waitForURL(`**/learn/path/${id}`);
+    await p.waitForSelector('.pd-lesson');
+    titles[id] = (await p.textContent('#main h1')).trim();
+  }
+  assert.equal(new Set(Object.values(titles)).size, 3, 'each path is different');
+  await p.goto(BASE + '/learn/paths');
+  assert.equal(await p.locator('.pt-row.soon a, a.pt-row.soon').count(), 0, 'coming-soon items are not links');
+  assert.ok(await p.locator('.pt-row.soon:has-text("IELTS")').count());
+  await c.close();
+});
+
+await check('paths: a full WAEC lesson by keyboard, then progress shows', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/waec/waec-concord');
+  await p.waitForSelector('h1:text("Find the real subject")');
+  assert.ok(!(await p.isVisible('.lx-nav')), 'lessons are full screen');
+  for (const heading of ['Each, every, one of', 'Either … or, neither … nor']) {
+    await p.focus('button:text("Next")'); await p.keyboard.press('Enter');
+    await p.waitForSelector(`h1:text("${heading}")`);
+  }
+  await p.focus('button:text("Start the practice")'); await p.keyboard.press('Enter');
+  // 1: gap, answer "is" (right). 2: "has". 3: wrong on purpose ("was"). 4: "lives". 5: error part "are". 6: "is".
+  const pick = async (text) => { const b = p.locator(`.lx-opt:has-text("${text}")`).first(); await b.focus(); await p.keyboard.press('Enter'); await p.waitForSelector('.lx-feedback'); await p.waitForFunction(() => document.activeElement?.textContent === 'Continue'); await p.keyboard.press('Enter'); };
+  await p.waitForSelector('.ls-blank'); await pick('is');
+  await p.waitForSelector('h1:has-text("Each of the students")'); await pick('has');
+  await p.waitForSelector('h1:has-text("Neither the principal")'); await pick('was');
+  await p.waitForSelector('h1:has-text("One of my brothers")'); await pick('lives');
+  await p.waitForSelector('.ls-part');
+  await p.click('.ls-part:text-is("are")');
+  await p.waitForSelector('.lx-feedback:has-text("Correct: is")');
+  await p.click('button:text("Continue")');
+  await p.waitForSelector('h1:has-text("Mathematics")'); await pick('is');
+  await p.waitForSelector('h1:text("Lesson complete!")');
+  assert.match(await p.textContent('.rs-sub'), /5 of 6 correct/);
+  assert.ok(await p.isVisible('.rs-missed:has-text("Neither the principal")'));
+  await p.goto(BASE + '/learn/path/waec');
+  await p.waitForSelector('.pd-lesson.done:has-text("Concord")');
+  await p.goto(BASE + '/learn/paths');
+  await p.waitForSelector('a.pt-row:has-text("WAEC"):has-text("1 of")');
+  await c.close();
+});
+
+await check('paths: order and write tasks (email checks flag a missing closing)', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/emails/email-start');
+  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 3; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
+  // Order task: sort by repeatedly moving the right item up.
+  const want = ['Subject line', 'Greeting', 'Purpose of the email', 'Details', 'Closing line or request', 'Sign-off and your name'];
+  for (let target = 0; target < want.length; target++) {
+    let items = await p.$$eval('.ls-order-text', (els) => els.map((e) => e.textContent));
+    let at = items.indexOf(want[target]);
+    while (at > target) { await p.click(`button[aria-label="Move “${want[target]}” up"]`); at--; }
+  }
+  await p.click('button:text("Check order")');
+  await p.waitForSelector('.lx-feedback:has-text("Perfect order!")');
+  await p.click('button:text("Continue")');
+  await p.waitForSelector('h1:text("Lesson complete!")');
+  assert.match(await p.textContent('.rs-sub'), /4 of 4 correct/);
+  await p.click('.rs-actions a.lx-btn:not(.ghost)');
+  await p.waitForURL('**/email-end');
+  for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
+  await p.waitForSelector('#ls-write');
+  await p.fill('#ls-write', 'Subject: Moving tomorrow’s meeting\n\nDear Mr Eze,\n\nCould we move tomorrow’s 10am meeting to 2pm? I have a client call in the morning that cannot be moved. Please let me know if that works for the team.');
+  await p.click('button:text("Check my writing")');
+  await p.waitForSelector('.ls-checks li.bad:has-text("Closing")');
+  await p.fill('#ls-write', 'Subject: Moving tomorrow’s meeting\n\nDear Mr Eze,\n\nCould we move tomorrow’s 10am meeting to 2pm? I have a client call in the morning that cannot be moved, and I would like the whole team to be there. Please let me know if that works for you.\n\nBest regards,\nFunmi');
+  await p.click('button:text("Check my writing")');
+  await p.waitForSelector('.ls-checks li.ok:has-text("Closing")');
+  assert.equal(await p.locator('.ls-checks li.bad').count(), 0);
+  await p.click('button:text("See a model answer")');
+  await p.waitForSelector('.ls-model:has-text("Kind regards")');
+  await c.close();
+});
+
+await check('paths: onboarding with Exam then WAEC offers the WAEC path, and Learn shows it', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
+  const p = await c.newPage();
+  await p.goto(BASE + '/welcome');
+  await p.click('button:text("Let\'s go")');
+  await p.click('[role=radio]:has-text("Exam preparation")');
+  await p.click('button:text("Continue")');
+  await p.click('[role=radio]:has-text("WAEC")');
+  await p.click('button:text("Continue")');
+  await p.click('button:text("Continue")');
+  await p.click('button:text("Finish setup")');
+  await p.click('a:text("Start your WAEC path")');
+  await p.waitForURL('**/learn/path/waec');
+  await p.goto(BASE + '/learn');
+  await p.waitForSelector('.ln-path:has-text("WAEC / NECO English"):has-text("Start: What the English paper tests")');
+  await c.close();
+});
+
+await check('paths: screens with progress pass overflow, axe and 200% text', async () => {
+  for (const [w, h] of [[390, 844], [1440, 900]]) {
+    for (const theme of THEMES) {
+      const c = await newContext({ viewport: { width: w, height: h }, colorScheme: theme });
+      const p = await c.newPage();
+      await p.goto(BASE + '/learn/path/essays/essay-shape');
+      for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+      await p.locator('.lx-opt').nth(1).click();
+      await p.waitForSelector('.lx-feedback');
+      await settle(p);
+      await p.screenshot({ path: `${SHOTS}lesson-feedback-${w}-${theme}.png`, fullPage: true });
+      assert.deepEqual(await overflow(p), [], `lesson feedback ${w} ${theme}`);
+      assert.deepEqual(await axe(p), [], `lesson feedback ${w} ${theme} axe`);
+      await p.goto(BASE + '/learn/path/emails/email-end');
+      for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+      for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
+      await p.fill('#ls-write', 'Hi, can we move it?');
+      await p.click('button:text("Check my writing")');
+      await p.click('button:text("See a model answer")');
+      await settle(p);
+      await p.screenshot({ path: `${SHOTS}lesson-write-${w}-${theme}.png`, fullPage: true });
+      assert.deepEqual(await overflow(p), [], `write ${w} ${theme}`);
+      assert.deepEqual(await axe(p), [], `write ${w} ${theme} axe`);
+      await p.goto(BASE + '/learn/path/emails/email-start');
+      for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+      for (let i = 0; i < 3; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
+      await p.waitForSelector('.ls-order');
+      await settle(p);
+      assert.deepEqual(await overflow(p), [], `order ${w} ${theme}`);
+      assert.deepEqual(await axe(p), [], `order ${w} ${theme} axe`);
+      if (w === 390 && theme === 'light') {
+        await p.evaluate(() => localStorage.setItem('lx-settings', JSON.stringify({ textScale: 2 })));
+        for (const route of ['/learn/paths', '/learn/path/waec', '/learn/path/waec/waec-comprehension', '/learn']) {
+          await p.goto(BASE + route);
+          await p.waitForSelector('#main h1');
+          await settle(p);
+          assert.deepEqual(await overflow(p), [], `${route} overflows at 200%`);
+        }
       }
       await c.close();
     }

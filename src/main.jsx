@@ -15,6 +15,9 @@ const Search = lazy(() => import('./screens/Search/Search.jsx'));
 const Words = lazy(() => import('./screens/Words/Words.jsx'));
 const ListDetail = lazy(() => import('./screens/Words/ListDetail.jsx'));
 const Progress = lazy(() => import('./screens/Progress/Progress.jsx'));
+const Paths = lazy(() => import('./screens/Paths/Paths.jsx'));
+const PathDetail = lazy(() => import('./screens/Paths/PathDetail.jsx'));
+const Lesson = lazy(() => import('./screens/Paths/Lesson.jsx'));
 const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
 const Flashcards = lazy(() => import('./screens/Learn/Flashcards.jsx'));
 const Quiz = lazy(() => import('./screens/Learn/Quiz.jsx'));
@@ -47,6 +50,9 @@ function App() {
               <Route path="/learn/spell" component={Spell} />
               <Route path="/learn/match" component={Match} />
               <Route path="/learn/setup" component={Setup} />
+              <Route path="/learn/paths" component={Paths} />
+              <Route path="/learn/path/:id" component={PathDetail} />
+              <Route path="/learn/path/:id/:lesson" component={Lesson} />
               <Route path="/me" component={Me} />
               <Route path="/welcome" component={Onboarding} />
               <Route path="/challenge" component={Challenge} />

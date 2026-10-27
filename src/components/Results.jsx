@@ -21,7 +21,7 @@ export function Results({ title, score, total, unit = 'correct', known = 0, miss
           <ul>
             {missed.map((m) => (
               <li key={m.word} class="lx-card">
-                <div><a href={`/word/${m.word}`}>{m.word}</a><span class="rs-back">Back {m.back}</span></div>
+                <div>{m.link === false ? <b>{m.word}</b> : <a href={`/word/${m.word}`}>{m.word}</a>}{m.back && <span class="rs-back">{m.link === false ? m.back : `Back ${m.back}`}</span>}</div>
                 {m.detail && <p>{m.detail}</p>}
               </li>
             ))}

@@ -8,6 +8,7 @@ import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
 import { saveProfile, GOALS, LEVELS } from '../../lib/profile.js';
 import { recordActivity } from '../../lib/streak.js';
 import { GOAL_FLOW, focusLabel, levelSamples } from '../../lib/goals.js';
+import { focusPath, pathById } from '../../lib/paths.js';
 import './onboarding.css';
 
 const GOAL_OPTIONS = [
@@ -193,7 +194,8 @@ export default function Onboarding() {
           <h1 class="lx-rise lx-d3">{flow.ready(label).title}</h1>
           <p class="ob-lead lx-rise lx-d4">{flow.ready(label).lead}</p>
           <p class="ob-streak lx-rise lx-d4"><span aria-hidden="true"><FlameIcon /></span>Day 1 streak started</p>
-          <button type="button" class="lx-btn ob-next lx-rise lx-d4" onClick={() => route('/')}>Start exploring</button>
+          {focusPath(code, focus) && <a class="lx-btn ob-next lx-rise lx-d4" href={`/learn/path/${focusPath(code, focus)}`}>Start your {pathById(focusPath(code, focus)).title.split(' ')[0]} path</a>}
+          <button type="button" class={`lx-btn ob-next lx-rise lx-d4 ${focusPath(code, focus) ? 'secondary' : ''}`} onClick={() => route('/')}>Start exploring</button>
         </section>
       )}
     </div>

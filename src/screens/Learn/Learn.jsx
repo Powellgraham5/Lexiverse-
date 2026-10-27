@@ -4,7 +4,52 @@ import { FlameIcon, ChevronIcon, CardsIcon, SpeakerIcon, CheckIcon } from '../..
 import { loadReviews, summary } from '../../lib/srs.js';
 import { loadActivity, currentStreak } from '../../lib/streak.js';
 import { WeekStrip } from '../../components/WeekStrip.jsx';
+import { loadProfile } from '../../lib/profile.js';
+import { PATHS, isOpen, loadPath, loadProgress, pathProgress, focusPath } from '../../lib/paths.js';
+import '../Paths/paths.css';
 import './learn.css';
+
+// The learner's path for their goal: their focus path if it is open, else the goal's first open one.
+function usePath() {
+  const [state, setState] = useState(null);
+  useEffect(() => {
+    const prof = loadProfile();
+    const goal = prof?.goal || 'e';
+    const id = focusPath(goal, prof?.focus) || PATHS.find((p) => p.goal === goal && isOpen(p))?.id;
+    if (!id) { setState({ none: true }); return; }
+    Promise.all([loadPath(id), loadProgress(id)]).then(([path, progress]) => setState({ path, p: pathProgress(path, progress) })).catch(() => setState({ none: true }));
+  }, []);
+  return state;
+}
+
+function PathCard() {
+  const st = usePath();
+  if (!st) return null;
+  if (st.none) {
+    return (
+      <section class="ln-path lx-card lx-rise lx-d1" aria-labelledby="ln-path-h">
+        <div class="ln-path-head"><span><small>Learning paths</small><b id="ln-path-h">Step-by-step lessons</b></span></div>
+        <p class="pt-sub">Exams, writing and work English, with lessons and practice.</p>
+        <div class="ln-path-row"><a class="lx-btn secondary" href="/learn/paths">Explore learning paths</a></div>
+      </section>
+    );
+  }
+  const { path, p } = st;
+  return (
+    <section class="ln-path lx-card lx-rise lx-d1" aria-labelledby="ln-path-h">
+      <div class="ln-path-head">
+        <span><small>Your path</small><b id="ln-path-h">{path.title}</b></span>
+        <span class="pt-soon">{p.done}/{p.total}</span>
+      </div>
+      <span class="mw-bar" aria-hidden="true"><span style={{ width: `${p.percent}%`, background: 'var(--lx-primary)' }} /></span>
+      <div class="ln-path-row">
+        {p.next ? <a class="lx-btn" href={`/learn/path/${path.id}/${p.next.id}`}>{p.done ? 'Continue' : 'Start'}: {p.next.title}</a>
+          : <a class="lx-btn" href={`/learn/path/${path.id}`}>Path complete: review it</a>}
+        <a class="lx-btn secondary" href="/learn/paths">All paths</a>
+      </div>
+    </section>
+  );
+}
 
 const GOAL = 10;
 
@@ -45,6 +90,8 @@ export default function Learn() {
         <h1 class="lx-page-title lx-rise">Learn</h1>
         <a class="lx-streak-chip" href="/progress"><FlameIcon />{streak ? `${streak} day${streak === 1 ? '' : 's'}` : 'Start a streak'}<span class="lx-sr">{streak ? ' streak.' : '.'} See your progress</span></a>
       </div>
+
+      <PathCard />
 
       {s && (
         <section class="ln-hero lx-rise lx-d1" aria-labelledby="ln-hero-h">

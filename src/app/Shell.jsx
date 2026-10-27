@@ -18,7 +18,7 @@ const TABS = [
 
 const isActive = (href, path) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
 
-// Focused flows fill the screen without the tab bar.
+// Focused flows (and path lessons) fill the screen without the tab bar.
 const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup'];
 
 // The first time the device voice speaks on an iPhone or iPad, explain the silent switch once.
@@ -31,7 +31,7 @@ onDeviceVoice(() => {
 
 export function Shell({ children }) {
   const { path } = useLocation();
-  const bare = FULLSCREEN.includes(path);
+  const bare = FULLSCREEN.includes(path) || /^\/learn\/path\/[^/]+\/[^/]+$/.test(path);
   const first = useRef(true);
 
   // After in-app navigation the new screen focuses its heading (see usePage) and the page starts at the top.

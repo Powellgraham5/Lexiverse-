@@ -11,6 +11,7 @@ import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js'
 import { playAudioOr } from '../../lib/speech.js';
 import { orbitChips, KIND_LABEL } from '../../lib/related.js';
 import { planetFont } from '../../lib/fit.js';
+import { WeekStrip } from '../../components/WeekStrip.jsx';
 import { recordMet } from '../../lib/practice.js';
 import { loadReviews, summary } from '../../lib/srs.js';
 import './today.css';
@@ -60,6 +61,8 @@ export default function Today() {
 
       {word && (
         <>
+          <div class="lx-split today-split">
+          <div class="lx-col today-world">
           <p class="lx-today-hint">Today's world · tap a word to travel there</p>
           <section class="lx-orbit" aria-label={`Word of the day, ${word.w}, and its related words`}>
             <span class="lx-orbit-ring outer" aria-hidden="true" />
@@ -76,7 +79,9 @@ export default function Today() {
               ))}
             </ul>
           </section>
+          </div>
 
+          <div class="lx-col today-side">
           <div class="lx-today-def lx-rise lx-d2">
             <p class="lx-today-ipa">{word.ipa && <span lang="en-fonipa">{word.ipa}</span>}{word.ipa && ' · '}{word.pos}</p>
             <p class="lx-today-meaning">{word.def}</p>
@@ -107,6 +112,9 @@ export default function Today() {
               : <span><b>Practise your words</b><span>Flashcards, quizzes and games</span></span>}
             <ChevronIcon size={20} />
           </a>
+          <div class="lx-desktop-only"><WeekStrip id="today-week" /></div>
+          </div>
+          </div>
         </>
       )}
     </>

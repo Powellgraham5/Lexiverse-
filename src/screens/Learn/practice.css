@@ -11,3 +11,9 @@
 .ps-foot .lx-btn { width: 100%; }
 .ps-round { display: flex; align-items: center; justify-content: center; gap: .375rem; min-height: 2.75rem; padding: 0 1rem; border: 0; border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-weight: 700; }
 .ps-empty { display: flex; flex-direction: column; align-items: center; gap: .75rem; padding: 2rem 1rem; text-align: center; }
+
+@media (min-width: 1024px) {
+  .ps { max-width: 44rem; width: 100%; margin: 0 auto; gap: 1.25rem; }
+  .ps h1 { font-size: 2rem; }
+  .ps-foot { margin-top: 1rem; }
+}

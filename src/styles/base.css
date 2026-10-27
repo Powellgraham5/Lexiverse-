@@ -85,3 +85,17 @@ img, svg { display: block; }
 @keyframes lx-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .lx-rise { animation: lx-rise .5s var(--lx-ease-out) both; }
 .lx-d1 { animation-delay: .08s; } .lx-d2 { animation-delay: .16s; } .lx-d3 { animation-delay: .24s; } .lx-d4 { animation-delay: .32s; }
+
+/* Responsive building blocks. Children stay in reading order; only the arrangement changes. */
+.lx-split, .lx-col { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.lx-desktop-only { display: none !important; }
+@media (min-width: 1024px) {
+  .lx-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.5rem 3rem; align-items: start; }
+  .lx-split.even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .lx-sticky { position: sticky; top: 2rem; }
+  .lx-desktop-only { display: flex !important; flex-direction: column; }
+  .lx-measure { max-width: 65ch; }
+}
+/* 200% text: never squeeze text into two columns. */
+:root[data-large-text] .lx-split { display: flex; }
+:root[data-large-text] .lx-sticky { position: static; }

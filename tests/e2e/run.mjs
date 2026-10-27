@@ -103,6 +103,38 @@ for (const [w, h] of WIDTHS) {
   }
 }
 
+// Laptop and big-screen sizes: overflow on every screen, and real two-column layouts.
+for (const [w, h] of [[1280, 800], [1920, 1080]]) {
+  const ctx = await newContext({ viewport: { width: w, height: h } });
+  const page = await ctx.newPage();
+  for (const [route, name] of ROUTES) {
+    await page.goto(BASE + route);
+    await page.waitForSelector('#main h1');
+    if (route.includes('q=')) await page.waitForSelector('.sr-rows:not([aria-busy]), .sr-state, .lx-error-card, .sr-section h2', { timeout: 5000 }).catch(() => {});
+    if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
+    if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
+    if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero', { timeout: 8000 }).catch(() => {});
+    await settle(page);
+    await page.screenshot({ path: `${SHOTS}${name}-${w}-light.png`, fullPage: true });
+    await check(`${name} ${w}px: no overflow`, async () => assert.deepEqual(await overflow(page), []));
+  }
+  for (const [route, sel] of [['/', '.today-split'], ['/word/serendipity', '.wd-split'], ['/translate', '.tr-split'], ['/me', '.me-split'], ['/share/serendipity', '.sh-split']]) {
+    await check(`${route} ${w}px: uses the width in two columns`, async () => {
+      await page.goto(BASE + route);
+      await page.waitForSelector(`${sel} > :nth-child(2)`);
+      await settle(page);
+      const r = await page.evaluate((s) => {
+        const main = document.querySelector('#main').getBoundingClientRect();
+        const [a, b] = [...document.querySelector(s).children].map((el) => el.getBoundingClientRect());
+        return { main: main.width, sideBySide: b.left >= a.right - 1, topGap: Math.abs(b.top - a.top) };
+      }, sel);
+      assert.ok(r.main >= 900, `content is only ${Math.round(r.main)}px wide`);
+      assert.ok(r.sideBySide, 'second column is not beside the first');
+    });
+  }
+  await ctx.close();
+}
+
 // Behaviour checks at phone size
 const ctx = await newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'allow' });
 const page = await ctx.newPage();

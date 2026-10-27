@@ -209,6 +209,8 @@ export default function Word() {
   return (
     <>
       {top}
+      <div class="lx-split wd-split">
+      <div class="lx-col lx-sticky wd-head">
       <section class="wd-orbit" aria-label={`${word} and nearby words`}>
         <span class="wd-ring" aria-hidden="true" />
         <div class="wd-planet">
@@ -241,7 +243,9 @@ export default function Word() {
       </div>
       {noRecording && <p class="wd-device-voice">No recording yet, so your device's voice reads it.</p>}
       {e.stale && <p class="wd-device-voice">Showing the copy saved on this device.</p>}
+      </div>
 
+      <div class="lx-col wd-body">
       <section class="wd-meanings lx-rise lx-d3" aria-labelledby="wd-m">
         <h2 id="wd-m">Meanings</h2>
         {e.meanings.map((m, i) => (
@@ -300,6 +304,8 @@ export default function Word() {
         <textarea id="wd-note" rows="3" value={note} placeholder="A memory trick, a sentence, anything that helps" onInput={(ev) => onNote(ev.currentTarget.value)} />
         <span class="wd-note-status" role="status">{noteSaved}</span>
       </section>
+      </div>
+      </div>
     </>
   );
 }

@@ -19,3 +19,7 @@
 .sp-l.missing { outline: 2px dashed var(--lx-ink); outline-offset: -2px; }
 .sp-l.extra { background: transparent; color: var(--lx-error-ink); text-decoration: line-through; }
 .sp-hint { padding: .75rem 1rem; border-radius: 1rem; background: var(--lx-note-bg); color: var(--lx-ink); }
+
+@media (min-width: 1024px) {
+  .sp-form, .sp-hint { width: 100%; max-width: 36rem; align-self: center; }
+}

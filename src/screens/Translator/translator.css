@@ -41,3 +41,11 @@
 .tr-ripple { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--lx-primary); animation: tr-ripple 1.6s ease-out infinite; }
 .tr-wave { display: flex; align-items: center; gap: 6px; height: 44px; }
 .tr-wave span { width: 6px; height: 44px; border-radius: 6px; background: var(--lx-primary); animation: tr-wave .9s ease-in-out infinite; }
+
+.tr-empty p { color: #E4DFFF; font-size: 1.125rem; }
+@media (min-width: 1024px) {
+  .tr-split { align-items: stretch; }
+  .tr-input, .tr-result { min-height: 16rem; }
+  .tr-input textarea { min-height: 10rem; font-size: 1.5rem; }
+  .tr-langs { max-width: 40rem; }
+}

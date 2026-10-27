@@ -145,7 +145,7 @@ export default function Search() {
       </p>
 
       {!active && (
-        <>
+        <div class="sr-idle">
           {recent.length > 0 && mode === 'word' && (
             <section class="sr-section" aria-labelledby="recent">
               <div class="sr-section-head"><h2 id="recent">Recent</h2><button type="button" class="lx-btn ghost small" onClick={() => setRecent(clearRecent())}>Clear</button></div>
@@ -163,7 +163,7 @@ export default function Search() {
               </a>
             )}
           </section>
-        </>
+        </div>
       )}
 
       {active && req.state === 'loading' && (

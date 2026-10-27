@@ -70,3 +70,12 @@
 .sr-translator span span { font-size: .875rem; color: #D9D3FF; }
 :root[data-contrast="high"] .sr-translator span span { color: var(--lx-ink); }
 .sr-translator-icon { display: flex; align-items: center; justify-content: center; flex: none; width: 2.75rem; height: 2.75rem; border-radius: .875rem; background: #4A2FE0; }
+
+.sr-idle { display: flex; flex-direction: column; gap: 1rem; }
+@media (min-width: 1024px) {
+  .sr-idle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: start; }
+  .sr-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .sr-box, .sr-modes, .sr-hint { max-width: 46rem; }
+  .sr-translator { max-width: 46rem; }
+}
+:root[data-large-text] .sr-rows, :root[data-large-text] .sr-idle { display: flex; flex-direction: column; }

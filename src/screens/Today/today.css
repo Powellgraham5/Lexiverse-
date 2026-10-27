@@ -81,3 +81,13 @@
 
 .lx-today-skeleton { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem 0; }
 .lx-sk-planet { width: 9rem; height: 9rem; border-radius: 50%; }
+
+/* Desktop: the world on the left, the word and what to do with it on the right. */
+@media (min-width: 1024px) {
+  .today-split { align-items: center; min-height: calc(100dvh - 12rem); }
+  .today-world .lx-orbit { max-width: 34rem; }
+  .lx-orbit-chips .lx-chip { font-size: 1.0625rem; min-height: 3rem; padding: 0 1.125rem; }
+  .lx-today-meaning { font-size: 1.625rem; }
+  .lx-today-ipa { font-size: 1.0625rem; }
+  .today-side { gap: 1.25rem; }
+}

@@ -1,0 +1,12 @@
+.ln-streak { display: flex; flex-direction: column; gap: .875rem; padding: 1rem; border-radius: 1.5rem; }
+.ln-streak-head { display: flex; align-items: center; gap: .75rem; }
+.ln-streak-head b { display: block; font-family: var(--lx-font-display); }
+.ln-streak-head span span { font-size: .875rem; color: var(--lx-muted); }
+.ln-flame { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: .875rem; background: var(--lx-flame); color: #FFFFFF; }
+.ln-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .25rem; margin: 0; padding: 0; list-style: none; }
+.ln-week li { display: flex; flex-direction: column; align-items: center; gap: .25rem; }
+.ln-week .dot { display: flex; align-items: center; justify-content: center; width: min(2.25rem, 100%); aspect-ratio: 1; border-radius: 50%; border: 2px dashed var(--lx-orbit); color: #FFFFFF; }
+.ln-week .done .dot { border: 0; background: var(--lx-primary); }
+.ln-week .today .dot { border: 2.5px solid var(--lx-flame); }
+.ln-week .lab { font-size: min(.75rem, 14px); font-weight: 700; color: var(--lx-muted); }
+.ln-week .today .lab { color: var(--lx-opposite-ink); }

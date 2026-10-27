@@ -90,6 +90,7 @@ export default function Translator() {
         <button type="button" class="tr-lang" aria-haspopup="dialog" aria-label={`Translate into ${toMeta.name}. Change`} onClick={() => setPicker('to')}>{toMeta.name}</button>
       </div>
 
+      <div class="lx-split even tr-split">
       <form class="tr-input lx-card lx-rise lx-d2" onSubmit={(e) => { e.preventDefault(); setDebounced(text); }}>
         <label for="tr-text" class="tr-label">{fromMeta.name}</label>
         <textarea id="tr-text" rows="3" maxLength={MAX_CHARS} value={text} lang={from} dir={fromMeta.dir || 'ltr'}
@@ -127,6 +128,8 @@ export default function Translator() {
           {!req.data.reviewed && <p class="tr-note">{req.data.source === 'phrasebook' ? 'Phrasebook' : 'Sample translation'} · to be checked by a native speaker</p>}
         </section>
       )}
+      {!q && <div class="tr-result tr-empty lx-desktop-only" aria-hidden="true"><span class="tr-label">{toMeta.name}</span><p>Your translation appears here.</p></div>}
+      </div>
 
       {from === 'en' && phrases.length > 0 && (
         <section class="tr-phrases" aria-labelledby="tr-qp">

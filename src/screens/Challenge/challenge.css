@@ -18,3 +18,8 @@
 .ch-own label span { font-weight: 400; color: var(--lx-note-ink); }
 .ch-own textarea { min-height: 4rem; border: 0; border-radius: .875rem; padding: .625rem .75rem; background: var(--lx-surface); resize: vertical; }
 .ch-done { margin-top: auto; width: 100%; }
+
+@media (min-width: 1024px) {
+  .ch { max-width: 44rem; margin: 0 auto; width: 100%; }
+  .ch h1 { font-size: 1.75rem; }
+}

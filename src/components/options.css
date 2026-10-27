@@ -23,3 +23,10 @@
 .lx-feedback { display: flex; flex-direction: column; gap: .375rem; padding: .875rem 1rem; border-radius: 1.25rem; line-height: 1.5; }
 .lx-feedback.right { background: var(--lx-success-bg); }
 .lx-feedback.wrong { background: var(--lx-error-bg); }
+
+/* Short answers sit in a 2 x 2 grid on wider screens. */
+@media (min-width: 768px) {
+  .lx-opts.short { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lx-opts.short .lx-opt { min-height: 5rem; }
+}
+:root[data-large-text] .lx-opts.short { display: flex; }

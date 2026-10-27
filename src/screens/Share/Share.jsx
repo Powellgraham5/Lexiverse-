@@ -50,17 +50,19 @@ export default function Share() {
       {req.state === 'not-found' && <ErrorCard title={`We couldn't find “${word}”`} code="DICT-404">There's no card for a word we don't know yet.</ErrorCard>}
       <canvas ref={canvas} hidden />
       {e && (
-        <>
+        <div class="lx-split even sh-split">
           <figure class="sh-card lx-rise">
             {img ? <img src={img} alt={`Card: Word I learned today, ${word}${e.ipa ? `, ${e.ipa}` : ''}${m ? `, ${m.pos}. ${m.def}` : ''}`} /> : <span class="lx-skeleton sh-sk" />}
           </figure>
+          <div class="lx-col sh-side">
           <div class="sh-actions lx-rise lx-d1">
             <button type="button" class="sh-act" onClick={() => saveImage(canvas.current, word)} disabled={!img}><DownloadIcon />Save image</button>
             <button type="button" class="sh-act" onClick={copyLink}><LinkIcon />Copy link</button>
             <button type="button" class="sh-act" onClick={share} disabled={!img}><ShareIcon />More apps</button>
           </div>
           <button type="button" class="lx-btn lx-rise lx-d2" onClick={share} disabled={!img}>Share</button>
-        </>
+          </div>
+        </div>
       )}
     </>
   );

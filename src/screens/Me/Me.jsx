@@ -18,6 +18,8 @@ export default function Me() {
         </div>
       </section>
 
+      <div class="lx-split even me-split">
+      <div class="lx-col">
       <h2 class="lx-me-h2 lx-rise lx-d2" id="seeing">Seeing &amp; reading</h2>
       <section class="lx-card lx-settings-group lx-rise lx-d2" aria-labelledby="seeing">
         <Segmented label="Theme" value={s.theme} onChange={(theme) => set({ theme })}
@@ -31,6 +33,8 @@ export default function Me() {
         <Switch label="Reduce motion" hint="Calmer screens, fewer animations" checked={s.motion} onChange={(motion) => set({ motion })} />
       </section>
 
+      </div>
+      <div class="lx-col">
       <h2 class="lx-me-h2" id="listening">Listening</h2>
       <section class="lx-card lx-settings-group" aria-labelledby="listening">
         <Switch label="Read words aloud" hint="Speak each word as it opens" checked={s.readAloud} onChange={(readAloud) => set({ readAloud })} />
@@ -38,6 +42,8 @@ export default function Me() {
         <Range label="Speaking speed" min={0.5} max={1.5} step={0.25} value={s.speechRate}
           onChange={(speechRate) => set({ speechRate })} format={(v) => `${v}×`} />
       </section>
+      </div>
+      </div>
     </>
   );
 }

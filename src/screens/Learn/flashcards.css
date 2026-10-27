@@ -44,3 +44,10 @@
 .fc-grade.got { background: var(--lx-primary); color: var(--lx-on-primary); }
 :root[data-contrast="high"] .fc-grade { outline: 2px solid var(--lx-ink); }
 .fc-sk { display: block; width: 100%; height: 22rem; border-radius: 1.75rem; }
+
+@media (min-width: 1024px) {
+  .fc-card, .fc-inner { max-width: 34rem; min-height: 26rem; }
+  .fc-face b { font-size: 2.75rem; }
+  .fc-grades { margin-top: 1rem; }
+  .fc-grade { min-height: 5rem; }
+}

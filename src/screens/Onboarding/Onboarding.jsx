@@ -102,10 +102,12 @@ export default function Onboarding() {
             </div>
             <div class="ob-sun">hello</div>
           </div>
-          <h1 class="lx-rise lx-d1">Every word is a world.</h1>
-          <p class="ob-lead lx-rise lx-d2">Discover words, hear them, practise them and keep them, in English and the languages you love.</p>
-          <div class="ob-actions lx-rise lx-d3">
-            <button type="button" class="lx-btn" onClick={() => go(2)}>Let's go</button>
+          <div class="ob-copy">
+            <h1 class="lx-rise lx-d1">Every word is a world.</h1>
+            <p class="ob-lead lx-rise lx-d2">Discover words, hear them, practise them and keep them, in English and the languages you love.</p>
+            <div class="ob-actions lx-rise lx-d3">
+              <button type="button" class="lx-btn" onClick={() => go(2)}>Let's go</button>
+            </div>
           </div>
         </section>
       )}

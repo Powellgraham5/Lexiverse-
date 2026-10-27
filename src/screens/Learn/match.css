@@ -17,3 +17,9 @@
 :root[data-contrast="high"] .mt-tile.sel { outline: 4px solid var(--lx-ink); }
 :root[data-contrast="high"] .mt-tile.done { outline: 3px dashed var(--lx-ink); }
 .mt-status { text-align: center; color: var(--lx-muted); font-size: .9375rem; }
+
+@media (min-width: 1024px) {
+  .mt-grid { gap: 1rem; }
+  .mt-tile { min-height: 5rem; font-size: 1.0625rem; }
+  .mt-tile.def { font-size: 1rem; }
+}

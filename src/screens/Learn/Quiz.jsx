@@ -95,7 +95,7 @@ export default function Quiz() {
       )}
 
       {q.kind === 'choice' && (
-        <div role="group" aria-label="Answers" class="lx-opts">
+        <div role="group" aria-label="Answers" class={`lx-opts ${q.options.every((o) => o.length <= 40) ? 'short' : ''}`}>
           {q.options.map((o, k) => {
             const st = answered && k === q.answer ? 'right' : answered && k === picked ? 'wrong' : answered ? 'dim' : '';
             return (

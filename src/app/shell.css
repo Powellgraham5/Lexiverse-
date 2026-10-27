@@ -40,7 +40,7 @@
 .lx-app.bare #main { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
 
 @media (min-width: 600px) {
-  #main { max-width: 36rem; }
+  #main { max-width: 46rem; padding-left: 2rem; padding-right: 2rem; }
 }
 
 /* Laptop and desktop: side rail, wider content column */
@@ -58,6 +58,18 @@
   .lx-brand b { color: var(--lx-link); font-weight: 700; }
   .lx-nav ul { display: flex; flex-direction: column; gap: .25rem; }
   .lx-nav li a { flex-direction: row; justify-content: flex-start; gap: .875rem; min-height: 3rem; padding: 0 1rem; font-size: 1rem; }
-  .lx-app:not(.bare) #main { max-width: 45rem; margin-left: max(15rem, calc(15rem + (100% - 15rem - 45rem) / 2)); padding: 2rem 2rem 3rem; }
-  .lx-app.bare #main { max-width: 32rem; padding-top: 2.5rem; }
+  .lx-app:not(.bare) #main { width: min(46rem, calc(100% - 15rem)); max-width: none; margin-left: max(15rem, calc(15rem + (100% - 15rem - 46rem) / 2)); padding: 2rem 2rem 3rem; }
+  .lx-app.bare #main { max-width: 40rem; padding-top: 2.5rem; }
+}
+
+/* Desktop: wide content beside the rail, and a roomy centred stage for full-screen flows. */
+@media (min-width: 1024px) {
+  /* Never wider than the space beside the 15rem rail. */
+  .lx-app:not(.bare) #main { width: min(72rem, calc(100% - 15rem)); max-width: none; margin-left: max(15rem, calc(15rem + (100% - 15rem - 72rem) / 2)); padding: 2.5rem 3rem 3rem; gap: 1.25rem; }
+  .lx-app.bare #main { max-width: 64rem; padding: 3rem 2.5rem; }
+  /* A faint Orbit ring behind full-screen flows, so a wide screen never feels empty. */
+  .lx-app.bare::before {
+    content: ''; position: fixed; left: 50%; top: 50%; width: 150vmax; aspect-ratio: 1; translate: -50% -50%; z-index: -1;
+    border-radius: 50%; border: 2px dashed var(--lx-orbit); opacity: .3; pointer-events: none;
+  }
 }

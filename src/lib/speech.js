@@ -29,13 +29,26 @@ export function speak(text, { accent = 'US', rate = 1, lang } = {}) {
   });
 }
 
+let current = null; // the recorded pronunciation playing now, so it can be stopped
+
+// Stops any speech or recording that is playing.
+export function stopSpeaking() {
+  if (canSpeak()) window.speechSynthesis.cancel();
+  if (current) { current.pause(); current.onended?.(); current = null; }
+}
+
 // Plays a recorded pronunciation, falling back to speech if the file can't play (offline, blocked).
+// Resolves when it has finished (or was stopped).
 export async function playAudioOr(url, text, opts) {
   if (url) {
     try {
       const audio = new Audio(url);
       audio.playbackRate = opts?.rate || 1;
+      const done = new Promise((resolve) => { audio.onended = () => resolve(true); audio.onerror = () => resolve(true); });
+      current = audio;
       await audio.play();
+      await done;
+      if (current === audio) current = null;
       return true;
     } catch { /* fall through to speech */ }
   }

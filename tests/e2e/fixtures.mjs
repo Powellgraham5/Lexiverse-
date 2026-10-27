@@ -60,11 +60,22 @@ export const PROFILE = { goal: 'e', level: 2, done: true, startedAt: 0 };
 export const SPEECH_STUB = () => {
   window.__spoken = [];
   const fakeVoices = [{ lang: 'en-US', localService: true, name: 'US' }, { lang: 'en-GB', localService: true, name: 'UK' }, { lang: 'fr-FR', localService: true, name: 'FR' }];
+  window.__cancels = 0;
+  // Like the real API: one utterance at a time, about 300 ms each; cancel() ends the current one now.
+  let now = null;
   const synth = {
     speaking: false,
     getVoices: () => fakeVoices,
-    cancel() {},
-    speak(u) { window.__spoken.push({ text: u.text, lang: u.lang, rate: u.rate }); setTimeout(() => u.onend?.(), 10); }
+    cancel() {
+      window.__cancels++;
+      const u = now; now = null; synth.speaking = false;
+      if (u) { clearTimeout(u.__t); u.onend?.(); }
+    },
+    speak(u) {
+      window.__spoken.push({ text: u.text, lang: u.lang, rate: u.rate });
+      now = u; synth.speaking = true;
+      u.__t = setTimeout(() => { if (now === u) { now = null; synth.speaking = false; u.onend?.(); } }, 300);
+    }
   };
   Object.defineProperty(window, 'speechSynthesis', { value: synth, configurable: true });
   window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };

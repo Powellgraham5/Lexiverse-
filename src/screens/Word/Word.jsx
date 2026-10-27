@@ -20,7 +20,7 @@ import { allLists, createList } from '../../lib/lists.js';
 import { recordLookup } from '../../lib/history.js';
 import { SaveSheet, ListFormSheet } from '../../components/lists/ListSheets.jsx';
 import { addRecent } from '../../lib/recent.js';
-import { speak, playAudioOr, canSpeak } from '../../lib/speech.js';
+import { speak, playAudioOr, canSpeak, stopSpeaking } from '../../lib/speech.js';
 import { planetFont } from '../../lib/fit.js';
 import './word.css';
 
@@ -111,6 +111,8 @@ export default function Word() {
   const [note, setNoteText] = useState('');
   const [noteSaved, setNoteSaved] = useState('');
   const [playing, setPlaying] = useState(null);
+  const run = useRef(0);
+  useEffect(() => () => { run.current++; stopSpeaking(); }, [word]);
   const [using, setUsing] = useState(null);
   const noteTimer = useRef(null);
   const e = req.data;
@@ -124,14 +126,19 @@ export default function Word() {
 
   useEffect(() => { if (e && settings.readAloud && canSpeak()) speak(word, { accent: settings.accent, rate: settings.speechRate }); }, [e?.word]);
 
+  // A second tap on the playing button stops it; any other button stops it and starts its own.
   async function play(kind) {
+    if (playing === kind) { run.current++; stopSpeaking(); setPlaying(null); return; }
+    const id = ++run.current;
+    stopSpeaking();
     setPlaying(kind);
+    const live = () => run.current === id;
     const opts = { accent: kind === 'UK' || kind === 'US' ? kind : settings.accent, rate: kind === 'slow' ? 0.6 : settings.speechRate };
     if (kind === 'all') {
-      await speak(word, opts);
-      for (const m of e.meanings) {
-        await speak(`${m.pos}. ${m.def}`, opts);
-        if (m.example) await speak(m.example, opts);
+      const lines = [word, ...e.meanings.flatMap((m) => [`${m.pos}. ${m.def}`, ...(m.example ? [m.example] : [])])];
+      for (const line of lines) {
+        if (!live()) return;
+        await speak(line, opts);
       }
     } else if (kind === 'slow') {
       await speak(word, opts);
@@ -139,7 +146,7 @@ export default function Word() {
       const url = kind === 'UK' ? e.audio.uk : e.audio.us || e.audio.au;
       await playAudioOr(url, word, opts);
     }
-    setPlaying(null);
+    if (live()) setPlaying(null);
   }
 
   async function openSave() {
@@ -280,9 +287,9 @@ export default function Word() {
 
       <div class="wd-play lx-rise lx-d2" role="group" aria-label="Pronunciation">
         {[['US', 'US', SpeakerIcon], ['UK', 'UK', SpeakerIcon], ['slow', 'Slow', SlowIcon], ['all', 'Read all', ReadAllIcon]].map(([k, label, I]) => (
-          <button key={k} type="button" class={playing === k ? 'on' : ''} aria-label={playing === k ? `Playing ${label}` : undefined} onClick={() => play(k)} disabled={!canSpeak() && (k === 'slow' || k === 'all')}>
+          <button key={k} type="button" class={playing === k ? 'on' : ''} aria-pressed={playing === k} onClick={() => play(k)} disabled={!canSpeak() && (k === 'slow' || k === 'all')}>
             {playing === k ? <span class="wd-bars" aria-hidden="true"><span /><span /><span /></span> : <I size={22} />}
-            {label}
+            {playing === k ? 'Stop' : label}
           </button>
         ))}
       </div>

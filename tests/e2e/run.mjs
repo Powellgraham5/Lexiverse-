@@ -411,6 +411,31 @@ await check('word page: read all speaks the word, then each meaning; slow is slo
   await c.close();
 });
 
+await check('word page: Read all stops on a second tap, and another button takes over', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  await p.evaluate(() => { window.__spoken = []; });
+  await p.click('.wd-play button:has-text("Read all")');
+  await p.waitForFunction(() => window.__spoken.length >= 1);
+  await p.click('.wd-play button[aria-pressed="true"]:has-text("Stop")');
+  await p.waitForSelector('.wd-play button[aria-pressed="true"]', { state: 'detached' });
+  const n = await p.evaluate(() => window.__spoken.length);
+  await p.waitForTimeout(1500);
+  assert.equal(await p.evaluate(() => window.__spoken.length), n, 'kept reading after Stop');
+  assert.ok(await p.isVisible('.wd-play button:has-text("Read all")'));
+  await p.click('.wd-play button:has-text("Read all")');
+  await p.waitForFunction(() => window.__spoken.length > 0);
+  await p.evaluate(() => { window.__spoken = []; });
+  await p.click('.wd-play button:has-text("Slow")');
+  await p.waitForTimeout(1500);
+  const after = await p.evaluate(() => window.__spoken.map((x) => x.text));
+  assert.deepEqual(after, ['serendipity'], `Read all kept going after Slow: ${after.join(' | ')}`);
+  await c.close();
+});
+
 await check('word page: save, undo, note and offline reopening', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();

@@ -1,6 +1,7 @@
 import { usePage } from '../../app/usePage.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { Segmented, Switch, Range } from '../../components/controls.jsx';
+import { ChevronIcon, StarIcon, WordsIcon } from '../../app/icons.jsx';
 import './me.css';
 
 export default function Me() {
@@ -17,6 +18,11 @@ export default function Me() {
           <span>Sign in to sync is coming in build phase 5</span>
         </div>
       </section>
+
+      <nav class="me-links lx-rise lx-d1" aria-label="Your words and progress">
+        <a href="/progress"><StarIcon /><span><b>Your universe</b><span>Streak, recall and the word archive</span></span><ChevronIcon /></a>
+        <a href="/words"><WordsIcon /><span><b>My Words</b><span>Saved words and lists</span></span><ChevronIcon /></a>
+      </nav>
 
       <div class="lx-split even me-split">
       <div class="lx-col">

@@ -4,7 +4,7 @@
 @media (min-width: 900px) { .lx-today-head .lx-wordmark { visibility: hidden; } }
 .lx-streak-chip {
   display: inline-flex; align-items: center; gap: .375rem; min-height: 2.75rem; padding: 0 .875rem;
-  border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-weight: 700;
+  border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-weight: 700; color: var(--lx-ink); text-decoration: none;
 }
 .lx-streak-chip svg { color: var(--lx-flame); }
 .lx-today-hint { font-weight: 700; font-size: .875rem; color: var(--lx-muted); }

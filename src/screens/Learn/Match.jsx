@@ -3,7 +3,7 @@ import { usePage } from '../../app/usePage.js';
 import { CheckIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
-import { useSession } from './session.js';
+import { useSession, minutesSince } from './session.js';
 import { SessionTop } from './SessionTop.jsx';
 import { buildMatch } from '../../lib/practice.js';
 import { getReview, fresh, record, comesBack, gradeFor } from '../../lib/srs.js';
@@ -14,7 +14,7 @@ import './match.css';
 export default function Match() {
   usePage('Word match');
   const [round, setRound] = useState(0);
-  const { cards, error } = useSession({ size: 4 }, round);
+  const { cards, error, startedAt } = useSession({ size: 4 }, round);
   const game = useMemo(() => cards && buildMatch(cards, `match${round}`), [cards]);
   const [word, setWord] = useState(null);
   const [matched, setMatched] = useState([]);
@@ -25,7 +25,7 @@ export default function Match() {
   const [log, setLog] = useState(null);
 
   async function finish(allMissed) {
-    recordActivity('review');
+    recordActivity('review', undefined, undefined, minutesSince(startedAt));
     const out = [];
     for (const w of game.words) {
       const helped = allMissed.includes(w);

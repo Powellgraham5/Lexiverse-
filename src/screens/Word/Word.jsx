@@ -15,7 +15,10 @@ import { didYouMean } from '../../lib/datamuse.js';
 import { translate, loadPhrasebook } from '../../lib/translate.js';
 import { byCode, hasVoice } from '../../lib/languages.js';
 import { orbitChips, KIND_LABEL, familyLabel } from '../../lib/related.js';
-import { getRecord, saveWord, unsaveWord, setNote } from '../../lib/saved.js';
+import { getRecord, setWordLists, unsaveWord, setNote, savedWords } from '../../lib/saved.js';
+import { allLists, createList } from '../../lib/lists.js';
+import { recordLookup } from '../../lib/history.js';
+import { SaveSheet, ListFormSheet } from '../../components/lists/ListSheets.jsx';
 import { addRecent } from '../../lib/recent.js';
 import { speak, playAudioOr, canSpeak } from '../../lib/speech.js';
 import { planetFont } from '../../lib/fit.js';
@@ -101,6 +104,10 @@ export default function Word() {
   const [req, retry] = useEntry(word);
   const [level, setLevel] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [listIds, setListIds] = useState([]);
+  const [sheet, setSheet] = useState(null); // 'save' | 'new'
+  const [lists, setLists] = useState({ all: [], counts: {} });
+  const [pick, setPick] = useState([]);
   const [note, setNoteText] = useState('');
   const [noteSaved, setNoteSaved] = useState('');
   const [playing, setPlaying] = useState(null);
@@ -110,8 +117,9 @@ export default function Word() {
 
   useEffect(() => {
     addRecent(word);
+    recordLookup(word).catch(() => {});
     loadWordList().then((l) => setLevel(levelOf(word, l))).catch(() => {});
-    getRecord(word).then((r) => { setSaved(Boolean(r?.saved)); setNoteText(r?.note || ''); }).catch(() => {});
+    getRecord(word).then((r) => { setSaved(Boolean(r?.saved)); setListIds(r?.listIds || []); setNoteText(r?.note || ''); }).catch(() => {});
   }, [word]);
 
   useEffect(() => { if (e && settings.readAloud && canSpeak()) speak(word, { accent: settings.accent, rate: settings.speechRate }); }, [e?.word]);
@@ -134,13 +142,50 @@ export default function Word() {
     setPlaying(null);
   }
 
-  async function toggleSave() {
-    const next = !saved;
-    setSaved(next);
+  async function openSave() {
+    const [all, words] = await Promise.all([allLists().catch(() => []), savedWords().catch(() => [])]);
+    const counts = {};
+    for (const w of words) for (const id of w.listIds || []) counts[id] = (counts[id] || 0) + 1;
+    setLists({ all, counts });
+    setPick(listIds);
+    setSheet('save');
+  }
+
+  // Saving always keeps the word in My Words; lists are optional groups on top.
+  async function saveTo(ids) {
+    const before = { saved, listIds };
+    setSheet(null);
     try {
-      await (next ? saveWord(word) : unsaveWord(word));
-      toast({ text: next ? `Saved “${word}” to My Words` : `Removed “${word}” from My Words`, kind: 'success', action: 'Undo', onAction: () => { setSaved(!next); (next ? unsaveWord(word) : saveWord(word)); } });
-    } catch { setSaved(!next); toast({ text: "Couldn't save on this device", kind: 'error' }); }
+      await setWordLists(word, ids);
+      setSaved(true); setListIds(ids);
+      const names = lists.all.filter((l) => ids.includes(l.id)).map((l) => l.name);
+      const where = names.length === 1 ? `“${names[0]}”` : names.length ? `${names.length} lists` : 'My Words';
+      toast({ text: `Saved “${word}” to ${where}`, kind: 'success', action: 'Undo', onAction: () => restore(before) });
+    } catch { toast({ text: "Couldn't save on this device", kind: 'error' }); }
+  }
+
+  async function remove() {
+    const before = { saved, listIds };
+    setSheet(null);
+    try {
+      await unsaveWord(word);
+      setSaved(false); setListIds([]);
+      toast({ text: `Removed “${word}” from My Words`, kind: 'success', action: 'Undo', onAction: () => restore(before) });
+    } catch { toast({ text: "Couldn't change this on this device", kind: 'error' }); }
+  }
+
+  async function restore(prev) {
+    await (prev.saved ? setWordLists(word, prev.listIds) : unsaveWord(word)).catch(() => {});
+    setSaved(prev.saved); setListIds(prev.listIds);
+  }
+
+  async function newList(form) {
+    try {
+      const l = await createList(form);
+      setPick((ids) => [...ids, l.id]);
+      setLists((x) => ({ ...x, all: [...x.all, l] }));
+      setSheet('save');
+    } catch { toast({ text: "Couldn't create the list", kind: 'error' }); }
   }
 
   function onNote(text) {
@@ -160,7 +205,7 @@ export default function Word() {
       <a class="wd-round light" href="/search" aria-label="Back" onClick={back}><BackIcon /></a>
       {e && (
         <div class="wd-top-actions">
-          <button type="button" class={`wd-round ${saved ? 'on' : 'light'}`} aria-pressed={saved} aria-label={saved ? 'Saved to My Words' : 'Save to My Words'} onClick={toggleSave}>
+          <button type="button" class={`wd-round ${saved ? 'on' : 'light'}`} aria-pressed={saved} aria-haspopup="dialog" aria-label={saved ? 'Saved to My Words' : 'Save to My Words'} onClick={openSave}>
             <BookmarkIcon filled={saved} />
           </button>
           <a class="wd-round light" href={`/share/${word}`} aria-label="Share as an image card"><ShareIcon /></a>
@@ -306,6 +351,9 @@ export default function Word() {
       </section>
       </div>
       </div>
+      <SaveSheet open={sheet === 'save'} word={word} lists={lists.all} counts={lists.counts} selected={pick} saved={saved}
+        onClose={() => setSheet(null)} onSave={saveTo} onRemove={remove} onNewList={(cur) => { setPick(cur); setSheet('new'); }} />
+      <ListFormSheet open={sheet === 'new'} onClose={() => setSheet('save')} onSave={newList} />
     </>
   );
 }

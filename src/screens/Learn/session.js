@@ -11,15 +11,22 @@ export function loadPrefs() {
 }
 export function savePrefs(p) { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* ignore */ } }
 
-// Loads a practice session: { cards, daily } once ready, error if the word data failed.
+// ?list=<id> on a practice screen practises only that list's words.
+export const listParam = () => { try { return new URLSearchParams(location.search).get('list'); } catch { return null; } };
+
+// Whole minutes spent in a session (at least 1), for the Progress chart.
+export const minutesSince = (start) => Math.max(1, Math.round((Date.now() - (start || Date.now())) / 60000));
+
+// Loads a practice session: { cards, daily, startedAt } once ready, error if the word data failed.
 export function useSession({ size, from } = {}, key = 0) {
   const [state, setState] = useState({ cards: null, daily: null, error: null });
   useEffect(() => {
     let live = true;
     const prefs = loadPrefs();
+    const list = listParam();
     loadDaily()
-      .then(async (daily) => ({ daily, cards: await buildSession({ daily, profile: loadProfile(), size: size || prefs.size, from: from || prefs.from }) }))
-      .then((s) => live && setState({ ...s, error: null }))
+      .then(async (daily) => ({ daily, cards: await buildSession({ daily, profile: loadProfile(), size: size || prefs.size, from: list ? `list:${list}` : from || prefs.from }) }))
+      .then((s) => live && setState({ ...s, startedAt: Date.now(), error: null }))
       .catch((error) => live && setState({ cards: null, daily: null, error }));
     return () => { live = false; };
   }, [key]);

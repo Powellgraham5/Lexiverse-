@@ -13,6 +13,8 @@ import Today from './screens/Today/Today.jsx';
 // Today loads with the app; every other screen is split into its own chunk.
 const Search = lazy(() => import('./screens/Search/Search.jsx'));
 const Words = lazy(() => import('./screens/Words/Words.jsx'));
+const ListDetail = lazy(() => import('./screens/Words/ListDetail.jsx'));
+const Progress = lazy(() => import('./screens/Progress/Progress.jsx'));
 const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
 const Flashcards = lazy(() => import('./screens/Learn/Flashcards.jsx'));
 const Quiz = lazy(() => import('./screens/Learn/Quiz.jsx'));
@@ -37,6 +39,8 @@ function App() {
               <Route path="/" component={Today} />
               <Route path="/search" component={Search} />
               <Route path="/words" component={Words} />
+              <Route path="/words/list/:id" component={ListDetail} />
+              <Route path="/progress" component={Progress} />
               <Route path="/learn" component={Learn} />
               <Route path="/learn/flashcards" component={Flashcards} />
               <Route path="/learn/quiz" component={Quiz} />

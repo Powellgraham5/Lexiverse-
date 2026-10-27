@@ -30,7 +30,12 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
   - **Practice modes:** flashcards (Forgot, Almost or Got it, keys 1 to 3), quick quiz (meaning and fill the gap), listen and spell (letter-by-letter feedback, with a hint that works without sound) and word match (keyboard friendly).
   - **Setup:** mixed practice with listening and spelling questions.
   - **Memory:** spaced repetition decides when each word comes back. Words of the day you meet join your reviews automatically.
-- Next: phase 4, Remember (My Words, lists, progress universe).
+- Phase 4 (remember):
+  - **My Words:** your galaxy of lists with how much is known and due, search within saved words, and recently looked up.
+  - **Lists:** create, rename, change colour and icon, export as CSV, and delete with undo. The bookmark on a word page saves it to one or more lists.
+  - **List detail:** sort, listen, remove with undo, and review or quiz just that list.
+  - **Your universe:** streak, recall, quizzes, minutes this week (with a text version for screen readers), constellations, and the word of the day archive as a calendar or a list.
+- Next: phase 5, account and settings (optional sign-in and sync).
 - `prototype/` is the old clickable prototype, kept for reference until the real screens replace it.
 
 See [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md) for the product plan, accessibility commitments and build phases.

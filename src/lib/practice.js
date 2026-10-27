@@ -4,6 +4,7 @@ import { get } from './db.js';
 import { normalize } from './dictionary.js';
 import { fresh, loadReviews, saveReview, getReview } from './srs.js';
 import { savedWords } from './saved.js';
+import { wordsInList } from './lists.js';
 import { shuffle } from './hash.js';
 
 // A word of the day the learner has seen joins their reviews (due now).
@@ -23,10 +24,15 @@ export async function cardFor(word, dailyByWord) {
 }
 
 // Picks the word ids for a session. Pure, so it is easy to test.
-export function pickWords({ reviews, saved, daily, profile, size = 8, from = 'due', now = Date.now() }) {
+// from: 'due' | 'goal' | 'all' | 'list:<id>' (a list only practises its own words; pass them as listWords).
+export function pickWords({ reviews, saved, daily, profile, size = 8, from = 'due', listWords = [], now = Date.now() }) {
   const reviewed = new Map(reviews.map((r) => [r.id, r]));
   const due = reviews.filter((r) => r.due <= now).sort((a, b) => a.due - b.due).map((r) => r.id);
   const savedIds = saved.map((s) => s.id);
+  if (from.startsWith('list:')) {
+    const inList = new Set(listWords);
+    return [...new Set([...due.filter((id) => inList.has(id)), ...listWords])].slice(0, size);
+  }
   const goal = profile?.goal || 'e';
   const level = profile?.level || 2;
   const fresh = shuffle(daily.filter((w) => w.l === level && !reviewed.has(w.w)), `${level}${goal}`, (w) => w.w)
@@ -41,7 +47,8 @@ export function pickWords({ reviews, saved, daily, profile, size = 8, from = 'du
 export async function buildSession({ daily, profile, size, from, now = Date.now() }) {
   const [reviews, saved] = await Promise.all([loadReviews().catch(() => []), savedWords().catch(() => [])]);
   const byWord = new Map(daily.map((w) => [w.w, w]));
-  const ids = pickWords({ reviews, saved, daily, profile, size: (size || 8) + 4, from, now });
+  const listWords = from?.startsWith('list:') ? (await wordsInList(from.slice(5)).catch(() => [])).map((w) => w.id) : [];
+  const ids = pickWords({ reviews, saved, daily, profile, size: (size || 8) + 4, from, listWords, now });
   const cards = [];
   for (const id of ids) {
     const c = await cardFor(id, byWord);

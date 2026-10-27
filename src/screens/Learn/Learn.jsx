@@ -43,7 +43,7 @@ export default function Learn() {
     <>
       <div class="ln-head">
         <h1 class="lx-page-title lx-rise">Learn</h1>
-        <span class="lx-streak-chip" role="img" aria-label={streak ? `${streak} day streak` : 'No streak yet'}><FlameIcon />{streak ? `${streak} day${streak === 1 ? '' : 's'}` : 'Start a streak'}</span>
+        <a class="lx-streak-chip" href="/progress"><FlameIcon />{streak ? `${streak} day${streak === 1 ? '' : 's'}` : 'Start a streak'}<span class="lx-sr">{streak ? ' streak.' : '.'} See your progress</span></a>
       </div>
 
       {s && (

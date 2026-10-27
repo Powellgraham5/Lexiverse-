@@ -22,11 +22,13 @@ export function loadActivity(storage = globalThis.localStorage) {
   try { return JSON.parse(storage?.getItem(KEY) || '{}'); } catch { return {}; }
 }
 
-// activity = { days: ['2026-10-26', ...], challenge: { '2026-10-26': true } }
-export function recordActivity(kind, storage = globalThis.localStorage, today = dayKey()) {
+// activity = { days: ['2026-10-26', ...], challenge: { day: true }, minutes: { day: n }, quizzes: { day: n } }
+export function recordActivity(kind, storage = globalThis.localStorage, today = dayKey(), minutes = 0) {
   const a = loadActivity(storage);
   a.days = [...new Set([...(a.days || []), today])].slice(-400);
   if (kind === 'challenge') a.challenge = { ...(a.challenge || {}), [today]: true };
+  if (kind === 'quiz') a.quizzes = { ...(a.quizzes || {}), [today]: (a.quizzes?.[today] || 0) + 1 };
+  if (minutes > 0) a.minutes = { ...(a.minutes || {}), [today]: Math.round(((a.minutes?.[today] || 0) + minutes) * 10) / 10 };
   try { storage?.setItem(KEY, JSON.stringify(a)); } catch { /* storage full or blocked */ }
   return a;
 }

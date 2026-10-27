@@ -28,6 +28,7 @@ const ROUTES = [
   ['/words', 'words'], ['/learn', 'learn'], ['/me', 'me'], ['/nowhere', 'not-found'],
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
+  ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -416,6 +417,7 @@ await check('word page: save, undo, note and offline reopening', async () => {
   await p.goto(BASE + '/word/serendipity');
   await p.waitForSelector('.wd-meaning');
   await p.click('button[aria-label="Save to My Words"]');
+  await p.click('dialog[open] button:text("Save to My Words")');
   await p.waitForSelector('.lx-toast:has-text("Saved")');
   assert.equal(await p.getAttribute('.wd-top-actions button', 'aria-pressed'), 'true');
   await p.fill('#wd-note', 'Sounds like serene dip');
@@ -425,6 +427,8 @@ await check('word page: save, undo, note and offline reopening', async () => {
   await p.waitForFunction(() => document.querySelector('.wd-top-actions button')?.getAttribute('aria-pressed') === 'true');
   assert.equal(await p.inputValue('#wd-note'), 'Sounds like serene dip');
   await p.click('button[aria-label="Saved to My Words"]');
+  await p.click('dialog[open] button:text("Remove from My Words")');
+  await p.waitForFunction(() => document.querySelector('.wd-top-actions button')?.getAttribute('aria-pressed') === 'false');
   await p.click('.lx-toast button:text("Undo")');
   await p.waitForFunction(() => document.querySelector('.wd-top-actions button')?.getAttribute('aria-pressed') === 'true');
   await c.close();
@@ -658,6 +662,152 @@ await check('service worker installs and the app reloads offline', async () => {
   await p.goto(BASE + '/');
   await p.waitForSelector('.lx-orbit-planet', { timeout: 8000 });
   await c.close();
+});
+
+
+// Phase 4: lists, progress and the archive.
+const SEED_WORDS = DAILY.filter((w) => w.l === 2).slice(0, 3).map((w) => w.w);
+async function seed(p) {
+  await p.goto(BASE + '/words');
+  await p.waitForSelector('#main h1');
+  await p.evaluate(async ({ words, now }) => {
+    const db = await new Promise((res, rej) => { const r = indexedDB.open('lexiverse', 1); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+    const put = (store, v) => new Promise((res, rej) => { const t = db.transaction(store, 'readwrite'); t.objectStore(store).put(v); t.oncomplete = res; t.onerror = () => rej(t.error); });
+    const DAY = 86400000;
+    await put('lists', { id: 'lexam', name: 'Exam prep', colour: '#FF8A65', icon: 'cap', createdAt: now - 3 * DAY, updatedAt: now });
+    for (const [i, w] of words.entries()) {
+      await put('words', { id: w, saved: true, savedAt: now - i * 1000, listIds: ['lexam'], updatedAt: now });
+      await put('history', { id: w, at: now - i * 3600000 });
+    }
+    await put('reviews', { id: words[0], interval: 0.007, ease: 2.3, due: now - 60000, reps: 2, lapses: 1, last: 'forgot' });
+    await put('reviews', { id: words[1], interval: 30, ease: 2.5, due: now + 20 * DAY, reps: 4, lapses: 0, last: 'got' });
+    const day = (n) => { const d = new Date(now - n * DAY); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+    localStorage.setItem('lx-activity', JSON.stringify({ days: [day(2), day(1), day(0)], minutes: { [day(1)]: 6, [day(0)]: 4 }, quizzes: { [day(0)]: 1 } }));
+  }, { words: SEED_WORDS, now: FIXED_NOW.getTime() });
+}
+
+await check('lists: create, rename, delete and undo', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/words');
+  await p.click('button:text("Create a list first")');
+  await p.click('dialog[open] button:text("Create list")', { force: true });
+  assert.equal(await p.isVisible('dialog[open]'), true, 'create without a name should do nothing');
+  await p.fill('#lf-name', 'Exam prep');
+  await p.click('dialog[open] button:text("Create list")');
+  await p.waitForURL('**/words/list/*');
+  await p.waitForSelector('h1:text("Exam prep")');
+  await p.waitForSelector('h2:text("No words in this list yet")');
+  await p.click('button[aria-label="List options"]');
+  await p.click('dialog[open] button:text("Rename")');
+  await p.fill('#rn-name', 'Finals');
+  await p.click('dialog[open] button:text("Save")');
+  await p.waitForSelector('h1:text("Finals")');
+  const url = p.url();
+  await p.click('button[aria-label="List options"]');
+  await p.click('dialog[open] button:text("Delete list")');
+  await p.click('dialog[open] button:text("Delete list")');
+  await p.waitForURL(BASE + '/words');
+  await p.click('.lx-toast button:text("Undo")');
+  await p.waitForURL(url);
+  await p.waitForSelector('h1:text("Finals")');
+  await c.close();
+});
+
+await check('word page: save into a new list from the sheet', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  await p.click('button[aria-label="Save to My Words"]');
+  await p.click('dialog[open] button:text("New list")');
+  await p.fill('#lf-name', 'Lovely words');
+  await p.click('dialog[open] button:text("Create list")');
+  await p.waitForSelector('dialog[open] .ss-row.on:has-text("Lovely words")');
+  await p.click('dialog[open] button:text("Save to 1 list")');
+  await p.waitForSelector('.lx-toast:has-text("Lovely words")');
+  await p.goto(BASE + '/words');
+  await p.waitForSelector('.mw-card:has-text("Lovely words"):has-text("1 word")');
+  await p.click('.mw-card:has-text("Lovely words")');
+  await p.waitForSelector('.ld-row:has-text("serendipity")');
+  await p.goto(BASE + '/words');
+  await p.waitForSelector('.mw-timeline:has-text("serendipity")');
+  await p.fill('#mw-q', 'seren');
+  await p.waitForSelector('.mw-row:has-text("serendipity")');
+  await c.close();
+});
+
+await check('list detail: sort, remove with undo, and review just this list', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await seed(p);
+  await p.goto(BASE + '/words/list/lexam');
+  await p.waitForSelector('.ld-row');
+  assert.match(await p.textContent('.ld-row:first-child .ld-status'), /Due/);
+  await p.click('.lx-seg button:text("A to Z")');
+  const names = await p.$$eval('.ld-word b', (bs) => bs.map((b) => b.textContent));
+  assert.deepEqual(names, [...SEED_WORDS].sort());
+  await p.click(`button[aria-label="Remove ${SEED_WORDS[2]} from this list"]`);
+  await p.waitForFunction(() => document.querySelectorAll('.ld-row').length === 2);
+  await p.click('.lx-toast button:text("Undo")');
+  await p.waitForFunction(() => document.querySelectorAll('.ld-row').length === 3);
+  await p.click('a:text("Review 1 due")');
+  await p.waitForURL('**/learn/flashcards?list=lexam');
+  await p.waitForSelector('.fc-card');
+  assert.equal((await p.textContent('.ps-count')).replace(/\s/g, ''), `0/${SEED_WORDS.length}`);
+  const first = await p.textContent('.fc-card');
+  assert.ok(first.includes(SEED_WORDS[0]), 'the due word comes first');
+  await c.close();
+});
+
+await check('progress: numbers, chart text, constellations and the archive', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await seed(p);
+  await p.goto(BASE + '/learn');
+  await p.click('a.lx-streak-chip');
+  await p.waitForURL('**/progress');
+  await p.waitForSelector('.pg-tile');
+  assert.match(await p.textContent('.pg-sub'), /^3 words in 1 world$/);
+  const tiles = await p.$$eval('.pg-tile b', (bs) => bs.map((b) => b.textContent));
+  assert.deepEqual(tiles, ['3', '50%', '1']);
+  assert.match(await p.textContent('#pg-min + .pg-total, .pg-total'), /10 min/);
+  assert.match(await p.textContent('.pg-card ul.lx-sr'), /Monday 26 October \(today\): 4 minutes/);
+  assert.match(await p.textContent('.pg-cons li.done'), /First quiz/);
+  await p.waitForSelector('.pg-cal a.pg-day.today');
+  assert.match(await p.getAttribute('.pg-cal a.pg-day.today', 'aria-label'), /Monday 26 October: \w+, (learned|missed)/);
+  await p.click('.lx-seg button:text("List")');
+  await p.waitForSelector('.pg-arc-list li');
+  await c.close();
+});
+
+await check('phase 4 screens with data: overflow, axe and 200% text', async () => {
+  for (const [w, h] of [[390, 844], [1440, 900]]) {
+    for (const theme of THEMES) {
+      const c = await newContext({ viewport: { width: w, height: h }, colorScheme: theme });
+      const p = await c.newPage();
+      await seed(p);
+      for (const [route, name] of [['/words', 'words-full'], ['/words/list/lexam', 'list-detail'], ['/progress', 'progress-full']]) {
+        await p.goto(BASE + route);
+        await p.waitForSelector('.mw-card, .ld-row, .pg-tile');
+        await settle(p);
+        await p.screenshot({ path: `${SHOTS}${name}-${w}-${theme}.png`, fullPage: true });
+        assert.deepEqual(await overflow(p), [], `${name} ${w} ${theme} overflows`);
+        assert.deepEqual(await axe(p), [], `${name} ${w} ${theme} axe`);
+      }
+      if (w === 390 && theme === 'light') {
+        await p.evaluate(() => localStorage.setItem('lx-settings', JSON.stringify({ textScale: 2 })));
+        for (const route of ['/words', '/words/list/lexam', '/progress']) {
+          await p.goto(BASE + route);
+          await p.waitForSelector('.mw-card, .ld-row, .pg-tile');
+          await settle(p);
+          assert.deepEqual(await overflow(p), [], `${route} overflows at 200%`);
+        }
+        await p.screenshot({ path: `${SHOTS}progress-390-text-200.png`, fullPage: true });
+      }
+      await c.close();
+    }
+  }
 });
 
 await check('manifest is valid and installable', async () => {

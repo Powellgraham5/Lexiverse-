@@ -4,7 +4,7 @@ import { useSettings } from '../../app/settings-context.jsx';
 import { SpeakerIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
-import { useSession } from './session.js';
+import { useSession, minutesSince } from './session.js';
 import { SessionTop } from './SessionTop.jsx';
 import { getReview, fresh, record, comesBack, isKnown } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
@@ -18,7 +18,7 @@ export default function Flashcards() {
   usePage('Flashcards');
   const [settings] = useSettings();
   const [round, setRound] = useState(0);
-  const { cards, error } = useSession({}, round);
+  const { cards, error, startedAt } = useSession({}, round);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [state, setState] = useState(null);
@@ -34,7 +34,7 @@ export default function Flashcards() {
     const res = [...results, { word: card.w, grade: g, back: comesBack(before, g), known: !isKnown(before) && after && isKnown(after) }];
     setResults(res);
     setFlipped(false);
-    if (i + 1 >= cards.length) recordActivity('review');
+    if (i + 1 >= cards.length) recordActivity('review', undefined, undefined, minutesSince(startedAt));
     setI(i + 1);
   }
 

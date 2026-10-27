@@ -5,7 +5,7 @@ import { useSettings } from '../../app/settings-context.jsx';
 import { SpeakerIcon, CheckIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
-import { useSession, loadPrefs } from './session.js';
+import { useSession, loadPrefs, minutesSince } from './session.js';
 import { SessionTop } from './SessionTop.jsx';
 import { buildQuiz, diffSpelling } from '../../lib/practice.js';
 import { getReview, fresh, record, comesBack, gradeFor, isKnown } from '../../lib/srs.js';
@@ -35,7 +35,7 @@ export default function Quiz() {
   const [settings] = useSettings();
   const prefs = loadPrefs();
   const [round, setRound] = useState(0);
-  const { cards, daily, error } = useSession(mixed ? { size: prefs.size, from: prefs.from } : { size: 5 }, round);
+  const { cards, daily, error, startedAt } = useSession(mixed ? { size: prefs.size, from: prefs.from } : { size: 5 }, round);
   const questions = useMemo(() => cards && buildQuiz(cards, daily, `quiz${round}`, mixed ? prefs.size : 5, mixed ? prefs.types : ['meaning', 'gap']), [cards]);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState(null);
@@ -63,7 +63,7 @@ export default function Quiz() {
   }
   function next() {
     setPicked(null); setTyped('');
-    if (i + 1 >= questions.length) recordActivity('review');
+    if (i + 1 >= questions.length) recordActivity('quiz', undefined, undefined, minutesSince(startedAt));
     setI(i + 1);
   }
 
@@ -76,7 +76,7 @@ export default function Quiz() {
       <div class="ps">
         <Results score={score} total={log.length} known={log.filter((x) => x.known).length}
           missed={log.filter((x) => !x.ok)} onRetry={() => { setLog([]); setI(0); setRound(round + 1); }}
-          doneHref="/learn" doneLabel="Done"
+          doneHref="/progress" doneLabel="See progress"
           extra={log.some((x) => !x.ok) && <p class="rs-sub">Words you missed will come back in your next review.</p>} />
       </div>
     );

@@ -13,3 +13,12 @@
 .lx-me-h2 { margin-top: .5rem; font-size: 1.0625rem; }
 :root[data-contrast="high"] .lx-me-hero { background: #000000; outline: 2px solid var(--lx-ink); }
 @keyframes lx-spin { to { transform: rotate(360deg); } }
+
+.me-links { display: grid; gap: .5rem; }
+@media (min-width: 1024px) { .me-links { grid-template-columns: 1fr 1fr; } }
+:root[data-large-text] .me-links { grid-template-columns: 1fr; }
+.me-links a { display: flex; align-items: center; gap: .875rem; min-height: 4rem; padding: .625rem 1rem; border-radius: 1.25rem; background: var(--lx-surface); color: var(--lx-ink); text-decoration: none; }
+.me-links a > svg:first-child { flex: none; color: var(--lx-link); }
+.me-links a > span { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.me-links a > span span { font-size: .875rem; color: var(--lx-muted); }
+.me-links a > svg:last-child { flex: none; color: var(--lx-muted); }

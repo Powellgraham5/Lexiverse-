@@ -4,7 +4,7 @@ import { useSettings } from '../../app/settings-context.jsx';
 import { SpeakerIcon, SlowIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
-import { useSession } from './session.js';
+import { useSession, minutesSince } from './session.js';
 import { SessionTop } from './SessionTop.jsx';
 import { SpellingFeedback } from './Quiz.jsx';
 import { getReview, fresh, record, comesBack, gradeFor, isKnown } from '../../lib/srs.js';
@@ -20,7 +20,7 @@ export default function Spell() {
   usePage('Listen & spell');
   const [settings] = useSettings();
   const [round, setRound] = useState(0);
-  const { cards, error } = useSession({ size: ROUNDS }, round);
+  const { cards, error, startedAt } = useSession({ size: ROUNDS }, round);
   const [i, setI] = useState(0);
   const [typed, setTyped] = useState('');
   const [checked, setChecked] = useState(null);
@@ -44,7 +44,7 @@ export default function Spell() {
   }
   function next() {
     setTyped(''); setChecked(null); setHint(false);
-    if (i + 1 >= cards.length) recordActivity('review');
+    if (i + 1 >= cards.length) recordActivity('review', undefined, undefined, minutesSince(startedAt));
     setI(i + 1);
   }
 

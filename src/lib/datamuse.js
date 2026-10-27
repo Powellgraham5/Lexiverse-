@@ -8,6 +8,9 @@ const BASE = 'https://api.datamuse.com';
 // Wiktionary senses carry labels; these never reach learners.
 const HIDDEN = /\b(vulgar|offensive|derogatory|slang|obsolete|archaic|dated|rare|abbreviation|initialism|acronym|clipping|misspelling|alternative form|plural of|past tense|present participle|third-person|ethnic slur)\b/i;
 
+// True when a sense is vulgar, slang, archaic or just a pointer to another form.
+export const hiddenSense = (text = '') => HIDDEN.test((text.match(/^\s*\(([^)]*)\)/)?.[1] || '')) || HIDDEN.test(text.slice(0, 40));
+
 // The first clean, short definition, without its "(label)" prefix.
 export function cleanDef(defs = []) {
   for (const raw of defs) {

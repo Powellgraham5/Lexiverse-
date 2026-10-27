@@ -24,3 +24,12 @@ export const FlameIcon = ({ size = 20, ...p }) => (
     <path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-5 5-5 8-1-1-2-2-2-4-2 2-2 5-2 8 0 4 3 7 7 7z" />
   </svg>
 );
+export const BookmarkIcon = ({ filled, ...p }) => <Icon {...p}><path d="M6 3h12v18l-6-4-6 4z" fill={filled ? 'currentColor' : 'none'} /></Icon>;
+export const ShareIcon = (p) => <Icon {...p}><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></Icon>;
+export const CopyIcon = (p) => <Icon {...p}><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></Icon>;
+export const PenIcon = (p) => <Icon {...p}><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></Icon>;
+export const SwapIcon = (p) => <Icon {...p}><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7" /></Icon>;
+export const SlowIcon = (p) => <Icon {...p}><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2M9 2h6" /></Icon>;
+export const ReadAllIcon = (p) => <Icon {...p}><path d="M4 6h16M4 12h10M4 18h13" /><path d="m18 14 3 2-3 2z" /></Icon>;
+export const DownloadIcon = (p) => <Icon {...p}><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></Icon>;
+export const LinkIcon = (p) => <Icon {...p}><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" /><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" /></Icon>;

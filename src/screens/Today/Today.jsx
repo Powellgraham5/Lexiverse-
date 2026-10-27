@@ -9,18 +9,9 @@ import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
 import { loadProfile } from '../../lib/profile.js';
 import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js';
 import { playAudioOr } from '../../lib/speech.js';
+import { orbitChips, KIND_LABEL } from '../../lib/related.js';
+import { planetFont } from '../../lib/fit.js';
 import './today.css';
-
-// Up to five related words placed around the orbit: similar (≈), opposite (≠), same family (+).
-export function orbitChips(w) {
-  const syn = w.syn.map((x) => ({ word: x, kind: 'similar', mark: '≈' }));
-  const ant = w.ant.map((x) => ({ word: x, kind: 'opposite', mark: '≠' }));
-  const fam = w.fam.map((x) => ({ word: x, kind: 'family', mark: '+' }));
-  const slots = [syn[0], syn[1], ant[0], syn[2], fam[0]];
-  const spare = [ant[1], fam[1]].filter(Boolean);
-  return slots.map((c) => c || spare.shift()).filter(Boolean);
-}
-const KIND_LABEL = { similar: 'similar meaning', opposite: 'opposite meaning', family: 'same word family' };
 
 export default function Today() {
   usePage('Today');
@@ -69,7 +60,7 @@ export default function Today() {
             <span class="lx-orbit-ring inner" aria-hidden="true" />
             <a class="lx-orbit-planet" href={`/word/${word.w}`}>
               <span>Word of the day</span>
-              <b>{word.w}</b>
+              <b style={{ fontSize: planetFont(word.w, 120) }}>{word.w}</b>
             </a>
             <ul class="lx-orbit-chips">
               {orbitChips(word).map((c, i) => (

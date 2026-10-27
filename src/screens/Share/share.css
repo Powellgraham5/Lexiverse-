@@ -1,0 +1,11 @@
+.sh-top { display: flex; align-items: center; gap: .75rem; }
+.sh-top h1 { font-size: 1.25rem; }
+.sh-card { margin: 0; }
+.sh-card img { display: block; width: 100%; max-width: 26rem; height: auto; margin: 0 auto; border-radius: 1.75rem; box-shadow: 0 18px 40px rgba(20, 18, 58, .18); }
+.sh-sk { display: block; width: 100%; max-width: 26rem; aspect-ratio: 4 / 5; margin: 0 auto; border-radius: 1.75rem; }
+.sh-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.sh-act {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .375rem; min-height: 4.5rem; padding: .5rem;
+  border: 0; border-radius: 1.25rem; background: var(--lx-surface); font-weight: 700; font-size: .875rem; text-align: center;
+}
+.sh-act:disabled, .lx-btn:disabled { opacity: .5; }

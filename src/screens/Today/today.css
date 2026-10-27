@@ -23,7 +23,7 @@
   box-shadow: 0 12px 30px rgba(74, 47, 224, .35); animation: lx-zoom .7s var(--lx-ease-out) both;
 }
 .lx-orbit-planet span { font-size: min(.6875rem, 13px); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #F2F0FF; }
-.lx-orbit-planet b { font-family: var(--lx-font-display); font-size: min(1rem, 4.2vw, 18px); overflow-wrap: anywhere; }
+.lx-orbit-planet b { font-family: var(--lx-font-display); white-space: nowrap; overflow-wrap: normal; }
 .lx-orbit-chips { margin: 0; padding: 0; list-style: none; }
 .lx-orbit-chips li { position: absolute; animation: lx-rise .5s var(--lx-ease-out) both; }
 .lx-orbit-chips .slot-0 { left: 2.29%; top: 11.33%; animation-delay: .1s; }
@@ -45,7 +45,7 @@
 :root[data-large-text] .lx-orbit-ring { display: none; }
 :root[data-large-text] .lx-orbit-planet { position: static; width: min(12rem, 70vw); height: min(12rem, 70vw); }
 :root[data-large-text] .lx-orbit-planet span { font-size: .75rem; }
-:root[data-large-text] .lx-orbit-planet b { font-size: 1.125rem; }
+:root[data-large-text] .lx-orbit-planet b { font-size: 1.125rem !important; white-space: normal; overflow-wrap: anywhere; }
 :root[data-large-text] .lx-orbit-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 :root[data-large-text] .lx-orbit-chips li { position: static; transform: none; }
 :root[data-large-text] .lx-chip { font-size: 1rem; white-space: normal; }

@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { BLOCKLIST } from '../src/lib/blocklist.js';
+import { etymologyText, syllables } from './wiktionary.mjs';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const CACHE = join(ROOT, 'scripts/.cache');
@@ -112,8 +113,34 @@ async function enrich(item) {
   done++;
   if (done % 25 === 0) console.log(`${done}/${items.length}`);
   const fix = relatedOverrides.get(item.w);
-  return { ...item, allPos, ipa: ph.ipa || ipaOverrides.get(item.w) || null, audio: { us: ph.us, uk: ph.uk }, syn: fix?.syn ?? similar, ant: fix?.ant ?? opposite, fam: fix?.fam ?? family, rank: rank.get(item.w) ?? null };
+  const page = wikt.get(item.w) || '';
+  const origin = page ? etymologyText(page) : null;
+  const syl = page ? syllables(page) : null;
+  return { ...item, allPos, ipa: ph.ipa || ipaOverrides.get(item.w) || null, audio: { us: ph.us, uk: ph.uk }, origin, syl: syl && syl.join('') === item.w ? syl : null, syn: fix?.syn ?? similar, ant: fix?.ant ?? opposite, fam: fix?.fam ?? family, rank: rank.get(item.w) ?? null };
 }
+
+// Wiktionary pages for origins and syllables: 50 titles per request, a descriptive User-Agent
+// and a pause between batches, as Wikimedia's API etiquette asks.
+const UA = 'LexiverseBuild/1.0 (https://github.com/Powellgraham5/Lexiverse-; build script)';
+async function wiktionaryPages(words) {
+  const pages = new Map();
+  for (let i = 0; i < words.length; i += 50) {
+    const titles = words.slice(i, i + 50);
+    const url = `https://en.wiktionary.org/w/api.php?action=query&prop=revisions&rvprop=content&rvslots=main&format=json&formatversion=2&titles=${encodeURIComponent(titles.join('|'))}`;
+    const file = join(CACHE, 'wikt-' + createHash('sha1').update(url).digest('hex') + '.json');
+    let data = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : null;
+    for (let attempt = 0; !data && attempt < 5; attempt++) {
+      const res = await fetch(url, { headers: { 'User-Agent': UA } });
+      if (res.ok) { data = await res.json(); writeFileSync(file, JSON.stringify(data)); break; }
+      console.log(`  Wiktionary ${res.status}, waiting ${30 * (attempt + 1)} s`);
+      await new Promise((r) => setTimeout(r, 30000 * (attempt + 1)));
+    }
+    for (const p of data?.query?.pages || []) if (p.revisions) pages.set(p.title, p.revisions[0].slots.main.content);
+    if (!existsSync(file)) await new Promise((r) => setTimeout(r, 2000));
+  }
+  return pages;
+}
+const wikt = await wiktionaryPages(items.map((x) => x.w));
 
 // Three at a time, so the free APIs aren't flooded.
 const out = [];
@@ -124,4 +151,5 @@ const lonely = out.filter((x) => x.syn.length + x.ant.length + x.fam.length < 2)
 writeFileSync(join(ROOT, 'public/data/daily.json'), JSON.stringify({ version: 1, words: out }));
 console.log(`daily.json: ${out.length} words (level 1: ${out.filter((x) => x.l === 1).length}, 2: ${out.filter((x) => x.l === 2).length}, 3: ${out.filter((x) => x.l === 3).length})`);
 console.log(`no pronunciation: ${missing.length} ${missing.join(' ')}`);
+console.log(`origins: ${out.filter((x) => x.origin).length}/${out.length}, syllables: ${out.filter((x) => x.syl).length}/${out.length}`);
 console.log(`fewer than 2 related words: ${lonely.length} ${lonely.join(' ')}`);

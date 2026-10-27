@@ -1,0 +1,27 @@
+# id|category|English|Yoruba|Hausa|Igbo|Nigerian Pidgin|French
+# Drafts. Every Yoruba, Hausa, Igbo and Pidgin line must be checked by a native speaker (docs/PHRASE_REVIEW.md).
+good-morning|greetings|Good morning|Ẹ káàárọ̀|Ina kwana?|Ụtụtụ ọma|Good morning o|Bonjour
+good-afternoon|greetings|Good afternoon|Ẹ káàsán|Ina wuni?|Ehihie ọma|Good afternoon o|Bon après-midi
+good-evening|greetings|Good evening|Ẹ kúùrọ̀lẹ́|Barka da yamma|Mgbede ọma|Good evening o|Bonsoir
+welcome|greetings|Welcome|Ẹ káàbọ̀|Barka da zuwa|Nnọọ|You don come|Bienvenue
+how-are-you|greetings|How are you?|Báwo ni?|Yaya kake?|Kedụ?|How you dey?|Comment allez-vous ?
+im-fine|greetings|I'm fine, thank you|Mo wà dáadáa, ẹ ṣé|Lafiya lau, na gode|Adị m mma, daalụ|I dey fine, thank you|Je vais bien, merci
+thank-you|polite|Thank you|Ẹ ṣé|Na gode|Daalụ|Thank you|Merci
+thanks-help|polite|Thank you for your help|Ẹ ṣé fún ìrànlọ́wọ́ yín|Na gode da taimakonka|Daalụ maka enyemaka gị|Thank you for your help o|Merci pour votre aide
+please|polite|Please|Ẹ jọ̀ọ́|Don Allah|Biko|Abeg|S'il vous plaît
+sorry|polite|Sorry|Ẹ má bínú|Yi haƙuri|Ndo|Sorry o|Désolé
+yes|polite|Yes|Bẹ́ẹ̀ ni|Ee|Ee|Yes|Oui
+no|polite|No|Rárá|A'a|Mba|No|Non
+your-name|people|What is your name?|Kí ni orúkọ yín?|Mene ne sunanka?|Kedụ aha gị?|Wetin be your name?|Comment vous appelez-vous ?
+my-name|people|My name is…|Orúkọ mi ni…|Sunana…|Aha m bụ…|My name na…|Je m'appelle…
+where-is|travel|Where is…?|Níbo ni … wà?|Ina … yake?|Ebee ka … dị?|Where … dey?|Où est… ?
+how-much|travel|How much is this?|Èló ni èyí?|Nawa ne wannan?|Ole ka nke a bụ?|How much be this one?|Combien ça coûte ?
+dont-understand|help|I don't understand|Kò yé mi|Ban gane ba|Aghọtaghị m|I no understand|Je ne comprends pas
+speak-slowly|help|Please speak slowly|Ẹ jọ̀ọ́, ẹ sọ̀rọ̀ díẹ̀díẹ̀|Don Allah ka yi magana a hankali|Biko, kwuo nwayọọ|Abeg talk am slowly|Parlez lentement, s'il vous plaît
+help|help|Help!|Ẹ gbà mí o!|Taimako!|Nyere m aka!|Help o!|Au secours !
+hungry|food|I'm hungry|Ebi ń pa mí|Ina jin yunwa|Agụụ na-agụ m|Hunger dey catch me|J'ai faim
+water|food|Water, please|Omi, ẹ jọ̀ọ́|Ruwa, don Allah|Mmiri, biko|Water, abeg|De l'eau, s'il vous plaît
+congratulations|feelings|Congratulations|Ẹ kú oríire|Ina taya ka murna|Ị mere nke ọma|Congrats o|Félicitations
+goodbye|greetings|Goodbye|Ó dàbọ̀|Sai an jima|Ka ọ dị|Bye bye|Au revoir
+see-tomorrow|greetings|See you tomorrow|Ó dọ̀la|Sai gobe|Ka echi|See you tomorrow|À demain
+good-night|greetings|Good night|Ó dàárọ̀|Mu kwana lafiya|Ka chi foo|Good night o|Bonne nuit

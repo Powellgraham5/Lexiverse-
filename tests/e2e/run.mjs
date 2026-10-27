@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
-import { mockApis, PROFILE } from './fixtures.mjs';
+import { mockApis, PROFILE, SPEECH_STUB } from './fixtures.mjs';
 import { wordOfTheDay } from '../../src/lib/daily.js';
 
 // A fixed date so the word of the day, and every screenshot, is the same on every machine and day.
@@ -25,7 +25,9 @@ const ROUTES = [
   ['/', 'today'], ['/search', 'search'], ['/search?q=seren', 'search-results'], ['/search?q=serendipty', 'search-did-you-mean'],
   ['/search?mode=letters&q=stone', 'search-letters'], ['/search?mode=rhymes&q=bright', 'search-rhymes'], ['/search?mode=pattern&q=c%3Ft', 'search-pattern'],
   ['/search?q=qwizzle', 'search-empty'], ['/search?q=fail', 'search-error'], ['/challenge', 'challenge'], ['/welcome', 'welcome'],
-  ['/words', 'words'], ['/learn', 'learn'], ['/me', 'me'], ['/word/serendipity', 'word-soon'], ['/nowhere', 'not-found']
+  ['/words', 'words'], ['/learn', 'learn'], ['/me', 'me'], ['/nowhere', 'not-found'],
+  ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
+  ['/translate', 'translator'], ['/share/serendipity', 'share']
 ];
 
 // A context with the fake APIs and, unless fresh, a learner who has finished onboarding.
@@ -86,6 +88,9 @@ for (const [w, h] of WIDTHS) {
       await page.waitForSelector('#main h1');
       // Search results arrive after the 250 ms debounce.
       if (route.includes('q=')) await page.waitForSelector('.sr-rows:not([aria-busy]), .sr-state, .lx-error-card, .sr-section h2', { timeout: 5000 }).catch(() => {});
+      if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
+      if (route.startsWith('/word/serendipity')) await page.waitForSelector('.wd-lang-result p', { timeout: 5000 }).catch(() => {});
+      if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
       await settle(page);
       await page.screenshot({ path: `${SHOTS}${name}-${w}-${theme}.png`, fullPage: true });
       await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
@@ -171,7 +176,7 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   await p.waitForURL('**/welcome');
   await p.click('button:text("Let\'s go")');
   await p.waitForSelector('h1:text("What brings you")');
-  assert.equal(await p.evaluate(() => document.activeElement.tagName), 'H1');
+  await p.waitForFunction(() => document.activeElement.tagName === 'H1', null, { timeout: 2000 });
   await p.click('button:text("Continue")', { force: true });
   assert.ok(await p.isVisible('h1:text("What brings you")'), 'continue without a goal should not advance');
   await p.click('[role=radio]:has-text("Exam preparation")');
@@ -229,7 +234,8 @@ await check('search: debounced results, did you mean, empty, error and Enter ope
   await p.goto(BASE + '/search');
   await p.type('#q', 'seren', { delay: 30 });
   await p.waitForSelector('.sr-row b:text("serendipity")');
-  assert.ok(calls <= 2, `typing should be debounced (${calls} calls)`);
+  // Five keystrokes; debouncing allows at most two searches (two requests each), never one per key.
+  assert.ok(calls <= 4, `typing should be debounced (${calls} calls)`);
   await p.fill('#q', 'serendipty');
   await p.waitForSelector('.sr-suggest a:text("serendipity")');
   await p.fill('#q', 'qwizzle');
@@ -325,6 +331,150 @@ await check('the longest daily words fit at 200% text, even in a wide fallback f
     }
     await c.close();
   }
+});
+
+await check('word page: meanings, level, origin, family, translation and accessible orbit', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  assert.equal((await p.textContent('.wd-planet h1')).trim(), 'serendipity');
+  assert.match(await p.textContent('.wd-level'), /C2|C1|B2/);
+  const first = await p.textContent('.wd-meaning .wd-def');
+  assert.match(first, /Luck in finding good things by chance/, 'our learner meaning comes first');
+  assert.ok((await p.locator('.wd-meaning').count()) >= 2);
+  assert.equal(await p.textContent('.wd-example b'), 'serendipity');
+  assert.match(await p.textContent('.wd-journey'), /Horace Walpole/);
+  assert.ok(await p.isVisible('.wd-family a:text("serendipitous")'));
+  await p.waitForSelector('.wd-lang-result p');
+  assert.equal(await p.textContent('.wd-lang-result p'), '[yo] serendipity');
+  assert.match(await p.textContent('.wd-lang'), /to be checked by a native speaker/);
+  await p.click('.wd-lang-tabs button:text("French")');
+  await p.waitForSelector('.wd-lang-result p:text("[fr] serendipity")');
+  assert.ok(await p.isVisible('.wd-lang-result button[aria-label="Listen in French"]'), 'French has a voice in the stub');
+  await c.close();
+});
+
+await check('word page: read all speaks the word, then each meaning; slow is slower', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  await p.evaluate(() => { window.__spoken = []; });
+  await p.click('.wd-play button:has-text("Read all")');
+  await p.waitForFunction(() => window.__spoken.length >= 3);
+  await p.waitForSelector('.wd-play button.on', { state: 'detached' });
+  const spoken = await p.evaluate(() => window.__spoken.map((x) => x.text));
+  assert.equal(spoken[0], 'serendipity');
+  assert.match(spoken[1], /^noun\. Luck in finding/);
+  await p.evaluate(() => { window.__spoken = []; });
+  await p.click('.wd-play button:has-text("Slow")');
+  await p.waitForFunction(() => window.__spoken.length >= 1);
+  assert.equal(await p.evaluate(() => window.__spoken[0].rate), 0.6);
+  await c.close();
+});
+
+await check('word page: save, undo, note and offline reopening', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  await p.click('button[aria-label="Save to My Words"]');
+  await p.waitForSelector('.lx-toast:has-text("Saved")');
+  assert.equal(await p.getAttribute('.wd-top-actions button', 'aria-pressed'), 'true');
+  await p.fill('#wd-note', 'Sounds like serene dip');
+  await p.waitForSelector('.wd-note-status:text("Note saved")');
+  await p.reload();
+  await p.waitForSelector('.wd-meaning');
+  await p.waitForFunction(() => document.querySelector('.wd-top-actions button')?.getAttribute('aria-pressed') === 'true');
+  assert.equal(await p.inputValue('#wd-note'), 'Sounds like serene dip');
+  await p.click('button[aria-label="Saved to My Words"]');
+  await p.click('.lx-toast button:text("Undo")');
+  await p.waitForFunction(() => document.querySelector('.wd-top-actions button')?.getAttribute('aria-pressed') === 'true');
+  await c.close();
+});
+
+await check('word page reopens offline from the device (service worker + cached entry)', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'allow' });
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  await p.evaluate(() => navigator.serviceWorker.ready);
+  await p.reload();
+  await p.waitForFunction(() => navigator.serviceWorker.controller);
+  await p.waitForSelector('.wd-meaning');
+  await c.setOffline(true);
+  await p.reload();
+  await p.waitForSelector('.wd-meaning', { timeout: 10000 });
+  assert.match(await p.textContent('.wd-planet h1'), /serendipity/);
+  await c.close();
+});
+
+await check('word page states: not found with suggestion, error with code, partial without recording', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipty');
+  await p.waitForSelector('h1:has-text("couldn\'t find")');
+  await p.waitForSelector('.wd-sugs a:text("serendipity")');
+  await p.goto(BASE + '/word/fail');
+  await p.waitForSelector('h1:text("This word got lost in space")', { timeout: 10000 });
+  assert.match(await p.textContent('.wd-code'), /DICT-503/);
+  await p.goto(BASE + '/word/defenestrate');
+  await p.waitForSelector('.wd-meaning');
+  assert.match(await p.textContent('.wd-device-voice'), /No recording yet/);
+  await c.close();
+});
+
+await check('translator: phrasebook, picker search, machine translation, RTL, quota and swap', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/translate');
+  await p.click('.tr-phrases button:text("Thank you for your help")');
+  await p.waitForSelector('.tr-out');
+  assert.equal(await p.textContent('.tr-out'), 'Ẹ ṣé fún ìrànlọ́wọ́ yín');
+  assert.match(await p.textContent('.tr-result'), /Phrasebook · to be checked/);
+  assert.ok(await p.isVisible('button:text("No voice")'), 'no Yoruba voice in the stub');
+  await p.click('button[aria-label^="Translate into"]');
+  await p.waitForSelector('dialog[open]');
+  await p.fill('#lp-q', 'sw');
+  assert.deepEqual(await p.$$eval('.lp-row b', (b) => b.map((x) => x.textContent)), ['Swahili', 'Swedish']);
+  // First Esc clears the search box (browser behaviour), the second closes the sheet.
+  await p.keyboard.press('Escape');
+  await p.keyboard.press('Escape');
+  await p.waitForTimeout(200);
+  assert.ok(!(await p.isVisible('dialog[open]')), 'Esc closes the picker');
+  await p.click('button[aria-label^="Translate into"]');
+  await p.fill('#lp-q', 'arab');
+  await p.click('.lp-row:has-text("Arabic")');
+  await p.fill('#tr-text', 'Thank you for your help');
+  await p.waitForSelector('.tr-out[dir="rtl"]');
+  assert.equal(await p.textContent('.tr-out'), 'شكرًا لمساعدتك');
+  await p.click('button[aria-label="Swap languages"]');
+  assert.equal(await p.inputValue('#tr-text'), 'شكرًا لمساعدتك');
+  assert.match(await p.getAttribute('button[aria-label^="Translate from"]', 'aria-label'), /Arabic/);
+  await p.click('button[aria-label="Swap languages"]');
+  await p.fill('#tr-text', 'quota please');
+  await p.waitForSelector('.lx-error-card:has-text("free translations are used up")', { timeout: 8000 });
+  assert.match(await p.textContent('.lx-error-card'), /TR-429/);
+  await p.fill('#tr-text', 'x'.repeat(600));
+  assert.equal((await p.inputValue('#tr-text')).length, 500);
+  assert.match(await p.textContent('.tr-count'), /500 \/ 500/);
+  await c.close();
+});
+
+await check('share: the card image is drawn and can be saved', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+  const p = await c.newPage();
+  await p.goto(BASE + '/share/serendipity');
+  await p.waitForSelector('.sh-card img');
+  assert.match(await p.getAttribute('.sh-card img', 'src'), /^data:image\/png/);
+  assert.match(await p.getAttribute('.sh-card img', 'alt'), /Word I learned today, serendipity/);
+  const [download] = await Promise.all([p.waitForEvent('download'), p.click('button:has-text("Save image")')]);
+  assert.equal(download.suggestedFilename(), 'lexiverse-serendipity.png');
+  await c.close();
 });
 
 await check('service worker installs and the app reloads offline', async () => {

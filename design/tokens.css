@@ -50,8 +50,9 @@
   --lx-skeleton-b: #F4F2FF;
 
   /* Type */
-  --lx-font-display: "Unbounded", system-ui, sans-serif;
-  --lx-font-body: "Inter", system-ui, sans-serif;
+  /* Self-hosted variable fonts (@fontsource-variable) register as "… Variable". */
+  --lx-font-display: "Unbounded Variable", "Unbounded", system-ui, sans-serif;
+  --lx-font-body: "Inter Variable", "Inter", system-ui, sans-serif;
   --lx-font-reading: "Atkinson Hyperlegible", system-ui, sans-serif;
   --lx-text-scale: 1;
 

@@ -1,0 +1,13 @@
+.lx-sheet {
+  width: min(100%, 32rem); max-width: 100%; max-height: 85dvh; margin: auto auto 0; padding: 0; border: 0;
+  border-radius: 1.75rem 1.75rem 0 0; background: var(--lx-bg); color: var(--lx-ink);
+}
+.lx-sheet::backdrop { background: rgba(7, 6, 26, .55); }
+@keyframes lx-sheet-up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.lx-sheet[open] { animation: lx-sheet-up .3s var(--lx-ease-out); }
+@media (min-width: 600px) { .lx-sheet { margin: auto; border-radius: 1.75rem; } }
+:root[data-contrast="high"] .lx-sheet { outline: 3px solid var(--lx-ink); }
+.lx-sheet-body { display: flex; flex-direction: column; gap: .875rem; padding: 1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom)); overflow-wrap: anywhere; }
+.lx-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.lx-sheet-head h2 { font-size: 1.25rem; }
+.lx-sheet-close { display: flex; align-items: center; justify-content: center; flex: none; width: 2.75rem; height: 2.75rem; border: 0; border-radius: var(--lx-radius-pill); background: var(--lx-surface); }

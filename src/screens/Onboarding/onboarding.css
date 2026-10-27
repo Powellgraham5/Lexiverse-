@@ -2,7 +2,7 @@
 .ob { display: flex; flex-direction: column; gap: 1rem; min-height: calc(100dvh - 2rem); overflow-x: clip; }
 .ob-step { display: flex; flex-direction: column; gap: .875rem; flex: 1; }
 .ob-step h1 { font-size: 1.625rem; margin-top: .5rem; }
-.step-1 .ob-step h1 { font-size: 1.875rem; line-height: 1.15; margin: 0; }
+.step-welcome .ob-step h1 { font-size: 1.875rem; line-height: 1.15; margin: 0; }
 .ob-lead { font-size: 1.125rem; line-height: 1.5; color: var(--lx-muted); }
 .ob-sub { color: var(--lx-muted); }
 .ob-actions, .ob-next { margin-top: auto; }
@@ -52,7 +52,7 @@
 :root[data-contrast="high"] .ob-choice.picked { outline: 4px solid var(--lx-ink); }
 .ob-choice b { display: block; font-size: 1.0625rem; }
 .ob-choice span span { font-size: .9375rem; color: var(--lx-muted); }
-.ob-planet { flex: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; }
+.ob-planet { display: flex; align-items: center; justify-content: center; flex: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; color: var(--lx-ink); }
 .ob-level { display: flex; flex-direction: column; gap: .25rem; padding: .25rem 0; }
 .ob-level b { font-family: var(--lx-font-display); font-size: 1.5rem; }
 
@@ -86,22 +86,25 @@
 .ob-copy { display: flex; flex-direction: column; gap: .875rem; flex: 1; }
 @media (min-width: 1024px) {
   /* Welcome: the orbit on the left, the invitation on the right. */
-  .step-1 .ob-step { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 4rem; align-items: center; min-height: calc(100dvh - 6rem); }
-  .step-1 .lx-wordmark { grid-column: 1 / -1; align-self: start; }
-  .step-1 .ob-orbit { width: min(100%, 30rem); margin: 0; }
-  .step-1 .ob-copy { flex: none; gap: 1.25rem; }
-  .step-1 .ob-step h1 { font-size: 3rem; }
-  .step-1 .ob-actions { margin-top: 1rem; }
+  .step-welcome .ob-step { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 4rem; align-items: center; min-height: calc(100dvh - 6rem); }
+  .step-welcome .lx-wordmark { grid-column: 1 / -1; align-self: start; }
+  .step-welcome .ob-orbit { width: min(100%, 30rem); margin: 0; }
+  .step-welcome .ob-copy { flex: none; gap: 1.25rem; }
+  .step-welcome .ob-step h1 { font-size: 3rem; }
+  .step-welcome .ob-actions { margin-top: 1rem; }
   /* Setup steps: a comfortable centred column, choices in a grid. */
-  .ob-bar, .step-2 .ob-step, .step-3 .ob-step, .step-4 .ob-step, .step-5 .ob-step { width: 100%; max-width: 46rem; margin-left: auto; margin-right: auto; }
+  .ob-bar, .step-goal .ob-step, .step-focus .ob-step, .step-ready .ob-step, .step-level .ob-step, .step-comfort .ob-step, .step-ready .ob-step { width: 100%; max-width: 46rem; margin-left: auto; margin-right: auto; }
   .ob-step h1 { font-size: 2.25rem; }
-  .step-2 .ob-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .875rem; }
-  .step-2 .ob-choice { min-height: 7rem; }
-  .step-3 .ob-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .875rem; }
-  .step-3 .ob-choice { align-items: flex-start; min-height: 9rem; }
+  :is(.step-goal, .step-focus) .ob-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .875rem; }
+  :is(.step-goal, .step-focus) .ob-choice { min-height: 7rem; }
+  .step-level .ob-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .875rem; }
+  .step-level .ob-choice { align-items: flex-start; min-height: 9rem; }
   .ob .lx-btn { max-width: 24rem; align-self: center; }
   .ob-next { margin-top: 2rem; }
   .ob-burst { width: min(100%, 360px); }
 }
-:root[data-large-text] .step-1 .ob-step { display: flex; }
-:root[data-large-text] :is(.step-2, .step-3) .ob-choices { display: flex; }
+:root[data-large-text] .step-welcome .ob-step { display: flex; }
+:root[data-large-text] :is(.step-goal, .step-focus, .step-level) .ob-choices { display: flex; }
+
+.ob-kicker { font-size: .8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lx-link); }
+.ob-level .ob-focus-title { font-family: var(--lx-font-body); font-size: 1.0625rem; }

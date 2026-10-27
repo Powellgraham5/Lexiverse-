@@ -204,6 +204,54 @@ await check('offline banner appears and clears', async () => {
 });
 await ctx.close();
 
+await check('onboarding: each goal leads to its own question, level title and ready screen', async () => {
+  const cases = [
+    ['Everyday English', 'Where do you use English most?', 'Travel', 'Which word feels just right?', 'Your universe is ready', 'e'],
+    ['Exam preparation', 'Which exam are you preparing for?', 'IELTS', 'Which word would you want in your IELTS answer?', 'Your IELTS universe is ready', 'x'],
+    ['Better writing', 'What do you write most?', 'Stories', 'Which word would you love to use in your stories?', 'Your writing universe is ready', 'w'],
+    ['Work and career', 'Where do you need English at work?', 'Meetings', 'Which word would you use in your meetings?', 'Your career universe is ready', 'k']
+  ];
+  for (const [goal, question, focus, levelTitle, ready, code] of cases) {
+    const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
+    const p = await c.newPage();
+    await p.goto(BASE + '/welcome');
+    await p.click('button:text("Let\'s go")');
+    await p.click(`[role=radio]:has-text("${goal}")`);
+    await p.click('button:text("Continue")');
+    await p.waitForSelector(`h1:text("${question}")`);
+    await p.click(`[role=radio]:has-text("${focus}")`);
+    await p.click('button:text("Continue")');
+    await p.waitForSelector(`h1:text("${levelTitle}")`);
+    await p.click('button:text("Continue")');
+    await p.click('button:text("Finish setup")');
+    await p.waitForSelector(`h1:text("${ready}")`);
+    const first = (await p.textContent('.ob-first b')).trim();
+    const word = DAILY.find((w) => w.w === first);
+    assert.ok(word && word.goals.includes(code), `${goal}: first word ${first} is not tagged ${code}`);
+    const prof = JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile')));
+    assert.equal(prof.goal, code);
+    assert.ok(prof.focus, 'focus saved');
+    await c.close();
+  }
+});
+
+await check('me: changing the goal changes Today\'s word and chip', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/');
+  await p.waitForSelector('.lx-goal-chip');
+  const before = (await p.textContent('.lx-orbit-planet b')).trim();
+  await p.goto(BASE + '/me');
+  await p.selectOption('#me-goal', 'x');
+  await p.selectOption('#me-focus', 'ielts');
+  await p.goto(BASE + '/');
+  await p.waitForSelector('.lx-goal-chip:has-text("IELTS")');
+  const after = (await p.textContent('.lx-orbit-planet b')).trim();
+  assert.ok(DAILY.find((w) => w.w === after).goals.includes('x'), `${after} is not an exam word`);
+  assert.notEqual(after, before);
+  await c.close();
+});
+
 await check('onboarding: goal is required, choices work by keyboard, setup lands on Today with a streak', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
   const p = await c.newPage();
@@ -218,7 +266,13 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   await p.keyboard.press('ArrowDown');
   assert.equal(await p.getAttribute('[role=radio]:has-text("Better writing")', 'aria-checked'), 'true');
   await p.click('button:text("Continue")');
-  await p.click('[role=radio]:has-text("serendipity")');
+  await p.waitForSelector('h1:text("What do you write most?")');
+  await p.click('button:text("Continue")', { force: true });
+  assert.ok(await p.isVisible('h1:text("What do you write most?")'), 'continue without a choice should not advance');
+  await p.click('[role=radio]:has-text("Essays")');
+  await p.click('button:text("Continue")');
+  await p.waitForSelector('h1:text("Which word would you love to use in your essays?")');
+  await p.click('[role=radio]:has-text("Advanced")');
   await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Make it comfortable")');
   await p.fill('#ob-size', '1.2');
@@ -226,7 +280,7 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   assert.equal(await p.evaluate(() => document.documentElement.dataset.contrast), 'high');
   await p.click('[role=switch]:near(:text("High contrast"))');
   await p.click('button:text("Finish setup")');
-  await p.waitForSelector('h1:text("Your universe is ready")');
+  await p.waitForSelector('h1:text("Your writing universe is ready")');
   const first = await p.textContent('.ob-first b');
   assert.ok(first && first !== 'ready', 'first word shown');
   assert.deepEqual(JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile'))).level, 3);
@@ -335,20 +389,21 @@ await check('the longest daily words fit at 200% text, even in a wide fallback f
   // Words with the longest spelling or IPA, each shown on a day where it is the word of the day.
   const longest = [...DAILY].sort((a, b) => (b.w.length + (b.ipa || '').length) - (a.w.length + (a.ipa || '').length)).slice(0, 10);
   for (const w of longest) {
+    const goal = w.goals[0];
     let day = null;
     for (let i = 0; i < 400 && !day; i++) {
       const d = new Date(2026, 9, 26 + i, 10);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      if (wordOfTheDay(DAILY, { level: w.l, goal: 'e', day: key }).w === w.w) day = d;
+      if (wordOfTheDay(DAILY, { level: w.l, goal, day: key }).w === w.w) day = d;
     }
     assert.ok(day, `no day found for ${w.w}`);
     const c = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
     await c.clock.setFixedTime(day);
     await mockApis(c);
-    await c.addInitScript(([level]) => {
-      localStorage.setItem('lx-profile', JSON.stringify({ goal: 'e', level, done: true }));
+    await c.addInitScript(([level, goal]) => {
+      localStorage.setItem('lx-profile', JSON.stringify({ goal, level, done: true }));
       localStorage.setItem('lx-settings', JSON.stringify({ textScale: 2 }));
-    }, [w.l]);
+    }, [w.l, goal]);
     const p = await c.newPage();
     await p.goto(BASE + '/');
     await p.waitForSelector('.lx-orbit-planet');

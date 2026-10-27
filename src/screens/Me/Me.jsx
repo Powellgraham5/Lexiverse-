@@ -1,4 +1,7 @@
+import { useState } from 'preact/hooks';
 import { usePage } from '../../app/usePage.js';
+import { loadProfile, saveProfile } from '../../lib/profile.js';
+import { GOAL_FLOW, LEVEL_NAMES } from '../../lib/goals.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { Segmented, Switch, Range } from '../../components/controls.jsx';
 import { ChevronIcon, StarIcon, WordsIcon } from '../../app/icons.jsx';
@@ -7,6 +10,9 @@ import './me.css';
 export default function Me() {
   usePage('Me & settings');
   const [s, set] = useSettings();
+  const [profile, setProfile] = useState(() => loadProfile() || { goal: 'e', level: 2, done: true });
+  const flow = GOAL_FLOW[profile.goal] || GOAL_FLOW.e;
+  const update = (patch) => { const p = { ...profile, ...patch }; saveProfile(p); setProfile(p); };
   return (
     <>
       <h1 class="lx-rise lx-page-title">Me</h1>
@@ -23,6 +29,25 @@ export default function Me() {
         <a href="/progress"><StarIcon /><span><b>Your universe</b><span>Streak, recall and the word archive</span></span><ChevronIcon /></a>
         <a href="/words"><WordsIcon /><span><b>My Words</b><span>Saved words and lists</span></span><ChevronIcon /></a>
       </nav>
+
+      <h2 class="lx-me-h2 lx-rise lx-d1" id="learning">Your learning</h2>
+      <section class="lx-card lx-settings-group me-learning lx-rise lx-d1" aria-labelledby="learning">
+        <div class="lx-setting stack">
+          <label for="me-goal"><b>Goal</b></label>
+          <select id="me-goal" class="me-select" value={profile.goal} onChange={(e) => update({ goal: e.currentTarget.value, focus: null })}>
+            {Object.entries(GOAL_FLOW).map(([k, f]) => <option key={k} value={k}>{f.name}</option>)}
+          </select>
+        </div>
+        <div class="lx-setting stack">
+          <label for="me-focus"><b>{flow.question}</b></label>
+          <select id="me-focus" class="me-select" value={profile.focus || ''} onChange={(e) => update({ focus: e.currentTarget.value || null })}>
+            <option value="">Not set</option>
+            {flow.options.map(([k, t]) => <option key={k} value={k}>{t}</option>)}
+          </select>
+        </div>
+        <Segmented label="Level" stretch value={profile.level} onChange={(level) => update({ level })}
+          options={[1, 2, 3].map((l) => [l, LEVEL_NAMES[l]])} hint="Your daily words follow your goal and level." />
+      </section>
 
       <div class="lx-split even me-split">
       <div class="lx-col">

@@ -7,15 +7,22 @@ export const dayKey = (date = new Date()) =>
 
 const dayNumber = (key) => Math.round(Date.UTC(...key.split('-').map((n, i) => (i === 1 ? n - 1 : +n))) / 86400000);
 
-// Words for the learner's level, with words tagged for their goal first in each cycle.
+// The words a learner's days are drawn from: words tagged for their goal at their level. When
+// that is under MIN_POOL words (e.g. everyday words at Advanced), the goal's words from the
+// nearest level are added; only if that is still too few does the whole level join in.
+const MIN_POOL = 20;
+export function dailyPool(words, { level = 2, goal = 'e' } = {}) {
+  const tagged = (l) => words.filter((w) => w.l === l && w.goals.includes(goal));
+  let pool = tagged(level);
+  for (const near of [level - 1, level + 1]) if (pool.length < MIN_POOL) pool = [...pool, ...tagged(near)];
+  if (pool.length < MIN_POOL) pool = [...new Set([...pool, ...words.filter((w) => w.l === level)])];
+  return pool.length ? pool : words;
+}
+
+// One word per day, cycling through the learner's pool in a stable shuffled order.
 export function wordOfTheDay(words, { level = 2, goal = 'e', day = dayKey() } = {}) {
-  const pool = words.filter((w) => w.l === level);
-  if (!pool.length) return words[0];
-  const order = [...pool].sort((a, b) => {
-    const ga = a.goals.includes(goal) ? 0 : 1;
-    const gb = b.goals.includes(goal) ? 0 : 1;
-    return ga - gb || hash(`${level}${goal}${a.w}`) - hash(`${level}${goal}${b.w}`);
-  });
+  const pool = dailyPool(words, { level, goal });
+  const order = [...pool].sort((a, b) => hash(`${level}${goal}${a.w}`) - hash(`${level}${goal}${b.w}`));
   const n = dayNumber(day);
   return order[((n % order.length) + order.length) % order.length];
 }

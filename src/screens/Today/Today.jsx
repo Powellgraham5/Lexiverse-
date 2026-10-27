@@ -7,6 +7,7 @@ import { SpeakerIcon, FlameIcon, ChevronIcon, CardsIcon } from '../../app/icons.
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
 import { loadProfile } from '../../lib/profile.js';
+import { focusLabel, LEVEL_NAMES } from '../../lib/goals.js';
 import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js';
 import { playAudioOr, stopSpeaking } from '../../lib/speech.js';
 import { orbitChips, KIND_LABEL } from '../../lib/related.js';
@@ -98,6 +99,7 @@ export default function Today() {
           <div class="lx-today-def lx-rise lx-d2">
             <p class="lx-today-ipa">{word.ipa && <span lang="en-fonipa">{word.ipa}</span>}{word.ipa && ' · '}{word.pos}</p>
             <p class="lx-today-meaning">{word.def}</p>
+            <a class="lx-goal-chip" href="/me#learning">{focusLabel(profile?.goal || 'e', profile?.focus)} · {LEVEL_NAMES[profile?.level || 2]}<span class="lx-sr">. Change your goal</span></a>
             <p class="lx-today-legend" aria-hidden="true">≈ similar · ≠ opposite · + same family</p>
           </div>
 

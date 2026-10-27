@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { dayKey, wordOfTheDay, buildChallenge } from './daily.js';
+import { dayKey, wordOfTheDay, dailyPool, buildChallenge } from './daily.js';
 
 const WORDS = JSON.parse(readFileSync(new URL('../../public/data/daily.json', import.meta.url))).words;
 
@@ -16,14 +16,33 @@ test('word of the day is stable for a day and changes the next day', () => {
   assert.equal(a.l, 2);
 });
 
-test('a full cycle never repeats a word and puts goal words first', () => {
-  const pool = WORDS.filter((w) => w.l === 3);
+test('a full cycle never repeats a word', () => {
+  const pool = dailyPool(WORDS, { level: 3, goal: 'k' });
   const seen = new Set();
   for (let i = 0; i < pool.length; i++) {
     const d = new Date(Date.UTC(2027, 0, 1) + i * 86400000);
     seen.add(wordOfTheDay(WORDS, { level: 3, goal: 'k', day: d.toISOString().slice(0, 10) }).w);
   }
   assert.equal(seen.size, pool.length);
+});
+
+test('daily words follow the goal: every word for 60 days is tagged with it', () => {
+  for (const level of [1, 2, 3]) {
+    for (const goal of ['e', 'x', 'w', 'k']) {
+      assert.ok(dailyPool(WORDS, { level, goal }).length >= 20, `pool ${level}${goal} too small`);
+      for (let i = 0; i < 60; i++) {
+        const day = new Date(Date.UTC(2026, 9, 1) + i * 86400000).toISOString().slice(0, 10);
+        const w = wordOfTheDay(WORDS, { level, goal, day });
+        assert.ok(w.goals.includes(goal), `${level}${goal} ${day}: ${w.w} is not a goal word`);
+      }
+    }
+  }
+});
+
+test('different goals give different words on the same day', () => {
+  const day = '2026-10-27';
+  const words = ['e', 'x', 'w', 'k'].map((goal) => wordOfTheDay(WORDS, { level: 2, goal, day }).w);
+  assert.ok(new Set(words).size >= 3, words.join(', '));
 });
 
 test('every daily word gets a challenge with exactly one right answer and three options', () => {

@@ -38,4 +38,5 @@ export const MoreIcon = (p) => <Icon {...p}><circle cx="5" cy="12" r="1.2" fill=
 export const TrashIcon = (p) => <Icon {...p}><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></Icon>;
 export const CaseIcon = (p) => <Icon {...p}><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M9 7V5h6v2M3 13h18" /></Icon>;
 export const StarIcon = (p) => <Icon {...p}><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></Icon>;
+export const ChatIcon = (p) => <Icon {...p}><path d="M4 5h16v11H9l-5 4z" /></Icon>;
 export const HeartIcon = (p) => <Icon {...p}><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /></Icon>;

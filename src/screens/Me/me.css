@@ -22,3 +22,6 @@
 .me-links a > span { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .me-links a > span span { font-size: .875rem; color: var(--lx-muted); }
 .me-links a > svg:last-child { flex: none; color: var(--lx-muted); }
+
+.me-select { width: 100%; min-height: 3rem; padding: 0 .875rem; border: 2px solid var(--lx-line-strong); border-radius: 1rem; background: var(--lx-surface); color: var(--lx-ink); font-size: 1rem; }
+.me-select:focus { outline: 3px solid var(--lx-focus); outline-offset: 2px; }

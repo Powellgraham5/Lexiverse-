@@ -12,22 +12,53 @@ function pickVoice(lang) {
     || voices.find((v) => v.lang.startsWith(lang.slice(0, 2)));
 }
 
+// iPhones and iPads: speech must start during a tap, and the silent switch mutes the device voice.
+export const isIOS = () => typeof navigator !== 'undefined'
+  && (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
+// Called whenever the device voice speaks (the app shows a one-time silent-switch tip on iOS).
+let deviceVoiceListener = null;
+export const onDeviceVoice = (fn) => { deviceVoiceListener = fn; };
+
 // Speaks text; resolves when finished (or immediately when speech isn't available).
 export function speak(text, { accent = 'US', rate = 1, lang } = {}) {
   if (!canSpeak()) return Promise.resolve(false);
   const synth = window.speechSynthesis;
-  synth.cancel();
+  // Only cancel when something is playing: on iOS a cancel straight before speak can drop the new line.
+  if (synth.speaking || synth.pending) synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang || LANG[accent] || 'en-US';
   const voice = pickVoice(u.lang);
   if (voice) u.voice = voice;
   u.rate = rate;
+  deviceVoiceListener?.();
   return new Promise((resolve) => {
     u.onend = () => resolve(true);
     u.onerror = () => resolve(false);
     synth.speak(u);
   });
 }
+
+// iOS only lets speech start inside a tap. A silent utterance spoken during the tap unlocks it,
+// so a device-voice fallback after a failed recording can still be heard. Once per page load.
+let primed = false;
+export function primeSpeech() {
+  if (primed || !canSpeak()) return;
+  primed = true;
+  const u = new SpeechSynthesisUtterance(' ');
+  u.volume = 0;
+  window.speechSynthesis.speak(u);
+}
+
+// Recording hosts that failed this session; their recordings are skipped so the voice answers at once.
+const DOWN_KEY = 'lx-audio-down';
+const down = new Set((() => { try { return JSON.parse(sessionStorage.getItem(DOWN_KEY) || '[]'); } catch { return []; } })());
+const hostOf = (url) => { try { return new URL(url, 'https://x').host; } catch { return ''; } };
+function markDown(url) {
+  down.add(hostOf(url));
+  try { sessionStorage.setItem(DOWN_KEY, JSON.stringify([...down])); } catch { /* private mode */ }
+}
+export const recordingUsable = (url) => Boolean(url) && !down.has(hostOf(url));
 
 let current = null; // the recorded pronunciation playing now, so it can be stopped
 
@@ -37,21 +68,28 @@ export function stopSpeaking() {
   if (current) { current.pause(); current.onended?.(); current = null; }
 }
 
-// Plays a recorded pronunciation, falling back to speech if the file can't play (offline, blocked).
-// Resolves when it has finished (or was stopped).
+// Plays a recorded pronunciation, falling back to the device voice if it can't play (offline,
+// blocked, or the recording host is down). Resolves when it has finished (or was stopped).
 export async function playAudioOr(url, text, opts) {
-  if (url) {
-    try {
-      const audio = new Audio(url);
-      audio.playbackRate = opts?.rate || 1;
-      const done = new Promise((resolve) => { audio.onended = () => resolve(true); audio.onerror = () => resolve(true); });
-      current = audio;
-      await audio.play();
-      await done;
-      if (current === audio) current = null;
-      return true;
-    } catch { /* fall through to speech */ }
-  }
+  if (!recordingUsable(url)) return speak(text, opts); // synchronous inside the tap
+  primeSpeech();
+  const audio = new Audio(url);
+  audio.playbackRate = opts?.rate || 1;
+  current = audio;
+  // 'ok' played, 'blocked' (the browser refused to autoplay; not the recording's fault), 'failed'.
+  const result = await new Promise((resolve) => {
+    let started = false;
+    const timer = setTimeout(() => { if (!started) resolve('failed'); }, 2500);
+    audio.onplaying = () => { started = true; clearTimeout(timer); };
+    audio.onended = () => { clearTimeout(timer); resolve('ok'); };
+    audio.onerror = () => { clearTimeout(timer); resolve(started ? 'ok' : 'failed'); };
+    audio.play().catch((e) => { clearTimeout(timer); resolve(e?.name === 'NotAllowedError' ? 'blocked' : e?.name === 'AbortError' ? 'ok' : 'failed'); });
+  });
+  if (current !== audio) return true; // stopped by the learner
+  current = null;
+  if (result === 'ok') return true;
+  audio.pause();
+  if (result === 'failed') markDown(url);
   return speak(text, opts);
 }
 

@@ -3,7 +3,8 @@ import { useLocation } from 'preact-iso';
 import { TodayIcon, SearchIcon, WordsIcon, LearnIcon, MeIcon } from './icons.jsx';
 import { Starfield } from '../components/Starfield.jsx';
 import { OfflineBanner } from '../components/OfflineBanner.jsx';
-import { Toasts } from '../components/toast.jsx';
+import { Toasts, toast } from '../components/toast.jsx';
+import { onDeviceVoice, isIOS } from '../lib/speech.js';
 import { requestHeadingFocus } from './usePage.js';
 import './shell.css';
 
@@ -19,6 +20,14 @@ const isActive = (href, path) => (href === '/' ? path === '/' : path === href ||
 
 // Focused flows fill the screen without the tab bar.
 const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup'];
+
+// The first time the device voice speaks on an iPhone or iPad, explain the silent switch once.
+const TIP_KEY = 'lx-tip-silent';
+onDeviceVoice(() => {
+  if (!isIOS()) return;
+  try { if (localStorage.getItem(TIP_KEY)) return; localStorage.setItem(TIP_KEY, '1'); } catch { return; }
+  toast({ text: "Can't hear it? Turn off silent mode (the switch on the side of your iPhone) to hear the device voice." });
+});
 
 export function Shell({ children }) {
   const { path } = useLocation();

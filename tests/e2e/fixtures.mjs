@@ -42,7 +42,7 @@ export async function mockApis(context) {
   });
   await context.route('https://api.dictionaryapi.dev/**', (route) => {
     const url = route.request().url();
-    if (url.includes('/media/')) return route.fulfill({ status: 200, contentType: 'audio/mpeg', body: '' });
+    if (url.includes('/media/')) return route.fulfill({ status: 502, contentType: 'text/plain', body: 'error code: 502' }); // the real recordings host is down
     const word = decodeURIComponent(url.split('/').pop());
     if (word === 'fail') return route.fulfill({ status: 500, body: 'error' });
     if (DICT[word]) return route.fulfill({ json: DICT[word] });
@@ -72,6 +72,7 @@ export const SPEECH_STUB = () => {
       if (u) { clearTimeout(u.__t); u.onend?.(); }
     },
     speak(u) {
+      if (!u.text.trim()) { window.__primes = (window.__primes || 0) + 1; return; } // the silent iOS unlock
       window.__spoken.push({ text: u.text, lang: u.lang, rate: u.rate });
       now = u; synth.speaking = true;
       u.__t = setTimeout(() => { if (now === u) { now = null; synth.speaking = false; u.onend?.(); } }, 300);

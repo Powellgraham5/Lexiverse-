@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useRequest } from '../../app/useRequest.js';
@@ -8,7 +8,7 @@ import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
 import { loadProfile } from '../../lib/profile.js';
 import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js';
-import { playAudioOr } from '../../lib/speech.js';
+import { playAudioOr, stopSpeaking } from '../../lib/speech.js';
 import { orbitChips, KIND_LABEL } from '../../lib/related.js';
 import { planetFont } from '../../lib/fit.js';
 import { WeekStrip } from '../../components/WeekStrip.jsx';
@@ -33,6 +33,19 @@ export default function Today() {
   const [due, setDue] = useState(0);
   // Seeing the word of the day adds it to the learner's reviews.
   useEffect(() => { if (word) recordMet(word.w).catch(() => {}); }, [word?.w]);
+
+  // Tap to hear, tap again to stop. Speech stops when you leave Today.
+  const [playing, setPlaying] = useState(false);
+  const run = useRef(0);
+  useEffect(() => () => { run.current++; stopSpeaking(); }, []);
+  async function listen() {
+    const id = ++run.current;
+    if (playing) { stopSpeaking(); setPlaying(false); return; }
+    setPlaying(true);
+    const url = settings.accent === 'UK' ? word.audio.uk || word.audio.us : word.audio.us || word.audio.uk;
+    await playAudioOr(url, word.w, { accent: settings.accent, rate: settings.speechRate });
+    if (run.current === id) setPlaying(false);
+  }
   useEffect(() => { loadReviews().then((r) => setDue(summary(r).due)).catch(() => {}); }, [word?.w]);
 
   return (
@@ -97,9 +110,9 @@ export default function Today() {
             </section>
           ) : (
             <div class="lx-today-actions lx-rise lx-d3">
-              <button type="button" class="lx-listen" aria-label={`Listen to ${word.w}`}
-                onClick={() => playAudioOr(settings.accent === 'UK' ? word.audio.uk || word.audio.us : word.audio.us || word.audio.uk, word.w, { accent: settings.accent, rate: settings.speechRate })}>
-                <SpeakerIcon size={24} />
+              <button type="button" class={`lx-listen ${playing ? 'on' : ''}`} aria-pressed={playing}
+                aria-label={playing ? `Stop ${word.w}` : `Listen to ${word.w}`} onClick={listen}>
+                {playing ? <span class="lx-bars" aria-hidden="true"><span /><span /><span /></span> : <SpeakerIcon size={24} />}
               </button>
               <a class="lx-btn" href="/challenge">Daily challenge · 1 min</a>
             </div>

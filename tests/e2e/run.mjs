@@ -411,6 +411,29 @@ await check('word page: read all speaks the word, then each meaning; slow is slo
   await c.close();
 });
 
+await check('today: sound starts during the tap even when recordings are down (the iPhone rule)', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  // Runs after the button's own click handler: whatever speech started by then started "inside the tap".
+  await c.addInitScript(() => addEventListener('click', () => { window.__inTap = (window.__primes || 0) + window.__spoken.length; }));
+  const p = await c.newPage();
+  await p.goto(BASE + '/');
+  await p.waitForSelector('.lx-listen');
+  const word = await p.evaluate(() => document.querySelector('.lx-listen').getAttribute('aria-label').replace('Listen to ', ''));
+  await p.click('.lx-listen');
+  assert.ok(await p.evaluate(() => window.__inTap >= 1), 'nothing was spoken or unlocked during the tap');
+  await p.waitForFunction((w) => window.__spoken.some((x) => x.text === w), word, { timeout: 4000 });
+  await p.waitForSelector('.lx-listen[aria-pressed="false"]');
+  // Second tap: the recordings host is known to be down, so the word is spoken inside the tap itself.
+  await p.evaluate(() => { window.__spoken = []; window.__primes = 0; });
+  await p.click('.lx-listen');
+  assert.equal(await p.evaluate(() => window.__inTap), 1, 'second tap should speak synchronously');
+  assert.equal(await p.getAttribute('.lx-listen', 'aria-pressed'), 'true');
+  await p.click('.lx-listen');
+  await p.waitForSelector('.lx-listen[aria-pressed="false"]');
+  await c.close();
+});
+
 await check('word page: Read all stops on a second tap, and another button takes over', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   await c.addInitScript(SPEECH_STUB);

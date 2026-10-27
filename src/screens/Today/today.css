@@ -91,3 +91,8 @@
   .lx-today-ipa { font-size: 1.0625rem; }
   .today-side { gap: 1.25rem; }
 }
+.lx-listen.on { background: var(--lx-cta); color: var(--lx-on-cta); }
+.lx-bars { display: flex; gap: 3px; align-items: center; height: 22px; }
+.lx-bars span { width: 4px; height: 18px; border-radius: 2px; background: currentColor; animation: lx-bar .8s ease-in-out infinite; }
+.lx-bars span:nth-child(2) { animation-delay: .15s; } .lx-bars span:nth-child(3) { animation-delay: .3s; }
+@keyframes lx-bar { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }

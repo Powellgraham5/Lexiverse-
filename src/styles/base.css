@@ -46,6 +46,8 @@ body {
 }
 h1, h2, h3 { font-family: var(--lx-font-display); line-height: 1.2; margin: 0; letter-spacing: -0.01em; }
 p { margin: 0; }
+/* Long words and IPA (no spaces, and drawn in a fallback font on some devices) may break rather than widen the page. */
+#main { overflow-wrap: anywhere; }
 a { color: var(--lx-link); }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }

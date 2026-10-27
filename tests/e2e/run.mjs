@@ -6,6 +6,11 @@ import { mkdirSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import { mockApis, PROFILE } from './fixtures.mjs';
+import { wordOfTheDay } from '../../src/lib/daily.js';
+
+// A fixed date so the word of the day, and every screenshot, is the same on every machine and day.
+const FIXED_NOW = new Date('2026-10-26T10:00:00');
+const DAILY = JSON.parse(readFileSync(new URL('../../public/data/daily.json', import.meta.url))).words;
 
 const require = createRequire(import.meta.url);
 const AXE = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -26,6 +31,7 @@ const ROUTES = [
 // A context with the fake APIs and, unless fresh, a learner who has finished onboarding.
 async function newContext(options = {}, { fresh = false } = {}) {
   const ctx = await browser.newContext({ serviceWorkers: 'block', ...options });
+  await ctx.clock.setFixedTime(FIXED_NOW);
   await mockApis(ctx);
   if (!fresh) await ctx.addInitScript((p) => { if (!localStorage.getItem('lx-profile')) localStorage.setItem('lx-profile', JSON.stringify(p)); }, PROFILE);
   return ctx;
@@ -282,6 +288,43 @@ await check('large text: the Today orbit becomes a list and nothing overflows', 
   await settle(p);
   await p.screenshot({ path: `${SHOTS}today-390-text-200.png`, fullPage: true });
   await c.close();
+});
+
+await check('the longest daily words fit at 200% text, even in a wide fallback font', async () => {
+  // Words with the longest spelling or IPA, each shown on a day where it is the word of the day.
+  const longest = [...DAILY].sort((a, b) => (b.w.length + (b.ipa || '').length) - (a.w.length + (a.ipa || '').length)).slice(0, 10);
+  for (const w of longest) {
+    let day = null;
+    for (let i = 0; i < 400 && !day; i++) {
+      const d = new Date(2026, 9, 26 + i, 10);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      if (wordOfTheDay(DAILY, { level: w.l, goal: 'e', day: key }).w === w.w) day = d;
+    }
+    assert.ok(day, `no day found for ${w.w}`);
+    const c = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+    await c.clock.setFixedTime(day);
+    await mockApis(c);
+    await c.addInitScript(([level]) => {
+      localStorage.setItem('lx-profile', JSON.stringify({ goal: 'e', level, done: true }));
+      localStorage.setItem('lx-settings', JSON.stringify({ textScale: 2 }));
+    }, [w.l]);
+    const p = await c.newPage();
+    await p.goto(BASE + '/');
+    await p.waitForSelector('.lx-orbit-planet');
+    // Monospace is far wider than any real fallback font: if this fits, any device fits.
+    await p.addStyleTag({ content: '* { font-family: "DejaVu Sans Mono", monospace !important; }' });
+    await settle(p);
+    assert.equal((await p.textContent('.lx-orbit-planet b')).trim(), w.w);
+    assert.deepEqual(await overflow(p), [], `${w.w} overflows`);
+    for (const r of ['/challenge']) {
+      await p.goto(BASE + r);
+      await p.waitForSelector('.ch-option');
+      await p.addStyleTag({ content: '* { font-family: "DejaVu Sans Mono", monospace !important; }' });
+      await settle(p);
+      assert.deepEqual(await overflow(p), [], `${w.w} challenge overflows`);
+    }
+    await c.close();
+  }
 });
 
 await check('service worker installs and the app reloads offline', async () => {

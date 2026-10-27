@@ -51,7 +51,7 @@
 :root[data-large-text] .lx-chip { font-size: 1rem; white-space: normal; }
 
 .lx-today-def { display: flex; flex-direction: column; gap: .25rem; }
-.lx-today-ipa { font-size: .9375rem; color: var(--lx-muted); }
+.lx-today-ipa { font-size: .9375rem; color: var(--lx-muted); overflow-wrap: anywhere; }
 .lx-today-meaning { font-size: 1.25rem; font-weight: 600; line-height: 1.35; }
 .lx-today-legend { font-size: .8125rem; color: var(--lx-muted); }
 

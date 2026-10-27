@@ -1,17 +1,11 @@
 // Word of the day and the daily challenge, built from public/data/daily.json.
+import { hash } from './hash.js';
 
 // Local calendar day as YYYY-MM-DD, so "today" follows the learner's own clock.
 export const dayKey = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 const dayNumber = (key) => Math.round(Date.UTC(...key.split('-').map((n, i) => (i === 1 ? n - 1 : +n))) / 86400000);
-
-// Small stable hash so every learner at the same level and goal gets a steady, shuffled order.
-function hash(s) {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
 
 // Words for the learner's level, with words tagged for their goal first in each cycle.
 export function wordOfTheDay(words, { level = 2, goal = 'e', day = dayKey() } = {}) {

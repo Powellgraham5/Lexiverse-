@@ -1,0 +1,19 @@
+.mt-tag { background: var(--lx-note-bg); }
+.mt-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: .625rem; }
+:root[data-large-text] .mt-grid { grid-template-columns: 1fr; }
+.mt-col { display: flex; flex-direction: column; gap: .625rem; }
+.mt-tile {
+  display: flex; align-items: center; justify-content: center; gap: .375rem; min-height: 4.25rem; padding: .625rem .75rem;
+  border: 2.5px solid var(--lx-surface); border-radius: 1.125rem; background: var(--lx-surface); text-align: center; line-height: 1.3;
+  transition: transform .15s, background-color .2s, border-color .2s;
+}
+.mt-tile.word { font-weight: 700; }
+.mt-tile.def { font-size: .875rem; font-weight: 600; text-align: left; justify-content: flex-start; }
+.mt-tile.sel { border-color: var(--lx-primary); background: var(--lx-primary-soft); }
+.mt-tile.done { border-color: var(--lx-success); background: var(--lx-success-bg); color: var(--lx-family-ink); cursor: default; }
+.mt-tile.done svg { flex: none; }
+@keyframes mt-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.mt-tile.bad { border-color: var(--lx-error); background: var(--lx-error-bg); animation: mt-shake .35s ease-out; }
+:root[data-contrast="high"] .mt-tile.sel { outline: 4px solid var(--lx-ink); }
+:root[data-contrast="high"] .mt-tile.done { outline: 3px dashed var(--lx-ink); }
+.mt-status { text-align: center; color: var(--lx-muted); font-size: .9375rem; }

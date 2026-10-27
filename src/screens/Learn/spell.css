@@ -1,0 +1,21 @@
+.sp-hear { display: flex; flex-direction: column; align-items: center; gap: .75rem; margin: .5rem 0; }
+@keyframes sp-ring { 0%, 100% { box-shadow: 0 0 0 0 rgba(74, 47, 224, .35); } 50% { box-shadow: 0 0 0 16px rgba(74, 47, 224, 0); } }
+.sp-big {
+  display: flex; align-items: center; justify-content: center; width: 7.5rem; height: 7.5rem; border: 0; border-radius: 50%;
+  background: var(--lx-primary); color: var(--lx-on-primary); box-shadow: 0 0 0 10px var(--lx-primary-soft); animation: sp-ring 2.4s ease-in-out infinite;
+}
+.sp-tools { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+.sp-form { display: flex; flex-direction: column; gap: .5rem; }
+.sp-form label { font-weight: 700; }
+.sp-input { min-height: 3.5rem; padding: 0 1rem; border: 2.5px solid var(--lx-primary); border-radius: 1.125rem; background: var(--lx-surface); font-size: 1.25rem; font-weight: 600; }
+.sp-input.right { border-color: var(--lx-success); background: var(--lx-success-bg); }
+.sp-input.wrong { border-color: var(--lx-error); }
+.sp-letters { display: flex; flex-wrap: wrap; gap: .25rem; margin: .25rem 0; }
+.sp-l {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 1.75rem; height: 2rem; padding: 0 .25rem; border-radius: .5rem;
+  background: var(--lx-surface); font-family: var(--lx-font-display); font-weight: 700;
+}
+.sp-l.wrong, .sp-l.missing { background: var(--lx-error); color: #FFFFFF; }
+.sp-l.missing { outline: 2px dashed var(--lx-ink); outline-offset: -2px; }
+.sp-l.extra { background: transparent; color: var(--lx-error-ink); text-decoration: line-through; }
+.sp-hint { padding: .75rem 1rem; border-radius: 1rem; background: var(--lx-note-bg); color: var(--lx-ink); }

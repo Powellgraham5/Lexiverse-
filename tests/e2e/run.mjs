@@ -27,7 +27,8 @@ const ROUTES = [
   ['/search?q=qwizzle', 'search-empty'], ['/search?q=fail', 'search-error'], ['/challenge', 'challenge'], ['/welcome', 'welcome'],
   ['/words', 'words'], ['/learn', 'learn'], ['/me', 'me'], ['/nowhere', 'not-found'],
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
-  ['/translate', 'translator'], ['/share/serendipity', 'share']
+  ['/translate', 'translator'], ['/share/serendipity', 'share'],
+  ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
 // A context with the fake APIs and, unless fresh, a learner who has finished onboarding.
@@ -91,6 +92,7 @@ for (const [w, h] of WIDTHS) {
       if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
       if (route.startsWith('/word/serendipity')) await page.waitForSelector('.wd-lang-result p', { timeout: 5000 }).catch(() => {});
       if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
+      if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero', { timeout: 8000 }).catch(() => {});
       await settle(page);
       await page.screenshot({ path: `${SHOTS}${name}-${w}-${theme}.png`, fullPage: true });
       await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
@@ -207,17 +209,17 @@ await check('daily challenge: answer, feedback, then Today shows done for the da
   const p = await c.newPage();
   await p.goto(BASE + '/');
   await p.click('a:text("Daily challenge")');
-  await p.waitForSelector('.ch-option');
+  await p.waitForSelector('.lx-opt');
   assert.ok(!(await p.isVisible('.lx-nav')), 'tab bar hidden in the challenge');
-  const options = await p.$$('.ch-option');
+  const options = await p.$$('.lx-opt');
   assert.equal(options.length, 3);
   await options[0].click();
-  await p.waitForSelector('.ch-feedback');
-  assert.equal(await p.locator('.ch-option.right').count(), 1);
-  assert.match(await p.textContent('.ch-feedback b'), /Spot on!|Not quite/);
-  const before = await p.locator('.ch-option.wrong, .ch-option.right').count();
+  await p.waitForSelector('.lx-feedback');
+  assert.equal(await p.locator('.lx-opt.right').count(), 1);
+  assert.match(await p.textContent('.lx-feedback b'), /Spot on!|Not quite/);
+  const before = await p.locator('.lx-opt.wrong, .lx-opt.right').count();
   await options[2].click({ force: true });
-  assert.equal(await p.locator('.ch-option.wrong, .ch-option.right').count(), before, 'answer is locked after the first pick');
+  assert.equal(await p.locator('.lx-opt.wrong, .lx-opt.right').count(), before, 'answer is locked after the first pick');
   await p.click('button:text("Done · keep my streak")');
   await p.waitForSelector('.lx-done');
   assert.match(await p.textContent('.lx-done h2'), /done for today/);
@@ -324,7 +326,7 @@ await check('the longest daily words fit at 200% text, even in a wide fallback f
     assert.deepEqual(await overflow(p), [], `${w.w} overflows`);
     for (const r of ['/challenge']) {
       await p.goto(BASE + r);
-      await p.waitForSelector('.ch-option');
+      await p.waitForSelector('.lx-opt');
       await p.addStyleTag({ content: '* { font-family: "DejaVu Sans Mono", monospace !important; }' });
       await settle(p);
       assert.deepEqual(await overflow(p), [], `${w.w} challenge overflows`);
@@ -474,6 +476,134 @@ await check('share: the card image is drawn and can be saved', async () => {
   assert.match(await p.getAttribute('.sh-card img', 'alt'), /Word I learned today, serendipity/);
   const [download] = await Promise.all([p.waitForEvent('download'), p.click('button:has-text("Save image")')]);
   assert.equal(download.suggestedFilename(), 'lexiverse-serendipity.png');
+  await c.close();
+});
+
+await check('flashcards: flip and grade by keyboard, summary, then Learn is all caught up', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn');
+  await p.waitForSelector('.ln-hero h2:text("Start with a few new words")');
+  await p.goto(BASE + '/learn/flashcards');
+  await p.waitForSelector('.fc-card');
+  assert.ok(!(await p.isVisible('.lx-nav')), 'tab bar hidden while practising');
+  const total = Number((await p.textContent('.ps-count')).split('/')[1]);
+  assert.equal(total, 10);
+  await p.focus('.fc-card');
+  await p.keyboard.press('Enter');
+  assert.equal(await p.getAttribute('.fc-card', 'aria-expanded'), 'true');
+  assert.deepEqual(await p.$$eval('.fc-grade span', (s) => s.map((x) => x.textContent)), ['later today', 'in 2 days', 'in 7 days']);
+  await p.keyboard.press('3');
+  for (let k = 1; k < total; k++) {
+    await p.waitForSelector('.fc-card[aria-expanded="false"]');
+    await p.focus('.fc-card');
+    await p.keyboard.press('Space');
+    await p.waitForSelector('.fc-grade');
+    await p.keyboard.press('3');
+  }
+  await p.waitForSelector('h1:text("Your world grew!")');
+  assert.match(await p.textContent('.rs-sub'), /10 of 10 got it/);
+  await p.goto(BASE + '/learn');
+  await p.waitForSelector('.ln-hero h2:has-text("All caught up")');
+  assert.match(await p.textContent('.ln-hero p'), /in 7 days/);
+  assert.match(await p.getAttribute('.ln-ring', 'aria-label'), /^10 of 10/);
+  assert.match(await p.textContent('.lx-streak-chip'), /1 day/);
+  await settle(p);
+  await p.screenshot({ path: `${SHOTS}learn-390-caught-up.png`, fullPage: true });
+  await c.close();
+});
+
+await check('quick quiz: five questions, answers lock, score at the end', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/quiz');
+  for (let k = 0; k < 5; k++) {
+    await p.waitForSelector(`.ps-count:text("${k} / 5")`);
+    const opts = await p.$$('.lx-opt');
+    assert.equal(opts.length, 4);
+    await opts[0].click();
+    await p.waitForSelector('.lx-feedback');
+    const marked = await p.locator('.lx-opt.right, .lx-opt.wrong').count();
+    await opts[1].click({ force: true });
+    assert.equal(await p.locator('.lx-opt.right, .lx-opt.wrong').count(), marked, 'locked after the first pick');
+    await p.click('.ps-foot .lx-btn');
+  }
+  await p.waitForSelector('.rs-planet');
+  assert.match(await p.textContent('.rs-sub'), /of 5 correct/);
+  await c.close();
+});
+
+await check('listen and spell: wrong spelling shows letter feedback; hint then the right spelling', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/spell');
+  await p.waitForSelector('#spell-in');
+  await p.fill('#spell-in', 'qqq');
+  await p.click('button:text("Check")');
+  await p.waitForSelector('.sp-letters');
+  assert.ok(await p.locator('.sp-l.wrong, .sp-l.missing').count() > 0);
+  const spokenBefore = await p.evaluate(() => window.__spoken.length);
+  await p.click('button:text("Next word")');
+  await p.waitForSelector('#spell-in:not([readonly])');
+  await p.waitForFunction((n) => window.__spoken.length > n, spokenBefore);
+  const word = await p.evaluate(() => window.__spoken[window.__spoken.length - 1].text);
+  await p.click('button:text("Hint")');
+  assert.match(await p.textContent('.sp-hint'), new RegExp(`${word.length} letters, starts with ${word[0]}`));
+  await p.fill('#spell-in', word);
+  await p.press('#spell-in', 'Enter');
+  await p.waitForSelector('.lx-feedback b:text("Got it, with a hint!")');
+  await c.close();
+});
+
+await check('word match: complete it with the keyboard only', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/match');
+  await p.waitForSelector('.mt-tile.word');
+  // Pick the first unmatched word, then try meanings until it matches (keyboard only).
+  for (let guard = 0; guard < 40 && !(await p.isVisible('h1:text("All matched!")')); guard++) {
+    if (!(await p.locator('.mt-tile.word.sel').count())) {
+      await p.locator('.mt-tile.word:not(.done)').first().focus();
+      await p.keyboard.press('Enter');
+    }
+    const before = await p.locator('.mt-tile.done').count();
+    const defs = p.locator('.mt-tile.def:not(.done)');
+    for (let d = 0; d < await defs.count(); d++) {
+      await defs.nth(d).focus();
+      await p.keyboard.press('Enter');
+      await p.waitForTimeout(60);
+      if (await p.isVisible('h1:text("All matched!")') || await p.locator('.mt-tile.done').count() > before) break;
+    }
+  }
+  await p.waitForSelector('h1:text("All matched!")');
+  await c.close();
+});
+
+await check('practice setup: 5 spelling questions only', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/setup');
+  await p.click('.lx-seg button:text("5")');
+  for (const t of ['Meanings', 'Fill the gap', 'Listening']) await p.click(`.su-check:has-text("${t}")`);
+  assert.equal(await p.locator('.su-check.on').count(), 1);
+  await p.click('button:has-text("Start")');
+  await p.waitForSelector('.ps-tag:text("Spelling")');
+  assert.match(await p.textContent('.ps-count'), /0 \/ 5/);
+  await c.close();
+});
+
+await check('Today shows how many words are ready to review', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/');
+  await p.waitForSelector('.lx-orbit-planet');
+  await p.waitForTimeout(300);
+  await p.reload();
+  await p.waitForSelector('.lx-today-card b:text("1 word ready to review")');
   await c.close();
 });
 

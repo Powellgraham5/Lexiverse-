@@ -7,6 +7,7 @@ import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { loadDaily, wordOfTheDay, buildChallenge } from '../../lib/daily.js';
 import { loadProfile } from '../../lib/profile.js';
 import { recordActivity } from '../../lib/streak.js';
+import '../../components/options.css';
 import './challenge.css';
 
 const KEYS = 'ABC';
@@ -46,13 +47,13 @@ export default function Challenge() {
             <span><b>{word.w}</b><span>{word.def}</span></span>
           </div>
           <h1 class="lx-rise lx-d1">{ch.question}</h1>
-          <div role="group" aria-label="Answers" class="ch-options">
+          <div role="group" aria-label="Answers" class="lx-opts">
             {ch.options.map((o, i) => {
               const state = answered && i === ch.answer ? 'right' : answered && i === picked ? 'wrong' : answered ? 'dim' : '';
               return (
-                <button key={o.text} type="button" class={`ch-option lx-rise lx-d${i + 2} ${state}`} aria-disabled={answered}
+                <button key={o.text} type="button" class={`lx-opt lx-rise lx-d${i + 2} ${state}`} aria-disabled={answered}
                   onClick={() => !answered && setPicked(i)}>
-                  <span class="ch-key">{state === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[i]}</span></> : KEYS[i]}</span>
+                  <span class="lx-opt-key">{state === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[i]}</span></> : KEYS[i]}</span>
                   <span>{o.text}</span>
                   {state === 'right' && <span class="lx-sr">, correct answer</span>}
                   {state === 'wrong' && <span class="lx-sr">, your answer, not correct</span>}
@@ -63,7 +64,7 @@ export default function Challenge() {
 
           {answered && (
             <>
-              <div class={`ch-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
+              <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
                 <b>{right ? 'Spot on!' : `Not quite. It's ${KEYS[ch.answer]}.`}</b>
                 <span>{ch.explain}</span>
               </div>

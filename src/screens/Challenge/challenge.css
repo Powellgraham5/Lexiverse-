@@ -13,30 +13,6 @@
   box-shadow: inset -8px -6px 0 rgba(0, 0, 0, .18); animation: ch-float 3s ease-in-out infinite;
 }
 .ch h1 { font-size: 1.3125rem; line-height: 1.3; margin-top: .25rem; }
-.ch-options { display: flex; flex-direction: column; gap: .625rem; }
-.ch-option {
-  display: flex; align-items: center; gap: .75rem; text-align: left; padding: .875rem 1rem; border-radius: 1.25rem;
-  border: 2.5px solid var(--lx-surface); background: var(--lx-surface); color: inherit; font-weight: 600; line-height: 1.4;
-  transition: transform .15s, opacity .2s;
-}
-.ch-option:active { transform: scale(.98); }
-.ch-option[aria-disabled="true"] { cursor: default; }
-.ch-key {
-  display: flex; align-items: center; justify-content: center; flex: none; width: 1.875rem; height: 1.875rem; border-radius: 50%;
-  background: var(--lx-raised); font-size: .875rem; font-weight: 700;
-}
-@keyframes ch-pop { 0% { transform: scale(1); } 40% { transform: scale(1.03); } 100% { transform: scale(1); } }
-@keyframes ch-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-.ch-option.right { border-color: var(--lx-success); background: var(--lx-success-bg); animation: ch-pop .35s ease-out; }
-.ch-option.right .ch-key { background: var(--lx-success); color: #FFFFFF; }
-.ch-option.wrong { border-color: var(--lx-error); background: var(--lx-error-bg); animation: ch-shake .35s ease-out; }
-.ch-option.wrong .ch-key { background: var(--lx-error); color: #FFFFFF; }
-.ch-option.dim { opacity: .5; }
-:root[data-contrast="high"] .ch-option.right { outline: 4px solid var(--lx-ink); }
-:root[data-contrast="high"] .ch-option.wrong { outline: 4px dashed var(--lx-ink); }
-.ch-feedback { display: flex; flex-direction: column; gap: .375rem; padding: .875rem 1rem; border-radius: 1.25rem; line-height: 1.5; }
-.ch-feedback.right { background: var(--lx-success-bg); }
-.ch-feedback.wrong { background: var(--lx-error-bg); }
 .ch-own { display: flex; flex-direction: column; gap: .5rem; padding: .875rem; border-radius: 1.25rem; background: var(--lx-note-bg); }
 .ch-own label { font-weight: 700; }
 .ch-own label span { font-weight: 400; color: var(--lx-note-ink); }

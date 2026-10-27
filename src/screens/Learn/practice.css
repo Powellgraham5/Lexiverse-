@@ -1,0 +1,13 @@
+/* Shared by every practice game. */
+.ps { display: flex; flex-direction: column; gap: 1rem; min-height: calc(100dvh - 2.5rem); }
+.ps-top { display: flex; align-items: center; gap: .75rem; }
+.ps-close { display: flex; align-items: center; justify-content: center; flex: none; width: 2.75rem; height: 2.75rem; border-radius: var(--lx-radius-pill); background: var(--lx-surface); color: var(--lx-ink); }
+.ps-bar { position: relative; flex: 1; height: 10px; border-radius: 999px; background: var(--lx-line-strong); overflow: hidden; }
+.ps-bar span { display: block; height: 100%; border-radius: 999px; background: var(--lx-primary); transition: width .5s var(--lx-ease-out); }
+.ps-count { font-size: .875rem; font-weight: 700; white-space: nowrap; }
+.ps-tag { align-self: flex-start; padding: .25rem .625rem; border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-size: .8125rem; font-weight: 700; }
+.ps h1 { font-size: 1.5rem; line-height: 1.25; }
+.ps-foot { margin-top: auto; display: flex; flex-direction: column; gap: .625rem; }
+.ps-foot .lx-btn { width: 100%; }
+.ps-round { display: flex; align-items: center; justify-content: center; gap: .375rem; min-height: 2.75rem; padding: 0 1rem; border: 0; border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-weight: 700; }
+.ps-empty { display: flex; flex-direction: column; align-items: center; gap: .75rem; padding: 2rem 1rem; text-align: center; }

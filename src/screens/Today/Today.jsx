@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useRequest } from '../../app/useRequest.js';
@@ -11,6 +11,8 @@ import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js'
 import { playAudioOr } from '../../lib/speech.js';
 import { orbitChips, KIND_LABEL } from '../../lib/related.js';
 import { planetFont } from '../../lib/fit.js';
+import { recordMet } from '../../lib/practice.js';
+import { loadReviews, summary } from '../../lib/srs.js';
 import './today.css';
 
 export default function Today() {
@@ -27,6 +29,10 @@ export default function Today() {
   const streak = currentStreak(activity.days || []);
   const done = challengeDone(activity);
   const word = req.data && wordOfTheDay(req.data, { level: profile?.level || 2, goal: profile?.goal || 'e' });
+  const [due, setDue] = useState(0);
+  // Seeing the word of the day adds it to the learner's reviews.
+  useEffect(() => { if (word) recordMet(word.w).catch(() => {}); }, [word?.w]);
+  useEffect(() => { loadReviews().then((r) => setDue(summary(r).due)).catch(() => {}); }, [word?.w]);
 
   return (
     <>
@@ -94,9 +100,11 @@ export default function Today() {
             </div>
           )}
 
-          <a class="lx-card lx-today-card lx-rise lx-d4" href="/learn">
+          <a class="lx-card lx-today-card lx-rise lx-d4" href={due ? '/learn/flashcards' : '/learn'}>
             <span class="lx-today-card-icon" aria-hidden="true"><CardsIcon size={20} /></span>
-            <span><b>Practise your words</b><span>Flashcards, quizzes and games</span></span>
+            {due
+              ? <span><b>{due} word{due === 1 ? '' : 's'} ready to review</b><span>About {Math.max(1, Math.round(due * 0.4))} min · keeps your streak</span></span>
+              : <span><b>Practise your words</b><span>Flashcards, quizzes and games</span></span>}
             <ChevronIcon size={20} />
           </a>
         </>

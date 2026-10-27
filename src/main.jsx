@@ -14,6 +14,11 @@ import Today from './screens/Today/Today.jsx';
 const Search = lazy(() => import('./screens/Search/Search.jsx'));
 const Words = lazy(() => import('./screens/Words/Words.jsx'));
 const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
+const Flashcards = lazy(() => import('./screens/Learn/Flashcards.jsx'));
+const Quiz = lazy(() => import('./screens/Learn/Quiz.jsx'));
+const Spell = lazy(() => import('./screens/Learn/Spell.jsx'));
+const Match = lazy(() => import('./screens/Learn/Match.jsx'));
+const Setup = lazy(() => import('./screens/Learn/Setup.jsx'));
 const Me = lazy(() => import('./screens/Me/Me.jsx'));
 const Onboarding = lazy(() => import('./screens/Onboarding/Onboarding.jsx'));
 const Challenge = lazy(() => import('./screens/Challenge/Challenge.jsx'));
@@ -33,6 +38,11 @@ function App() {
               <Route path="/search" component={Search} />
               <Route path="/words" component={Words} />
               <Route path="/learn" component={Learn} />
+              <Route path="/learn/flashcards" component={Flashcards} />
+              <Route path="/learn/quiz" component={Quiz} />
+              <Route path="/learn/spell" component={Spell} />
+              <Route path="/learn/match" component={Match} />
+              <Route path="/learn/setup" component={Setup} />
               <Route path="/me" component={Me} />
               <Route path="/welcome" component={Onboarding} />
               <Route path="/challenge" component={Challenge} />

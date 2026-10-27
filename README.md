@@ -6,7 +6,7 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
 
 ## Status
 
-**Building, phases 0 to 2 of 7 done.** It is a PWA only: people install it from the browser, with no app store.
+**Building, phases 0 to 3 of 7 done.** It is a PWA only: people install it from the browser, with no app store.
 
 - Live: https://lexiverse.ehigiatorpowell1.workers.dev (deploys from this branch on every push).
 - Run it: `npm install`, then `npm run dev`. Hosting and install steps are in [docs/DEPLOY.md](docs/DEPLOY.md).
@@ -25,7 +25,12 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
 - **Phrasebook (needs a native speaker):**
   - 25 phrases in Yoruba, Hausa, Igbo, Nigerian Pidgin and French are drafts. Please check them in [docs/PHRASE_REVIEW.md](docs/PHRASE_REVIEW.md): tick each correct line, fix wrong ones in `scripts/content/phrases.txt`, then run `node scripts/build-phrases.mjs`.
   - Until then the app labels them "to be checked by a native speaker".
-- Next: phase 3, Practise (Learn hub, flashcards, quiz, listen and spell, word match).
+- Phase 3 (practise):
+  - **Learn hub:** today's progress ring, words due, the practice tiles, setup and the weekly streak, plus "All caught up".
+  - **Practice modes:** flashcards (Forgot, Almost or Got it, keys 1 to 3), quick quiz (meaning and fill the gap), listen and spell (letter-by-letter feedback, with a hint that works without sound) and word match (keyboard friendly).
+  - **Setup:** mixed practice with listening and spelling questions.
+  - **Memory:** spaced repetition decides when each word comes back. Words of the day you meet join your reviews automatically.
+- Next: phase 4, Remember (My Words, lists, progress universe).
 - `prototype/` is the old clickable prototype, kept for reference until the real screens replace it.
 
 See [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md) for the product plan, accessibility commitments and build phases.

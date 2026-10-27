@@ -18,7 +18,7 @@ const TABS = [
 const isActive = (href, path) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
 
 // Focused flows fill the screen without the tab bar.
-const FULLSCREEN = ['/welcome', '/challenge'];
+const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup'];
 
 export function Shell({ children }) {
   const { path } = useLocation();

@@ -17,7 +17,7 @@ npm run e2e        # builds, then checks every screen at 4 widths, light and dar
 In **Workers & Pages**, click **Create**, then import this GitHub repository. Use these settings:
 
 - Project name: `lexiverse`
-- Production branch: `claude/focused-thompson-pqtsz1` (this repo's only branch for now)
+- Production branch: `main`
 - Build command: `npm run build`
 - Deploy command: `npx wrangler deploy`
 - Path: `/`

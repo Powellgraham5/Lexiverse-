@@ -8,6 +8,7 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
 
 **Building, phases 0 to 2 of 7 done.** It is a PWA only: people install it from the browser, with no app store.
 
+- Live: https://lexiverse.ehigiatorpowell1.workers.dev (deploys from this branch on every push).
 - Run it: `npm install`, then `npm run dev`. Hosting and install steps are in [docs/DEPLOY.md](docs/DEPLOY.md).
 - Phase 0 (foundations): app shell, themes with the dark-mode starfield, high contrast, reading font, text up to 200%, reduce motion, offline support and install.
 - Phase 1 (discover):

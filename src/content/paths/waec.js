@@ -4,6 +4,7 @@ const MARKET = 'Every last Saturday of the month, the traders of Oja Tuntun mark
 
 export default {
   note: 'Practice questions written for Lexiverse to help you prepare. They are not official WAEC or NECO past questions. Always check your school and the exam body for the current syllabus.',
+  guide: ['Start with “Know the exam” so you know what each paper tests.', 'Work through the units in order: lexis, comprehension and summary, essays and letters, then oral English.', 'Check letter and essay layouts in Writing formats.', 'Take the timed practice test, and save rules to your notebook.'],
   units: [
     {
       title: 'Know the exam',

@@ -1,6 +1,7 @@
 // Work and career: Emails. Practice material written for Lexiverse.
 export default {
   note: 'Lessons and practice written for Lexiverse. The automatic checks look for a subject, greeting, closing and length; they cannot judge your message, so compare it with the model email.',
+  guide: ['Start with the parts of an email, then tone and real situations.', 'Write each practice email, check it, then compare with the model.', 'Copy email templates from Writing formats.', 'Save phrases you like to your notebook.'],
   units: [
     {
       title: 'Parts of an email',

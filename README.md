@@ -35,10 +35,12 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
   - **Lists:** create, rename, change colour and icon, export as CSV, and delete with undo. The bookmark on a word page saves it to one or more lists.
   - **List detail:** sort, listen, remove with undo, and review or quiz just that list.
   - **Your universe:** streak, recall, quizzes, minutes this week (with a text version for screen readers), constellations, and the word of the day archive as a calendar or a list.
-- Learning paths (round 1):
-  - **Paths hub:** Everyday English, Exam preparation, Better writing, and Work and career each lead somewhere different. Everyday English keeps the existing daily words and practice.
-  - **Open now:** WAEC / NECO English (exam overview, lexis and structure, comprehension and summary, letters and essays, oral English), Essays (structure, essay types, linking and precise words) and Emails (parts of an email, tone, real situations). IELTS, SAT, Reports, Stories, Meetings and Interviews show as coming soon.
-  - **Lessons:** teaching cards with examples, then practice: multiple choice, fill the gap, spot the mistake, put in order and writing tasks with automatic checks and a model answer. Progress is saved on the device.
+- Learning paths:
+  - **Paths hub:** Everyday English, Exam preparation, Better writing, and Work and career each lead somewhere different, with a "How it works" line. Everyday English keeps the existing daily words and practice.
+  - **Open now (45 lessons):** WAEC / NECO English, IELTS (writing tasks 1 and 2, reading, listening with the device voice, and a timed speaking cue card), SAT Reading and Writing, Essays, Reports, Stories and Emails. Meetings, Interviews and other exams show as coming soon.
+  - **Each path:** a "How to use this path" guide, lessons (teaching cards, then multiple choice, fill the gap, spot the mistake, put in order, listening, speaking and writing tasks with automatic checks and a model answer) and a **timed practice test** with a pausable timer that can be switched off, scores and a best score.
+  - **Writing formats:** layouts, rules and common mistakes for WAEC letters, speeches and articles, IELTS tasks, the SAT question format, essays, reports, stories and emails, with Copy template and Save to notebook.
+  - **Notebook:** a Notebook tab in My Words with ruled-paper notes, autosave, search, delete with undo, and "Save to notebook" on every lesson card and format.
   - Content is practice material, not official past questions. A teacher checklist is in [docs/CONTENT_REVIEW.md](docs/CONTENT_REVIEW.md).
 - Next: phase 5, account and settings (optional sign-in and sync).
 - `prototype/` is the old clickable prototype, kept for reference until the real screens replace it.

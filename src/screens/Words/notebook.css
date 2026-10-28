@@ -1,0 +1,29 @@
+/* Notebook: a list of notes, and an editor that looks like ruled paper. */
+.nb { display: flex; flex-direction: column; gap: .875rem; }
+.nb-bar { display: flex; gap: .5rem; flex-wrap: wrap; }
+.nb-search { flex: 1 1 min(14rem, 100%); min-width: 0; }
+.nb-new { flex: none; gap: .375rem; }
+.nb-list { display: grid; gap: .625rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 1024px) { .nb-list { grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); } }
+:root[data-large-text] .nb-list { grid-template-columns: 1fr; }
+.nb-card { display: flex; flex-direction: column; gap: .25rem; min-height: 8rem; padding: 1rem 1.125rem; border-radius: 1.25rem; background: var(--lx-note-bg, var(--lx-surface)); color: var(--lx-ink); text-decoration: none; border-left: 4px solid var(--lx-coral); }
+.nb-card b { font-size: 1.0625rem; }
+.nb-snippet { font-size: .875rem; color: var(--lx-muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
+.nb-when { margin-top: auto; font-size: .75rem; font-weight: 700; color: var(--lx-muted); }
+.nb-tag { align-self: flex-start; padding: .125rem .5rem; border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-size: .75rem; font-weight: 700; color: var(--lx-link); }
+.nb-empty-icon { display: flex; align-items: center; justify-content: center; width: 5rem; height: 5rem; border-radius: 50%; background: var(--lx-note-bg, var(--lx-surface)); color: var(--lx-link); }
+
+.ne-paper {
+  --line: 2rem;
+  display: flex; flex-direction: column; gap: .5rem; padding: 1.25rem 1.25rem 1.5rem 2.25rem; border-radius: 1.25rem;
+  background: var(--lx-surface); box-shadow: inset 3px 0 0 0 var(--lx-coral), 0 8px 22px rgba(20, 18, 58, .07); position: relative;
+}
+.ne-title { border: 0; background: transparent; color: var(--lx-ink); font-family: var(--lx-font-display); font-size: 1.375rem; font-weight: 700; outline: none; padding: .25rem 0; }
+.ne-title:focus-visible, .ne-body:focus-visible { box-shadow: 0 0 0 3px var(--lx-primary-soft); border-radius: .5rem; }
+.ne-body {
+  min-height: 60vh; border: 0; resize: vertical; outline: none; color: var(--lx-ink); font: inherit; font-size: 1.0625rem;
+  line-height: var(--line); background-color: transparent;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line) - 1px), var(--lx-line) calc(var(--line) - 1px), var(--lx-line) var(--line));
+  background-attachment: local;
+}
+.ne-status { min-height: 1.25rem; font-size: .875rem; font-weight: 600; color: var(--lx-muted); }

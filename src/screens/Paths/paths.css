@@ -98,3 +98,51 @@
 .ln-path-head b { font-size: 1.125rem; }
 .ln-path-row { display: flex; gap: .5rem; flex-wrap: wrap; }
 .ln-path-row .lx-btn { flex: 1 1 12rem; }
+.ls-listen { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.ls-script { font-style: italic; }
+.ls-cue { padding: 1rem 1.125rem; border-radius: 1.25rem; line-height: 1.6; }
+.ls-cue ul { margin: .25rem 0 0; padding-left: 1.25rem; }
+.ls-timer { display: flex; flex-direction: column; align-items: center; gap: .5rem; padding: 1.25rem; border-radius: 1.5rem; background: var(--lx-surface); text-align: center; }
+.ls-timer b { font-family: var(--lx-font-display); font-size: 2.75rem; font-variant-numeric: tabular-nums; }
+.ls-timer-label { font-weight: 700; color: var(--lx-link); }
+.ls-timer-btns { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; }
+
+/* Writing formats */
+.fm-filter { display: flex; flex-wrap: wrap; gap: .5rem; }
+.fm-group { display: flex; flex-direction: column; gap: .5rem; }
+.fm-group h2 { font-size: 1.125rem; }
+.fm-list { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 1024px) { .fm-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+:root[data-large-text] .fm-list { grid-template-columns: 1fr; }
+.fm-card { border-radius: 1.25rem; overflow: hidden; }
+.fm-head { display: flex; align-items: center; gap: .75rem; width: 100%; min-height: 4rem; padding: .75rem 1rem; border: 0; background: transparent; color: var(--lx-ink); text-align: left; }
+.fm-head > span { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.fm-head > span span { font-size: .8125rem; color: var(--lx-muted); }
+.fm-chev { flex: none; color: var(--lx-muted); transform: rotate(90deg); transition: transform var(--lx-fast); }
+.fm-chev.open { transform: rotate(-90deg); }
+.fm-body { display: flex; flex-direction: column; gap: .5rem; padding: 0 1rem 1rem; }
+.fm-body h4 { font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; color: var(--lx-link); }
+.fm-template { margin: 0; padding: .875rem 1rem; border-radius: 1rem; background: var(--lx-raised); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .875rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.fm-rules { margin: 0; padding-left: 1.25rem; line-height: 1.55; }
+.fm-mistake { padding: .625rem .875rem; border-radius: .875rem; background: var(--lx-error-bg); font-size: .9375rem; line-height: 1.5; }
+.fm-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.fm-actions .lx-btn { gap: .375rem; }
+
+/* Guides */
+.pt-how { font-size: .8125rem; color: var(--lx-muted); line-height: 1.5; }
+.pt-how b { color: var(--lx-ink); }
+.pd-guide { border-radius: 1.25rem; padding: 0; }
+.pd-guide summary { display: flex; align-items: center; min-height: 3.25rem; padding: 0 1rem; font-weight: 700; cursor: pointer; }
+.pd-guide ol { margin: 0; padding: 0 1rem 1rem 2.25rem; line-height: 1.6; }
+.pd-tools { display: grid; gap: .5rem; }
+.pd-test { display: flex; align-items: center; gap: .75rem; min-height: 4rem; padding: .625rem .875rem; border-radius: 1.25rem; background: var(--lx-surface); color: var(--lx-ink); text-decoration: none; }
+.pd-test > span { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.pd-test > span span { font-size: .8125rem; color: var(--lx-muted); }
+.pd-test > svg:first-child { flex: none; color: var(--lx-link); }
+.ls-save { align-self: flex-start; }
+.fm-chip { min-height: 2.75rem; padding: 0 1rem; border: 2px solid var(--lx-line-strong); border-radius: var(--lx-radius-pill); background: var(--lx-surface); color: var(--lx-ink); font-weight: 700; }
+.fm-chip[aria-pressed="true"] { border-color: var(--lx-cta); background: var(--lx-cta); color: var(--lx-on-cta); }
+.pt-timer { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.pt-timer > span { flex: 1; font-weight: 600; }
+.pt-timer b { font-family: var(--lx-font-display); font-size: 1.375rem; font-variant-numeric: tabular-nums; }
+.pt-timer b.low { color: var(--lx-error-ink); }

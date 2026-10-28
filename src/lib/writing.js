@@ -15,7 +15,7 @@ export const words = (text) => (text.match(/[A-Za-z][A-Za-z'-]*/g) || []);
 export const paragraphs = (text) => text.split(/\n\s*\n/).map((p) => p.trim()).filter((p) => words(p).length >= 3);
 const sentences = (text) => text.split(/(?<=[.!?])\s+|\n+/).map((s) => s.trim()).filter(Boolean);
 
-// kind: 'essay' | 'letter-formal' | 'letter-informal' | 'email' | 'email-formal' | 'paragraph'
+// kind: 'essay' | 'letter-formal' | 'letter-informal' | 'email' | 'email-formal' | 'paragraph' | 'summary' | 'story' | 'report'
 // q (the task) is optional: its own words are the topic, so repeating them is not flagged.
 export function checkWriting(text, { minWords = 0, maxWords = Infinity, kind = 'paragraph', minParagraphs, subject = false, q = '' } = {}) {
   const out = [];
@@ -64,7 +64,29 @@ export function checkWriting(text, { minWords = 0, maxWords = Infinity, kind = '
       ? { ok: true, label: 'Subject line', tip: 'Your subject line says what the email is about.' }
       : { ok: false, label: 'Subject line', tip: 'Add a first line like “Subject: Request for a meeting on Friday”.' });
   }
-  if (kind === 'letter-formal' || kind === 'email-formal' || kind === 'essay') {
+  if (kind === 'story') {
+    const quotes = (text.match(/[“"]/g) || []).length;
+    if (quotes) {
+      // Speech should end with punctuation inside the closing mark: “We are late,” said Ade.
+      const outside = text.match(/[”"]\s*[,.?!]/);
+      out.push(outside
+        ? { ok: false, label: 'Dialogue punctuation', tip: 'Put the comma, full stop or question mark inside the closing quotation mark: “We are late,” said Ade.' }
+        : { ok: true, label: 'Dialogue punctuation', tip: 'Speech marks are punctuated correctly.' });
+    }
+    const starts = sentences(text).map((x) => (words(x)[0] || '').toLowerCase()).filter(Boolean);
+    const top = Object.entries(starts.reduce((m, w) => ({ ...m, [w]: (m[w] || 0) + 1 }), {})).sort((a, b) => b[1] - a[1])[0];
+    if (top && starts.length >= 4 && top[1] / starts.length > 0.5) out.push({ ok: false, label: 'Sentence openings', tip: `Most sentences start with “${top[0][0].toUpperCase()}${top[0].slice(1)}”. Vary how your sentences begin.` });
+  }
+  if (kind === 'report') {
+    const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+    const headings = lines.filter((l) => words(l).length <= 8 && !/[.!?,;:]$/.test(l));
+    out.push(headings.length >= 3
+      ? { ok: true, label: 'Headings', tip: `You used ${headings.length} headings.` }
+      : { ok: false, label: 'Headings', tip: 'Put headings such as “Introduction”, “Findings” and “Recommendations” on their own lines.' });
+    const used = LINKERS.filter((l) => new RegExp(`\\b${l}\\b`, 'i').test(lower));
+    if (used.length < 2) out.push({ ok: false, label: 'Linking words', tip: 'Connect your findings with words like “however”, “in addition” or “therefore”.' });
+  }
+  if (['letter-formal', 'email-formal', 'essay', 'report'].includes(kind)) {
     const m = text.match(CONTRACTION);
     if (m) out.push({ ok: false, label: 'Formal style', tip: `Write words in full in formal writing: “${m[0]}” is too casual.` });
   }

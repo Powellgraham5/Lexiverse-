@@ -1,184 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
-import { CheckIcon, CloseIcon, ChevronIcon } from '../../app/icons.jsx';
+import { CheckIcon, CloseIcon, PenIcon } from '../../app/icons.jsx';
+import { toast } from '../../components/toast.jsx';
+import { addNote, cardToNote } from '../../lib/notebook.js';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
 import { SessionTop } from '../Learn/SessionTop.jsx';
 import { loadPath, lessonsOf, markLessonDone } from '../../lib/paths.js';
-import { checkWriting, words } from '../../lib/writing.js';
 import { recordActivity } from '../../lib/streak.js';
-import { shuffle } from '../../lib/hash.js';
+import { VIEWS, Passage, scored } from './exercises.jsx';
 import '../../components/options.css';
 import '../Learn/practice.css';
 import './paths.css';
-
-const KEYS = 'ABCDEF';
-const scored = (x) => x.type !== 'write';
-
-// Reading passages sit behind a toggle so the question stays in view on a phone.
-function Passage({ text }) {
-  return (
-    <details class="ls-passage" open>
-      <summary>Passage</summary>
-      <p>{text}</p>
-    </details>
-  );
-}
-
-function Feedback({ ok, title, why, extra }) {
-  return (
-    <div class={`lx-feedback lx-rise ${ok ? 'right' : 'wrong'}`} role="status">
-      <b>{title}</b>
-      {extra}
-      {why && <span>{why}</span>}
-    </div>
-  );
-}
-
-function Choice({ x, onDone }) {
-  const [picked, setPicked] = useState(null);
-  const answered = picked !== null;
-  const ok = picked === x.answer;
-  const gap = x.type === 'gap';
-  return (
-    <>
-      {gap ? <h1 class="ls-q lx-rise">{x.q.split('___').map((part, i) => (i ? [<span key={i} class="ls-blank">{answered ? x.options[x.answer] : <span class="lx-sr">blank</span>}</span>, part] : part))}</h1>
-        : <h1 class="ls-q lx-rise">{x.q}</h1>}
-      <div role="group" aria-label="Answers" class={`lx-opts ${x.options.every((o) => o.length <= 40) ? 'short' : ''}`}>
-        {x.options.map((o, k) => {
-          const st = answered && k === x.answer ? 'right' : answered && k === picked ? 'wrong' : answered ? 'dim' : '';
-          return (
-            <button key={o} type="button" class={`lx-opt ${st}`} aria-disabled={answered} onClick={() => !answered && setPicked(k)}>
-              <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[k]}</span></> : KEYS[k]}</span>
-              <span>{o}</span>
-              {st === 'right' && <span class="lx-sr">, correct answer</span>}
-              {st === 'wrong' && <span class="lx-sr">, your answer, not correct</span>}
-            </button>
-          );
-        })}
-      </div>
-      {answered && <Foot><Feedback ok={ok} title={ok ? 'Brilliant!' : `Not quite. The answer is “${x.options[x.answer]}”`} why={x.why} /><Next onClick={() => onDone(ok, ok ? '' : `You chose “${x.options[picked]}”. ${x.why}`)} /></Foot>}
-    </>
-  );
-}
-
-function SpotError({ x, onDone }) {
-  const [picked, setPicked] = useState(null);
-  const answered = picked !== null;
-  const ok = picked === x.answer;
-  return (
-    <>
-      <h1 class="ls-q lx-rise">{x.q}</h1>
-      <p class="ls-hint">Tap the part of the sentence that is wrong.</p>
-      <div role="group" aria-label="Parts of the sentence" class="ls-parts">
-        {x.parts.map((part, k) => {
-          const st = answered && k === x.answer ? 'wrong-part' : answered && k === picked ? 'picked' : '';
-          return (
-            <button key={k} type="button" class={`ls-part ${st}`} aria-disabled={answered} onClick={() => !answered && setPicked(k)}>
-              <span class="lx-sr">Part {KEYS[k]}: </span>{part}
-              {answered && k === x.answer && <span class="lx-sr">, this is the mistake</span>}
-            </button>
-          );
-        })}
-      </div>
-      {answered && (
-        <Foot>
-          <Feedback ok={ok} title={ok ? 'Well spotted!' : `Not quite. The mistake is “${x.parts[x.answer]}”`}
-            extra={<span>Correct: <b>{x.fix}</b></span>} why={x.why} />
-          <Next onClick={() => onDone(ok, ok ? '' : `The mistake was “${x.parts[x.answer]}”. ${x.why}`)} />
-        </Foot>
-      )}
-    </>
-  );
-}
-
-function Order({ x, seed, onDone }) {
-  const start = useMemo(() => {
-    let s = shuffle(x.parts, seed);
-    if (s.every((p, i) => p === x.parts[i])) s = [...s.slice(1), s[0]];
-    return s;
-  }, [x]);
-  const [items, setItems] = useState(start);
-  const [checked, setChecked] = useState(false);
-  const [msg, setMsg] = useState('');
-  const ok = items.every((p, i) => p === x.parts[i]);
-  const move = (i, d) => {
-    const j = i + d;
-    if (j < 0 || j >= items.length) return;
-    const next = [...items];
-    [next[i], next[j]] = [next[j], next[i]];
-    setItems(next);
-    setMsg(`${next[j]} moved to position ${j + 1}`);
-  };
-  return (
-    <>
-      <h1 class="ls-q lx-rise">{x.q}</h1>
-      <p class="ls-hint">Use the arrows to move each part into place, then check.</p>
-      <ol class="ls-order" aria-label="Parts to put in order">
-        {items.map((p, i) => (
-          <li key={p} class={checked ? (p === x.parts[i] ? 'right' : 'wrong') : ''}>
-            <span class="ls-order-n" aria-hidden="true">{i + 1}</span>
-            <span class="ls-order-text">{p}{checked && <span class="lx-sr">{p === x.parts[i] ? ', in the right place' : ', in the wrong place'}</span>}</span>
-            {!checked && (
-              <span class="ls-order-btns">
-                <button type="button" aria-label={`Move “${p}” up`} disabled={i === 0} onClick={() => move(i, -1)}><ChevronIcon size={18} /></button>
-                <button type="button" aria-label={`Move “${p}” down`} disabled={i === items.length - 1} onClick={() => move(i, 1)}><ChevronIcon size={18} /></button>
-              </span>
-            )}
-          </li>
-        ))}
-      </ol>
-      <p class="lx-sr" aria-live="polite">{msg}</p>
-      {!checked ? <div class="ps-foot"><button type="button" class="lx-btn" onClick={() => setChecked(true)}>Check order</button></div> : (
-        <Foot>
-          <Feedback ok={ok} title={ok ? 'Perfect order!' : 'Not quite. Here is the right order:'}
-            extra={!ok && <ol class="ls-right-order">{x.parts.map((p) => <li key={p}>{p}</li>)}</ol>} why={x.why} />
-          <Next onClick={() => onDone(ok, ok ? '' : `Right order: ${x.parts.join(' → ')}.`)} />
-        </Foot>
-      )}
-    </>
-  );
-}
-
-function Write({ x, onDone }) {
-  const [text, setText] = useState('');
-  const [checks, setChecks] = useState(null);
-  const [model, setModel] = useState(false);
-  const n = words(text).length;
-  return (
-    <>
-      <span class="ps-tag lx-rise">Writing task</span>
-      <h1 class="ls-q lx-rise">{x.q}</h1>
-      <ul class="ls-checklist">{x.checklist.map((c) => <li key={c}>{c}</li>)}</ul>
-      <label for="ls-write" class="lx-sr">Your answer</label>
-      <textarea id="ls-write" class="ls-write" rows="10" value={text} placeholder="Write here…" onInput={(e) => { setText(e.currentTarget.value); setChecks(null); }} />
-      <p class="ls-count" aria-live="polite">{n} words · aim for {x.minWords} to {x.maxWords}</p>
-      <div class="ps-foot">
-        <button type="button" class="lx-btn secondary" disabled={!text.trim()} onClick={() => setChecks(checkWriting(text, x))}>Check my writing</button>
-        {checks && (
-          <section class="ls-checks lx-rise" aria-labelledby="ls-checks-h">
-            <h2 id="ls-checks-h">Automatic checks</h2>
-            <p class="ls-hint">These look at length, layout and linking words. They can’t judge your ideas, so compare with the model answer too.</p>
-            <ul>{checks.map((c) => <li key={c.label} class={c.ok ? 'ok' : 'bad'}>{c.ok ? <CheckIcon size={18} /> : <CloseIcon size={18} />}<span><b>{c.label}</b><span>{c.tip}</span></span></li>)}</ul>
-          </section>
-        )}
-        {(checks || model) && <button type="button" class="lx-btn ghost" aria-expanded={model} onClick={() => setModel(!model)}>{model ? 'Hide model answer' : 'See a model answer'}</button>}
-        {model && <div class="ls-model lx-card"><h2>Model answer</h2>{x.model.split('\n').map((line, i) => (line ? <p key={i}>{line}</p> : <br key={i} />))}</div>}
-        {checks && <Next onClick={() => onDone(null)} />}
-      </div>
-    </>
-  );
-}
-
-const Foot = ({ children }) => <div class="ps-foot">{children}</div>;
-// Continue takes focus as soon as feedback appears, so keyboard and screen reader users can go on.
-function Next({ onClick }) {
-  const ref = useRef(null);
-  // After the frame, so the Enter that chose the answer does not also press Continue.
-  useEffect(() => { const t = setTimeout(() => ref.current?.focus({ preventScroll: true }), 50); return () => clearTimeout(t); }, []);
-  return <button type="button" class="lx-btn" ref={ref} onClick={onClick}>Continue</button>;
-}
 
 export default function Lesson() {
   const { params } = useRoute();
@@ -250,6 +84,9 @@ export default function Lesson() {
             ))}
           </ul>
         )}
+        <button type="button" class="lx-btn ghost small ls-save" onClick={() => addNote(cardToNote(card, path.title))
+          .then(() => toast({ text: 'Saved to your notebook', kind: 'success', action: 'Open', onAction: () => { location.href = '/words?tab=notebook'; } }))
+          .catch(() => toast({ text: "Couldn't save the note", kind: 'error' }))}><PenIcon size={18} />Save to notebook</button>
         <div class="ps-foot">
           <button type="button" class="lx-btn" onClick={() => setStage(last ? { part: 'ex', i: 0 } : { part: 'cards', i: stage.i + 1 })}>{last ? 'Start the practice' : 'Next'}</button>
           {stage.i > 0 && <button type="button" class="lx-btn ghost" onClick={() => setStage({ part: 'cards', i: stage.i - 1 })}>Back</button>}
@@ -259,7 +96,7 @@ export default function Lesson() {
   }
 
   const x = lesson.exercises[stage.i];
-  const View = { choice: Choice, gap: Choice, error: SpotError, order: Order, write: Write }[x.type];
+  const View = VIEWS[x.type];
   return (
     <div class="ps">
       <SessionTop done={at} total={steps} label={lesson.title} closeHref={back} />

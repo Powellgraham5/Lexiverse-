@@ -70,3 +70,8 @@
 .mw-empty-orbit.small { width: min(8rem, 50%); }
 :root[data-large-text] .ld-row { flex-wrap: wrap; }
 :root[data-large-text] .ld-word { flex-basis: 100%; }
+
+.mw-tabs { display: flex; gap: .25rem; padding: .25rem; border-radius: var(--lx-radius-pill); background: var(--lx-surface); align-self: flex-start; }
+.mw-tabs button { min-height: 2.75rem; padding: 0 1.25rem; border: 0; border-radius: var(--lx-radius-pill); background: transparent; color: var(--lx-ink); font-weight: 700; }
+.mw-tabs button[aria-selected="true"] { background: var(--lx-cta); color: var(--lx-on-cta); }
+.mw-panel { display: flex; flex-direction: column; gap: 1rem; }

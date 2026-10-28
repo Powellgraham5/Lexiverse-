@@ -18,6 +18,9 @@ const Progress = lazy(() => import('./screens/Progress/Progress.jsx'));
 const Paths = lazy(() => import('./screens/Paths/Paths.jsx'));
 const PathDetail = lazy(() => import('./screens/Paths/PathDetail.jsx'));
 const Lesson = lazy(() => import('./screens/Paths/Lesson.jsx'));
+const PracticeTest = lazy(() => import('./screens/Paths/PracticeTest.jsx'));
+const Formats = lazy(() => import('./screens/Paths/Formats.jsx'));
+const Note = lazy(() => import('./screens/Words/NoteEditor.jsx'));
 const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
 const Flashcards = lazy(() => import('./screens/Learn/Flashcards.jsx'));
 const Quiz = lazy(() => import('./screens/Learn/Quiz.jsx'));
@@ -52,7 +55,10 @@ function App() {
               <Route path="/learn/setup" component={Setup} />
               <Route path="/learn/paths" component={Paths} />
               <Route path="/learn/path/:id" component={PathDetail} />
+              <Route path="/learn/path/:id/test" component={PracticeTest} />
               <Route path="/learn/path/:id/:lesson" component={Lesson} />
+              <Route path="/learn/formats" component={Formats} />
+              <Route path="/words/note/:id" component={Note} />
               <Route path="/me" component={Me} />
               <Route path="/welcome" component={Onboarding} />
               <Route path="/challenge" component={Challenge} />

@@ -5,6 +5,7 @@ import { PlusIcon, SearchIcon, CheckIcon } from '../../app/icons.jsx';
 import { toast } from '../../components/toast.jsx';
 import { ListPlanet } from '../../components/lists/ListPlanet.jsx';
 import { ListFormSheet } from '../../components/lists/ListSheets.jsx';
+import { Notebook } from './Notebook.jsx';
 import { allLists, createList, listStats } from '../../lib/lists.js';
 import { savedWords } from '../../lib/saved.js';
 import { loadReviews } from '../../lib/srs.js';
@@ -24,7 +25,8 @@ function Badge({ stats }) {
 
 export default function Words() {
   usePage('My Words');
-  const { route } = useLocation();
+  const { route, query } = useLocation();
+  const tab = query.tab === 'notebook' ? 'notebook' : 'words';
   const [data, setData] = useState(null);
   const [q, setQ] = useState('');
   const [creating, setCreating] = useState(false);
@@ -54,7 +56,26 @@ export default function Words() {
     } catch { toast({ text: "Couldn't create the list", kind: 'error' }); }
   }
 
-  if (!data) return <><h1 class="lx-page-title">My Words</h1><div class="mw-grid" aria-busy="true">{[0, 1, 2, 3].map((i) => <span key={i} class="lx-skeleton mw-sk" />)}</div></>;
+  // Words and Notebook tabs. The tab lives in the URL (?tab=notebook) so links and Back work.
+  const tabs = (
+    <div class="mw-tabs lx-rise" role="tablist" aria-label="My Words"
+      onKeyDown={(e) => { if (['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); const next = tab === 'words' ? 'notebook' : 'words'; route(next === 'notebook' ? '/words?tab=notebook' : '/words', true); setTimeout(() => document.getElementById(`mw-tab-${next}`)?.focus(), 0); } }}>
+      {[['words', 'Words'], ['notebook', 'Notebook']].map(([id, label]) => (
+        <button key={id} id={`mw-tab-${id}`} type="button" role="tab" aria-selected={tab === id} aria-controls="mw-panel" tabIndex={tab === id ? 0 : -1}
+          onClick={() => route(id === 'notebook' ? '/words?tab=notebook' : '/words', true)}>{label}</button>
+      ))}
+    </div>
+  );
+  if (tab === 'notebook') {
+    return (
+      <>
+        <div class="mw-head lx-rise"><div><h1 class="lx-page-title">My Words</h1><p class="mw-sub">Your notebook</p></div></div>
+        {tabs}
+        <div id="mw-panel" role="tabpanel" aria-labelledby="mw-tab-notebook"><Notebook /></div>
+      </>
+    );
+  }
+  if (!data) return <><h1 class="lx-page-title">My Words</h1>{tabs}<div class="mw-grid" aria-busy="true">{[0, 1, 2, 3].map((i) => <span key={i} class="lx-skeleton mw-sk" />)}</div></>;
   const total = data.saved.length;
   const recent = showAll ? data.recent : data.recent.slice(0, 5);
 
@@ -64,6 +85,8 @@ export default function Words() {
         <div><h1 class="lx-page-title">My Words</h1><p class="mw-sub">{total} word{total === 1 ? '' : 's'} in your galaxy</p></div>
         <button type="button" class="mw-add" aria-label="New list" onClick={() => setCreating(true)}><PlusIcon /></button>
       </div>
+      {tabs}
+      <div id="mw-panel" role="tabpanel" aria-labelledby="mw-tab-words" class="mw-panel">
 
       {total === 0 && data.lists.length === 0 ? (
         <section class="mw-empty lx-card lx-rise lx-d1" aria-labelledby="mw-empty-h">
@@ -126,6 +149,7 @@ export default function Words() {
           )}
         </>
       )}
+      </div>
       <ListFormSheet open={creating} onClose={() => setCreating(false)} onSave={create} />
     </>
   );

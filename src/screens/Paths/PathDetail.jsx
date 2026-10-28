@@ -1,11 +1,23 @@
 import { useEffect, useState } from 'preact/hooks';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
-import { BackIcon, CheckIcon, ChevronIcon } from '../../app/icons.jsx';
+import { BackIcon, CheckIcon, ChevronIcon, SlowIcon, PenIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
-import { loadPath, loadProgress, pathProgress, pathById } from '../../lib/paths.js';
+import { loadPath, loadProgress, pathProgress, pathById, bestTest, buildTest } from '../../lib/paths.js';
 import { CATEGORIES } from './Paths.jsx';
 import './paths.css';
+
+// Which Writing formats group fits each path.
+export const FORMAT_GROUP = { waec: 'waec', ielts: 'ielts', sat: 'sat', essays: 'writing', stories: 'writing', reports: 'writing', emails: 'emails' };
+const GUIDE_KEY = 'lx-guide-closed';
+const guideClosed = (id) => { try { return JSON.parse(localStorage.getItem(GUIDE_KEY) || '[]').includes(id); } catch { return false; } };
+function setGuideClosed(id, closed) {
+  try {
+    const list = new Set(JSON.parse(localStorage.getItem(GUIDE_KEY) || '[]'));
+    closed ? list.add(id) : list.delete(id);
+    localStorage.setItem(GUIDE_KEY, JSON.stringify([...list]));
+  } catch { /* private mode */ }
+}
 
 export default function PathDetail() {
   const { params } = useRoute();
@@ -35,6 +47,7 @@ export default function PathDetail() {
 
   const { path, progress } = state;
   const p = pathProgress(path, progress);
+  const best = bestTest(progress);
   const cat = CATEGORIES.find((c) => c.goal === path.goal);
   return (
     <>
@@ -57,6 +70,26 @@ export default function PathDetail() {
           <p class="pd-note">{path.note}</p>
         </div>
         <div class="lx-col">
+          {path.guide && (
+            <details class="pd-guide lx-card lx-rise lx-d1" open={!guideClosed(path.id)} onToggle={(e) => setGuideClosed(path.id, !e.currentTarget.open)}>
+              <summary>How to use this path</summary>
+              <ol>{path.guide.map((g) => <li key={g}>{g}</li>)}</ol>
+            </details>
+          )}
+          <div class="pd-tools lx-rise lx-d1">
+            <a class="pd-test" href={`/learn/path/${path.id}/test`}>
+              <SlowIcon />
+              <span><b>Timed practice test</b><span>{buildTest(path).length} questions · {buildTest(path).length} minutes{best ? ` · Best: ${best.score}/${best.total}` : ''}</span></span>
+              <ChevronIcon />
+            </a>
+            {FORMAT_GROUP[path.id] && (
+              <a class="pd-test" href={`/learn/formats?group=${FORMAT_GROUP[path.id]}`}>
+                <PenIcon />
+                <span><b>Writing formats</b><span>Layouts, rules and templates</span></span>
+                <ChevronIcon />
+              </a>
+            )}
+          </div>
           {path.units.map((u, ui) => (
             <section key={u.title} class="pd-unit lx-rise lx-d2" aria-labelledby={`pd-u${ui}`}>
               <h2 id={`pd-u${ui}`}><span class="pd-unit-n">Unit {ui + 1}</span>{u.title}</h2>

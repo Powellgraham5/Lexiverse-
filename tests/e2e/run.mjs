@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/ielts', 'path-soon'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/meetings', 'path-soon'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -94,7 +94,7 @@ for (const [w, h] of WIDTHS) {
       if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
       if (route.startsWith('/word/serendipity')) await page.waitForSelector('.wd-lang-result p', { timeout: 5000 }).catch(() => {});
       if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
-      if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero', { timeout: 8000 }).catch(() => {});
+      if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero, .pt-cat, .pd-lesson, .ps-tag, .fm-card', { timeout: 8000 }).catch(() => {});
       await settle(page);
       await page.screenshot({ path: `${SHOTS}${name}-${w}-${theme}.png`, fullPage: true });
       await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
@@ -115,7 +115,7 @@ for (const [w, h] of [[1280, 800], [1920, 1080]]) {
     if (route.includes('q=')) await page.waitForSelector('.sr-rows:not([aria-busy]), .sr-state, .lx-error-card, .sr-section h2', { timeout: 5000 }).catch(() => {});
     if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
     if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
-    if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero', { timeout: 8000 }).catch(() => {});
+    if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero, .pt-cat, .pd-lesson, .ps-tag, .fm-card', { timeout: 8000 }).catch(() => {});
     await settle(page);
     await page.screenshot({ path: `${SHOTS}${name}-${w}-light.png`, fullPage: true });
     await check(`${name} ${w}px: no overflow`, async () => assert.deepEqual(await overflow(page), []));
@@ -937,7 +937,7 @@ await check('paths: four categories, each with its own destination', async () =>
   assert.equal(new Set(Object.values(titles)).size, 3, 'each path is different');
   await p.goto(BASE + '/learn/paths');
   assert.equal(await p.locator('.pt-row.soon a, a.pt-row.soon').count(), 0, 'coming-soon items are not links');
-  assert.ok(await p.locator('.pt-row.soon:has-text("IELTS")').count());
+  assert.ok(await p.locator('.pt-row.soon:has-text("Meetings")').count());
   await c.close();
 });
 
@@ -948,10 +948,10 @@ await check('paths: a full WAEC lesson by keyboard, then progress shows', async 
   await p.waitForSelector('h1:text("Find the real subject")');
   assert.ok(!(await p.isVisible('.lx-nav')), 'lessons are full screen');
   for (const heading of ['Each, every, one of', 'Either … or, neither … nor']) {
-    await p.focus('button:text("Next")'); await p.keyboard.press('Enter');
+    await p.click('.ps-foot button:text-is("Next")');
     await p.waitForSelector(`h1:text("${heading}")`);
   }
-  await p.focus('button:text("Start the practice")'); await p.keyboard.press('Enter');
+  await p.click('button:text("Start the practice")');
   // 1: gap, answer "is" (right). 2: "has". 3: wrong on purpose ("was"). 4: "lives". 5: error part "are". 6: "is".
   const pick = async (text) => { const b = p.locator(`.lx-opt:has-text("${text}")`).first(); await b.focus(); await p.keyboard.press('Enter'); await p.waitForSelector('.lx-feedback'); await p.waitForFunction(() => document.activeElement?.textContent === 'Continue'); await p.keyboard.press('Enter'); };
   await p.waitForSelector('.ls-blank'); await pick('is');
@@ -1068,6 +1068,166 @@ await check('paths: screens with progress pass overflow, axe and 200% text', asy
       await c.close();
     }
   }
+});
+
+
+// Round 2: guides, formats, notebook and timed tests
+await check('guides: every category and path explains how to use it', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/paths');
+  await p.waitForSelector('.pt-cat');
+  assert.equal(await p.locator('.pt-cat .pt-how').count(), 4);
+  for (const id of ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'emails']) {
+    await p.goto(BASE + `/learn/path/${id}`);
+    await p.waitForSelector('.pd-guide li');
+    assert.ok(await p.isVisible('a.pd-test:has-text("Timed practice test")'), `${id} has a test`);
+    assert.ok(await p.isVisible('a.pd-test:has-text("Writing formats")'), `${id} links to formats`);
+  }
+  await p.click('.pd-guide summary');
+  await p.reload();
+  await p.waitForSelector('.pd-guide');
+  assert.equal(await p.getAttribute('.pd-guide', 'open'), null, 'closed guide stays closed');
+  await c.close();
+});
+
+await check('formats: open a layout, copy it, save it to the notebook and find it there', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 }, permissions: ['clipboard-read', 'clipboard-write'] });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/paths');
+  await p.click('a.pd-test:has-text("Writing formats")');
+  await p.waitForURL('**/learn/formats');
+  await p.click('.fm-chip:text("IELTS")');
+  assert.equal(await p.locator('.fm-group').count(), 1);
+  await p.click('.fm-head:has-text("Writing Task 2")');
+  await p.waitForSelector('.fm-template');
+  assert.match(await p.textContent('.fm-template'), /Introduction: paraphrase the question/);
+  await p.click('button:text("Copy template")');
+  await p.waitForSelector('.lx-toast:has-text("Template copied")');
+  assert.match(await p.evaluate(() => navigator.clipboard.readText()), /Body paragraph 1/);
+  await p.click('button:text("Save to notebook")');
+  await p.waitForSelector('.lx-toast:has-text("Saved to your notebook")');
+  await p.goto(BASE + '/words?tab=notebook');
+  await p.waitForSelector('.nb-card:has-text("Writing Task 2")');
+  await c.close();
+});
+
+await check('notebook: write, autosave, reload, search, delete and undo; tabs work by keyboard', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/words');
+  await p.waitForSelector('[role=tab][aria-selected=true]:text("Words")');
+  await p.focus('[role=tab]:text("Words")');
+  await p.keyboard.press('ArrowRight');
+  await p.waitForURL('**/words?tab=notebook');
+  await p.waitForFunction(() => document.activeElement?.id === 'mw-tab-notebook');
+  await p.waitForSelector('h2:text("Your notebook is empty")');
+  await p.click('button:text("Write your first note")');
+  await p.waitForURL('**/words/note/*');
+  await p.fill('#ne-title', 'Concord rules');
+  await p.fill('#ne-body', 'Each and every take a singular verb.\nNeither ... nor: the verb agrees with the nearer subject.');
+  await p.waitForSelector('.ne-status:text("Saved")');
+  const url = p.url();
+  await p.reload();
+  await p.waitForFunction(() => document.querySelector('#ne-body')?.value.includes('nearer subject'));
+  assert.equal(await p.inputValue('#ne-title'), 'Concord rules');
+  await p.goto(BASE + '/words?tab=notebook');
+  await p.fill('#nb-q', 'nearer');
+  await p.waitForSelector('.nb-card:has-text("Concord rules")');
+  await p.fill('#nb-q', 'zzz');
+  await p.waitForSelector('.mw-none');
+  await p.goto(url);
+  await p.click('button[aria-label="Delete note"]');
+  await p.waitForURL('**/words?tab=notebook');
+  await p.click('.lx-toast button:text("Undo")');
+  await p.waitForURL(url);
+  await p.waitForFunction(() => document.querySelector('#ne-title')?.value === 'Concord rules');
+  await c.close();
+});
+
+await check('lessons: save a teaching card to the notebook', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/sat/sat-punctuation');
+  await p.waitForSelector('h1:text("Two complete sentences")');
+  await p.click('button:text("Save to notebook")');
+  await p.waitForSelector('.lx-toast:has-text("Saved to your notebook")');
+  await p.goto(BASE + '/words?tab=notebook');
+  await p.waitForSelector('.nb-card:has-text("Two complete sentences"):has-text("SAT")');
+  await c.close();
+});
+
+// A context whose timers are under test control (clock.install), for timed tests.
+async function clockContext() {
+  const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } });
+  await ctx.clock.install({ time: FIXED_NOW });
+  await mockApis(ctx);
+  await ctx.addInitScript((pr) => localStorage.setItem('lx-profile', JSON.stringify(pr)), PROFILE);
+  return ctx;
+}
+
+await check('timed test: countdown, pause, timer off, and time running out', async () => {
+  let c = await clockContext();
+  let p = await c.newPage();
+  await p.goto(BASE + '/learn/path/sat/test');
+  await p.click('button:text("Start the test")');
+  await p.waitForSelector('[role=timer]:has-text("10:00")');
+  await c.clock.runFor(5000);
+  await p.waitForSelector('[role=timer]:has-text("9:55")');
+  await p.click('button:text("Pause")');
+  await p.waitForSelector('h1:text("Paused")');
+  await c.clock.runFor(5000);
+  await p.click('.ps-empty button:text("Resume")');
+  await p.waitForSelector('[role=timer]:has-text("9:55")');
+  await p.locator('.lx-opt').first().click();
+  await p.click('button:text("Continue")');
+  await c.clock.runFor(10 * 60 * 1000);
+  await p.waitForSelector('h1:text("Time is up!")');
+  assert.match(await p.textContent('.rs-missed'), /Not answered in time/);
+  await p.goto(BASE + '/learn/path/sat');
+  await p.waitForSelector('a.pd-test:has-text("Best:")');
+  await c.close();
+
+  c = await clockContext();
+  p = await c.newPage();
+  await p.goto(BASE + '/learn/path/emails/test');
+  await p.click('button:text("Start the test")');
+  await p.click('button:text("Turn off timer")');
+  await p.waitForSelector('.pt-timer:has-text("Timer off")');
+  assert.equal(await p.locator('[role=timer]').count(), 0);
+  await c.clock.runFor(30 * 60 * 1000);
+  assert.ok(!(await p.isVisible('h1:text("Time is up!")')), 'no time limit once the timer is off');
+  for (let i = 0; i < 10; i++) {
+    if (await p.isVisible('h1:text("Test complete!")')) break;
+    await p.locator('.lx-opt, .ls-part').first().click();
+    await p.click('button:text("Continue")');
+  }
+  await p.waitForSelector('h1:text("Test complete!")');
+  await c.close();
+});
+
+await check('IELTS: listening plays the script and the speaking cue card counts down', async () => {
+  const c = await clockContext();
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/ielts/ielts-listening');
+  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await p.click('button[aria-label="Play the recording"]');
+  await p.waitForFunction(() => window.__spoken.some((x) => x.text.includes('Greenfield Sports Centre')));
+  await p.click('button:text("Read the transcript")');
+  await p.waitForSelector('.ls-script:has-text("Thursday evenings")');
+  await p.click('.lx-opt:has-text("Thursday, 6.30")');
+  await p.waitForSelector('.lx-feedback:has-text("Brilliant")');
+  await p.goto(BASE + '/learn/path/ielts/ielts-speaking');
+  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 2; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
+  await p.click('button:text("Start: 1:00 to prepare")');
+  await p.waitForSelector('[role=timer]:has-text("1:00")');
+  await c.clock.runFor(61000);
+  await p.waitForSelector('[role=timer]:has-text("Speak now")');
+  await c.clock.runFor(121000);
+  await p.waitForSelector('.lx-feedback:has-text("Check yourself")');
+  await c.close();
 });
 
 await check('manifest is valid and installable', async () => {

@@ -953,7 +953,7 @@ await check('paths: a full WAEC lesson by keyboard, then progress shows', async 
   }
   await p.click('button:text("Start the practice")');
   // 1: gap, answer "is" (right). 2: "has". 3: wrong on purpose ("was"). 4: "lives". 5: error part "are". 6: "is".
-  const pick = async (text) => { const b = p.locator(`.lx-opt:has-text("${text}")`).first(); await b.focus(); await p.keyboard.press('Enter'); await p.waitForSelector('.lx-feedback'); await p.waitForFunction(() => document.activeElement?.textContent === 'Continue'); await p.keyboard.press('Enter'); };
+  const pick = async (text) => { await p.waitForFunction(() => document.activeElement?.tagName === 'H1'); const b = p.locator(`.lx-opt:has-text("${text}")`).first(); await b.focus(); await p.keyboard.press('Enter'); await p.waitForSelector('.lx-feedback'); await p.waitForFunction(() => document.activeElement?.textContent === 'Continue'); await p.keyboard.press('Enter'); };
   await p.waitForSelector('.ls-blank'); await pick('is');
   await p.waitForSelector('h1:has-text("Each of the students")'); await pick('has');
   await p.waitForSelector('h1:has-text("Neither the principal")'); await pick('was');

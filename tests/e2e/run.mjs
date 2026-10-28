@@ -1085,6 +1085,7 @@ await check('guides: every category and path explains how to use it', async () =
     assert.ok(await p.isVisible('a.pd-test:has-text("Writing formats")'), `${id} links to formats`);
   }
   await p.click('.pd-guide summary');
+  await p.waitForFunction(() => (localStorage.getItem('lx-guide-closed') || '').includes('emails'));
   await p.reload();
   await p.waitForSelector('.pd-guide');
   assert.equal(await p.getAttribute('.pd-guide', 'open'), null, 'closed guide stays closed');

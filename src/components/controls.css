@@ -10,7 +10,8 @@
 .lx-setting-text span { font-size: .875rem; color: var(--lx-muted); }
 
 .lx-seg { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: var(--lx-radius-pill); background: var(--lx-raised); }
-.lx-seg.stretch button { flex: 1; }
+.lx-seg.stretch { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.lx-seg.stretch button { flex: 1; min-width: 0; }
 .lx-seg button {
   min-height: 2.75rem; padding: 0 .875rem; border: 0; border-radius: var(--lx-radius-pill);
   background: transparent; font-weight: 700;
@@ -39,4 +40,5 @@
 .lx-setting input[type="range"] { width: 100%; height: 2rem; accent-color: var(--lx-primary); }
 /* Large text: options wrap onto several rows, so the group becomes a rounded panel, not a pill. */
 :root[data-large-text] .lx-seg { border-radius: 1.25rem; }
+:root[data-large-text] .lx-seg.stretch { grid-auto-flow: row; }
 :root[data-large-text] .lx-seg button { flex: 1 1 auto; }

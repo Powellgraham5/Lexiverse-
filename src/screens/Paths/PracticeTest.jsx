@@ -25,7 +25,10 @@ export default function PracticeTest() {
       .then(([p, prog]) => { setPath(p); setBest(bestTest(prog)); }).catch(() => setPath(null));
   }, [params.id]);
   usePage(path ? `${path.title}: practice test` : 'Practice test');
-  const items = useMemo(() => (path ? buildTest(path) : []), [path]);
+  // Each attempt shuffles anew, so a retake is not the same sequence of questions.
+  const [attempt, setAttempt] = useState(0);
+  const items = useMemo(() => (path ? buildTest(path, 10, `test${attempt}`) : []), [path, attempt]);
+  const picked = useRef({});
   const [phase, setPhase] = useState('intro'); // intro | run | done
   const [i, setI] = useState(0);
   const [log, setLog] = useState([]);
@@ -47,7 +50,11 @@ export default function PracticeTest() {
   }, [timer?.left]);
 
   async function finish(entries, timedOut = false) {
-    const all = [...entries, ...items.slice(entries.length).map((x) => ({ ok: false, word: x.q, detail: 'Not answered in time.', link: false }))];
+    // An answer picked but not yet continued past still counts when time runs out.
+    const all = [...entries, ...items.slice(entries.length).map((x, k) => {
+      const a = picked.current[entries.length + k];
+      return a ? { ...a, word: x.q, link: false } : { ok: false, word: x.q, detail: 'Not answered in time.', link: false };
+    })];
     setLog(all);
     setPhase('done');
     const score = all.filter((e) => e.ok).length;
@@ -63,7 +70,9 @@ export default function PracticeTest() {
     if (i + 1 >= items.length) finish(entries);
     else setI(i + 1);
   }
-  function start() {
+  function start(again = false) {
+    if (again) setAttempt((n) => n + 1);
+    picked.current = {};
     started.current = Date.now();
     setLog([]); setI(0);
     setTimer(TIMER.start(items.length * SECS_PER_QUESTION));
@@ -86,7 +95,7 @@ export default function PracticeTest() {
         </ul>
         {best && <p class="pt-sub">Your best so far: {best.score}/{best.total}</p>}
         <p class="pd-note">{path.note}</p>
-        <div class="ps-foot"><button type="button" class="lx-btn" onClick={start}>Start the test</button></div>
+        <div class="ps-foot"><button type="button" class="lx-btn" onClick={() => start()}>Start the test</button></div>
       </div>
     );
   }
@@ -98,7 +107,7 @@ export default function PracticeTest() {
       <div class="ps">
         <p class="lx-sr" aria-live="assertive">{say}</p>
         <Results title={say === 'Time is up' ? 'Time is up!' : 'Test complete!'} score={score} total={items.length} unit="correct"
-          missed={log.filter((e) => !e.ok)} onRetry={start} retryLabel="Take it again" doneHref={back} doneLabel="Back to the path"
+          missed={log.filter((e) => !e.ok)} onRetry={() => start(true)} retryLabel="Take it again" doneHref={back} doneLabel="Back to the path"
           extra={<p class="rs-sub">Time taken: {mmss(secs)}{best ? ` · Previous best: ${best.score}/${best.total}` : ''}</p>} />
       </div>
     );
@@ -121,7 +130,7 @@ export default function PracticeTest() {
         <>
           <span class="ps-tag lx-rise">Question {i + 1} of {items.length}</span>
           {x.passage && <Passage text={x.passage} />}
-          <View key={x.key} x={x} seed={x.key} onDone={onDone} />
+          <View key={x.key} x={x} seed={x.key} onDone={onDone} onAnswer={(ok, detail) => { picked.current[i] = { ok, detail }; }} />
         </>
       )}
     </div>

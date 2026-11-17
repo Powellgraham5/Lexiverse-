@@ -99,3 +99,37 @@ img, svg { display: block; }
 /* 200% text: never squeeze text into two columns. */
 :root[data-large-text] .lx-split { display: flex; }
 :root[data-large-text] .lx-sticky { position: static; }
+
+/* Shared page pieces used across screens (top bar, round buttons, search box, progress bar,
+   empty states, skeletons). They live here so every screen has them on a fresh load. */
+.lx-search { display: flex; align-items: center; gap: .625rem; padding: 0 1rem; min-height: 3.25rem; border-radius: var(--lx-radius-pill); background: var(--lx-surface); }
+.lx-search svg { flex: none; color: var(--lx-muted); }
+.lx-search input { flex: 1; min-width: 0; border: 0; background: transparent; font-size: 1rem; outline: none; }
+.lx-search:focus-within { box-shadow: 0 0 0 3px var(--lx-primary); }
+.lx-bar { display: block; width: 100%; height: 6px; margin-top: auto; border-radius: 999px; background: var(--lx-line); overflow: hidden; }
+.lx-bar span { display: block; height: 100%; border-radius: 999px; }
+.lx-sk { height: 10.5rem; border-radius: 1.5rem; }
+.lx-none { color: var(--lx-muted); }
+.lx-empty { display: flex; flex-direction: column; align-items: center; gap: .875rem; padding: 2rem 1.25rem; text-align: center; }
+.lx-empty h2 { font-size: 1.25rem; }
+.lx-empty p { color: var(--lx-muted); max-width: 28rem; }
+.lx-empty .lx-btn { width: 100%; max-width: 22rem; }
+@keyframes mw-spin { to { transform: rotate(360deg); } }
+@keyframes mw-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.lx-empty-orbit { position: relative; width: min(12rem, 70%); aspect-ratio: 1; }
+.lx-empty-orbit .ring { position: absolute; inset: 0; border-radius: 50%; border: 2px dashed var(--lx-orbit); animation: mw-spin 30s linear infinite; }
+.lx-empty-orbit .moon { position: absolute; left: 50%; top: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: var(--lx-coral); }
+.lx-empty-orbit .core { position: absolute; inset: 32%; border-radius: 50%; border: 3px dashed var(--lx-primary); animation: mw-float 4s ease-in-out infinite; }
+.lx-empty-orbit.small { width: min(8rem, 50%); }
+.lx-top { display: flex; justify-content: space-between; align-items: center; }
+.lx-round { display: flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border: 0; border-radius: 50%; background: var(--lx-surface); color: var(--lx-ink); }
+.lx-bar span { background: var(--lx-primary); }
+/* Forced colours drop box-shadows, so the search box gets a real outline there. */
+.lx-search { outline: 2px solid transparent; outline-offset: 2px; }
+@media (forced-colors: active) { .lx-search:focus-within { outline-color: Highlight; } }
+/* While a sheet is open the page behind it does not scroll, and scrolling inside the sheet
+   never spills over to the page. */
+html:has(dialog[open]) { overflow: hidden; }
+.lx-sheet, .lx-sheet-body { overscroll-behavior: contain; }
+/* A tall sticky column scrolls with the page instead (see Shell). */
+.lx-sticky.lx-nostick { position: static; }

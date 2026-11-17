@@ -73,3 +73,10 @@
     border-radius: 50%; border: 2px dashed var(--lx-orbit); opacity: .3; pointer-events: none;
   }
 }
+
+/* Phones turned sideways have little height: a slimmer tab bar leaves more room for content. */
+@media (max-height: 500px) and (max-width: 899px) {
+  .lx-nav { bottom: calc(8px + env(safe-area-inset-bottom)); padding: 4px; border-radius: 22px; }
+  .lx-nav a { min-height: 44px; padding-block: 2px; }
+  #main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+}

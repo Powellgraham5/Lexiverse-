@@ -56,14 +56,14 @@ export default function ListDetail() {
 
   if (missing) {
     return (
-      <section class="mw-empty lx-card" aria-labelledby="ld-gone">
+      <section class="lx-empty lx-card" aria-labelledby="ld-gone">
         <h1 id="ld-gone" class="lx-page-title">This list isn't here</h1>
         <p>It may have been deleted on this device. Your saved words are still in My Words.</p>
         <a class="lx-btn" href="/words">Open My Words</a>
       </section>
     );
   }
-  if (!list || !words) return <div aria-busy="true"><h1 class="lx-sr">List</h1><span class="lx-skeleton mw-sk" /></div>;
+  if (!list || !words) return <div aria-busy="true"><h1 class="lx-sr">List</h1><span class="lx-skeleton lx-sk" /></div>;
 
   const stats = listStats(words.map((w) => w.id), reviews);
   const real = id !== 'saved';
@@ -110,9 +110,9 @@ export default function ListDetail() {
 
   return (
     <>
-      <div class="ld-top">
-        <a class="ld-round" href="/words" aria-label="Back to My Words"><BackIcon /></a>
-        {real && <button type="button" class="ld-round" aria-label="List options" aria-haspopup="dialog" onClick={() => setSheet('options')}><MoreIcon /></button>}
+      <div class="lx-top">
+        <a class="lx-round" href="/words" aria-label="Back to My Words"><BackIcon /></a>
+        {real && <button type="button" class="lx-round" aria-label="List options" aria-haspopup="dialog" onClick={() => setSheet('options')}><MoreIcon /></button>}
       </div>
 
       <div class="lx-split">
@@ -121,7 +121,7 @@ export default function ListDetail() {
             <ListPlanet list={list} size={88} />
             <h1 class="lx-page-title">{list.name}</h1>
             <p class="mw-sub">{stats.count} word{stats.count === 1 ? '' : 's'} · {stats.known}% known{stats.due ? ` · ${stats.due} due` : ''}</p>
-            <span class="mw-bar ld-bar" aria-hidden="true"><span style={{ width: `${stats.known}%`, background: list.colour }} /></span>
+            <span class="lx-bar ld-bar" aria-hidden="true"><span style={{ width: `${stats.known}%`, background: list.colour }} /></span>
           </header>
           {stats.count > 0 && (
             <div class="ld-actions lx-rise lx-d1">
@@ -133,8 +133,8 @@ export default function ListDetail() {
 
         <div class="lx-col">
           {stats.count === 0 ? (
-            <section class="mw-empty lx-card lx-rise lx-d1" aria-labelledby="ld-empty">
-              <div class="mw-empty-orbit small" aria-hidden="true"><span class="ring"><span class="moon" /></span><span class="core" /></div>
+            <section class="lx-empty lx-card lx-rise lx-d1" aria-labelledby="ld-empty">
+              <div class="lx-empty-orbit small" aria-hidden="true"><span class="ring"><span class="moon" /></span><span class="core" /></div>
               <h2 id="ld-empty">No words in this list yet</h2>
               <p>Open any word and tap the bookmark, then pick this list.</p>
               <a class="lx-btn" href="/search"><SearchIcon />Find words</a>

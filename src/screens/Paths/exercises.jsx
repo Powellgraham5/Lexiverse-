@@ -9,7 +9,9 @@ import '../../components/options.css';
 import '../Learn/practice.css';
 import './paths.css';
 
-// Exercise views shared by lessons and timed practice tests. Each calls onDone(ok, detail);
+// Exercise views shared by lessons and timed practice tests. Each calls onDone(ok, detail) when the
+// learner moves on, and onAnswer(ok, detail) as soon as an answer is picked (a timed test counts it
+// even if time runs out before Continue);
 // ok is null for tasks that are not scored (writing, speaking).
 const KEYS = 'ABCDEF';
 export const scored = (x) => !['write', 'speak'].includes(x.type);
@@ -34,7 +36,7 @@ function Feedback({ ok, title, why, extra }) {
   );
 }
 
-function Choice({ x, onDone }) {
+function Choice({ x, onDone, onAnswer }) {
   const [picked, setPicked] = useState(null);
   const answered = picked !== null;
   const ok = picked === x.answer;
@@ -47,7 +49,7 @@ function Choice({ x, onDone }) {
         {x.options.map((o, k) => {
           const st = answered && k === x.answer ? 'right' : answered && k === picked ? 'wrong' : answered ? 'dim' : '';
           return (
-            <button key={o} type="button" class={`lx-opt ${st}`} aria-disabled={answered} onClick={() => !answered && setPicked(k)}>
+            <button key={o} type="button" class={`lx-opt ${st}`} aria-disabled={answered} onClick={() => { if (answered) return; setPicked(k); onAnswer?.(k === x.answer, k === x.answer ? '' : `You chose “${x.options[k]}”. ${x.why}`); }}>
               <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[k]}</span></> : KEYS[k]}</span>
               <span>{o}</span>
               {st === 'right' && <span class="lx-sr">, correct answer</span>}
@@ -61,7 +63,7 @@ function Choice({ x, onDone }) {
   );
 }
 
-function SpotError({ x, onDone }) {
+function SpotError({ x, onDone, onAnswer }) {
   const [picked, setPicked] = useState(null);
   const answered = picked !== null;
   const ok = picked === x.answer;
@@ -73,7 +75,7 @@ function SpotError({ x, onDone }) {
         {x.parts.map((part, k) => {
           const st = answered && k === x.answer ? 'wrong-part' : answered && k === picked ? 'picked' : '';
           return (
-            <button key={k} type="button" class={`ls-part ${st}`} aria-disabled={answered} onClick={() => !answered && setPicked(k)}>
+            <button key={k} type="button" class={`ls-part ${st}`} aria-disabled={answered} onClick={() => { if (answered) return; setPicked(k); onAnswer?.(k === x.answer, k === x.answer ? '' : `The mistake was “${x.parts[x.answer]}”. ${x.why}`); }}>
               <span class="lx-sr">Part {KEYS[k]}: </span>{part}
               {answered && k === x.answer && <span class="lx-sr">, this is the mistake</span>}
             </button>
@@ -153,7 +155,11 @@ function Write({ x, onDone }) {
       <textarea id="ls-write" class="ls-write" rows="10" value={text} placeholder="Write here…" onInput={(e) => { setText(e.currentTarget.value); setChecks(null); }} />
       <p class="ls-count" aria-live="polite">{n} words · aim for {x.minWords} to {x.maxWords}</p>
       <div class="ps-foot">
-        <button type="button" class="lx-btn secondary" disabled={!text.trim()} onClick={() => setChecks(checkWriting(text, x))}>Check my writing</button>
+        <button type="button" class="lx-btn secondary" disabled={!text.trim()} onClick={() => {
+          setChecks(checkWriting(text, x));
+          // Move to the results so screen reader users hear the feedback before Continue.
+          setTimeout(() => { const h = document.getElementById('ls-checks-h'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }, 0);
+        }}>Check my writing</button>
         {checks && (
           <section class="ls-checks lx-rise" aria-labelledby="ls-checks-h">
             <h2 id="ls-checks-h">Automatic checks</h2>
@@ -163,7 +169,7 @@ function Write({ x, onDone }) {
         )}
         {(checks || model) && <button type="button" class="lx-btn ghost" aria-expanded={model} onClick={() => setModel(!model)}>{model ? 'Hide model answer' : 'See a model answer'}</button>}
         {model && <div class="ls-model lx-card"><h2>Model answer</h2>{x.model.split('\n').map((line, i) => (line ? <p key={i}>{line}</p> : <br key={i} />))}</div>}
-        {checks && <Next onClick={() => onDone(null)} />}
+        {checks && <Next onClick={() => onDone(null)} focus={false} />}
       </div>
     </>
   );
@@ -171,16 +177,16 @@ function Write({ x, onDone }) {
 
 const Foot = ({ children }) => <div class="ps-foot">{children}</div>;
 // Continue takes focus as soon as feedback appears, so keyboard and screen reader users can go on.
-function Next({ onClick }) {
+function Next({ onClick, focus = true }) {
   const ref = useRef(null);
   // After the frame, so the Enter that chose the answer does not also press Continue.
-  useEffect(() => { const t = setTimeout(() => ref.current?.focus({ preventScroll: true }), 50); return () => clearTimeout(t); }, []);
+  useEffect(() => { if (!focus) return undefined; const t = setTimeout(() => ref.current?.focus({ preventScroll: true }), 50); return () => clearTimeout(t); }, []);
   return <button type="button" class="lx-btn" ref={ref} onClick={onClick}>Continue</button>;
 }
 
 // Listening: the device voice reads a short script, then a choice question. A transcript is
 // always available, so deaf and hard-of-hearing learners can still do the exercise.
-function Listen({ x, onDone }) {
+function Listen({ x, onDone, onAnswer }) {
   const [played, setPlayed] = useState(0);
   const [script, setScript] = useState(!canSpeak());
   useEffect(() => () => stopSpeaking(), []);
@@ -196,7 +202,7 @@ function Listen({ x, onDone }) {
       {!canSpeak() && <p class="ls-hint">Your device has no voice, so the transcript is shown.</p>}
       {played > 0 && <p class="ls-hint">Played {played} time{played === 1 ? '' : 's'}. In the real test you hear it once.</p>}
       {script && <p class="ls-passage ls-script">{x.script}</p>}
-      <Choice x={{ ...x, type: 'choice' }} onDone={onDone} />
+      <Choice x={{ ...x, type: 'choice' }} onDone={onDone} onAnswer={onAnswer} />
     </>
   );
 }
@@ -217,8 +223,8 @@ function Speak({ x, onDone }) {
   }, [phase, paused]);
   useEffect(() => {
     if (left > 0) { if (left === 10) setSay('10 seconds left'); return; }
-    if (phase === 'prep') { setPhase('talk'); setLeft(x.talk || 120); setSay('Start speaking now'); }
-    else if (phase === 'talk') { setPhase('done'); setSay('Time is up'); }
+    if (phase === 'prep') { setPaused(false); setPhase('talk'); setLeft(x.talk || 120); setSay('Start speaking now'); }
+    else if (phase === 'talk') { setPaused(false); setPhase('done'); setSay('Time is up'); }
   }, [left]);
   return (
     <>

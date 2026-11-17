@@ -29,16 +29,56 @@ onDeviceVoice(() => {
   toast({ text: "Can't hear it? Turn off silent mode (the switch on the side of your iPhone) to hear the device voice." });
 });
 
+// Scroll memory for Back and Forward: positions are saved per URL as the learner scrolls.
+const scrollPositions = new Map();
+let cameBack = false;
+let backY = 0;
+if (typeof window !== 'undefined') {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // Read the saved position at once: while the page swaps, scroll events would overwrite it.
+  addEventListener('popstate', () => { cameBack = true; backY = scrollPositions.get(location.pathname + location.search) || 0; });
+  let pending = false;
+  addEventListener('scroll', () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => { pending = false; scrollPositions.set(location.pathname + location.search, scrollY); });
+  }, { passive: true });
+}
+// Content often loads after the route changes, so retry until the page is tall enough (up to 1.5 s).
+function restoreScroll(y) {
+  const until = Date.now() + 1500;
+  const step = () => {
+    scrollTo(0, y);
+    if (Math.abs(scrollY - y) > 2 && Date.now() < until) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 export function Shell({ children }) {
   const { path } = useLocation();
   const bare = FULLSCREEN.includes(path) || /^\/learn\/path\/[^/]+\/[^/]+$/.test(path);
   const first = useRef(true);
 
-  // After in-app navigation the new screen focuses its heading (see usePage) and the page starts at the top.
+  // Forward navigation starts the new screen at the top and focuses its heading (see usePage).
+  // Back and Forward return to where the learner was on that screen, without moving focus.
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    requestHeadingFocus();
-    scrollTo(0, 0);
+    if (cameBack) {
+      cameBack = false;
+      restoreScroll(backY);
+    } else {
+      requestHeadingFocus();
+      scrollTo(0, 0);
+    }
+  }, [path]);
+
+  // Sticky side columns on wide screens only stick when they fit the window; a taller column
+  // scrolls with the page so none of it is ever out of reach.
+  useEffect(() => {
+    const fit = () => document.querySelectorAll('.lx-sticky').forEach((el) => el.classList.toggle('lx-nostick', el.offsetHeight > innerHeight - 64));
+    const timers = [setTimeout(fit, 300), setTimeout(fit, 1200)];
+    addEventListener('resize', fit);
+    return () => { timers.forEach(clearTimeout); removeEventListener('resize', fit); };
   }, [path]);
 
   return (
@@ -62,7 +102,7 @@ export function Shell({ children }) {
             ))}
           </ul>
         </nav>}
-        <main id="main">
+        <main id="main" tabIndex={-1}>
           <OfflineBanner />
           {children}
         </main>

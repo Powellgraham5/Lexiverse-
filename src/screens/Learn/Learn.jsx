@@ -30,7 +30,7 @@ function PathCard() {
       <section class="ln-path lx-card lx-rise lx-d1" aria-labelledby="ln-path-h">
         <div class="ln-path-head"><span><small>Learning paths</small><b id="ln-path-h">Step-by-step lessons</b></span></div>
         <p class="pt-sub">Exams, writing and work English, with lessons and practice.</p>
-        <div class="ln-path-row"><a class="lx-btn secondary" href="/learn/paths">Explore learning paths</a></div>
+        <div class="ln-path-row"><a class="lx-btn" href="/learn/paths">Explore learning paths</a></div>
       </section>
     );
   }
@@ -41,7 +41,7 @@ function PathCard() {
         <span><small>Your path</small><b id="ln-path-h">{path.title}</b></span>
         <span class="pt-soon">{p.done}/{p.total}</span>
       </div>
-      <span class="mw-bar" aria-hidden="true"><span style={{ width: `${p.percent}%`, background: 'var(--lx-primary)' }} /></span>
+      <span class="lx-bar" aria-hidden="true"><span style={{ width: `${p.percent}%` }} /></span>
       <div class="ln-path-row">
         {p.next ? <a class="lx-btn" href={`/learn/path/${path.id}/${p.next.id}`}>{p.done ? 'Continue' : 'Start'}: {p.next.title}</a>
           : <a class="lx-btn" href={`/learn/path/${path.id}`}>Path complete: review it</a>}

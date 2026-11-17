@@ -4,7 +4,7 @@ import { loadProfile, saveProfile } from '../../lib/profile.js';
 import { GOAL_FLOW, LEVEL_NAMES } from '../../lib/goals.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { Segmented, Switch, Range } from '../../components/controls.jsx';
-import { ChevronIcon, StarIcon, WordsIcon } from '../../app/icons.jsx';
+import { ChevronIcon, StarIcon, WordsIcon, PenIcon } from '../../app/icons.jsx';
 import './me.css';
 
 export default function Me() {
@@ -21,13 +21,14 @@ export default function Me() {
         <span class="lx-me-planet" aria-hidden="true"><span class="lx-me-ring"><span /></span></span>
         <div>
           <b>Learning on this device</b>
-          <span>Sign in to sync is coming in build phase 5</span>
+          <span>Your words and progress are saved on this phone. Sign in to sync is coming soon.</span>
         </div>
       </section>
 
       <nav class="me-links lx-rise lx-d1" aria-label="Your words and progress">
         <a href="/progress"><StarIcon /><span><b>Your universe</b><span>Streak, recall and the word archive</span></span><ChevronIcon /></a>
-        <a href="/words"><WordsIcon /><span><b>My Words</b><span>Saved words and lists</span></span><ChevronIcon /></a>
+        <a href="/words"><WordsIcon /><span><b>My Words</b><span>Saved words, lists and your notebook</span></span><ChevronIcon /></a>
+        <a href="/words?tab=notebook"><PenIcon /><span><b>Notebook</b><span>Your notes from lessons and formats</span></span><ChevronIcon /></a>
       </nav>
 
       <h2 class="lx-me-h2 lx-rise lx-d1" id="learning">Your learning</h2>

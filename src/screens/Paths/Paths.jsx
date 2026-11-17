@@ -26,7 +26,7 @@ export default function Paths() {
 
   return (
     <>
-      <div class="ld-top"><a class="ld-round" href="/learn" aria-label="Back to Learn"><BackIcon /></a></div>
+      <div class="lx-top"><a class="lx-round" href="/learn" aria-label="Back to Learn"><BackIcon /></a></div>
       <h1 class="lx-page-title lx-rise">Learning paths</h1>
       <p class="pt-sub lx-rise lx-d1">Pick a path for step-by-step lessons and practice. Your goal comes first.</p>
       <a class="pd-test lx-rise lx-d1" href="/learn/formats"><PenIcon /><span><b>Writing formats</b><span>Letters, essays, IELTS tasks, reports, stories and emails</span></span><ChevronIcon /></a>

@@ -30,13 +30,13 @@ export default function PathDetail() {
       .catch(() => setState({ error: true }));
   }, [params.id]);
 
-  const top = <div class="ld-top"><a class="ld-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>;
+  const top = <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>;
   if (!state) return <>{top}<h1 class="lx-sr">{meta?.title || 'Path'}</h1><span class="lx-skeleton pt-sk" aria-busy="true" /></>;
   if (state.error) return <>{top}<ErrorCard title="This path didn't load">Check your connection and try again.</ErrorCard></>;
   if (state.missing) {
     return (
       <>{top}
-        <section class="mw-empty lx-card" aria-labelledby="pd-gone">
+        <section class="lx-empty lx-card" aria-labelledby="pd-gone">
           <h1 id="pd-gone" class="lx-page-title">{meta ? `${meta.title} is coming soon` : 'Path not found'}</h1>
           <p>{meta ? 'Lessons for this path are being written. Try another path for now.' : 'This path does not exist.'}</p>
           <a class="lx-btn" href="/learn/paths">See all paths</a>
@@ -48,6 +48,7 @@ export default function PathDetail() {
   const { path, progress } = state;
   const p = pathProgress(path, progress);
   const best = bestTest(progress);
+  const testSize = buildTest(path).length;
   const cat = CATEGORIES.find((c) => c.goal === path.goal);
   return (
     <>
@@ -60,7 +61,7 @@ export default function PathDetail() {
             <h1 class="lx-page-title">{path.title}</h1>
             <p class="pt-sub">{path.sub}</p>
             <div class="pd-prog">
-              <span class="mw-bar" aria-hidden="true"><span style={{ width: `${p.percent}%`, background: 'var(--lx-primary)' }} /></span>
+              <span class="lx-bar" aria-hidden="true"><span style={{ width: `${p.percent}%` }} /></span>
               <span>{p.done} of {p.total} lessons done</span>
             </div>
             {p.next
@@ -79,7 +80,7 @@ export default function PathDetail() {
           <div class="pd-tools lx-rise lx-d1">
             <a class="pd-test" href={`/learn/path/${path.id}/test`}>
               <SlowIcon />
-              <span><b>Timed practice test</b><span>{buildTest(path).length} questions · {buildTest(path).length} minutes{best ? ` · Best: ${best.score}/${best.total}` : ''}</span></span>
+              <span><b>Timed practice test</b><span>{testSize} questions · {testSize} minutes{best ? ` · Best: ${best.score}/${best.total}` : ''}</span></span>
               <ChevronIcon />
             </a>
             {FORMAT_GROUP[path.id] && (

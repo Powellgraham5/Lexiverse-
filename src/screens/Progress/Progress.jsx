@@ -124,7 +124,7 @@ export default function Progress() {
   }, []);
 
   const back = (ev) => { if (history.length > 1) { ev.preventDefault(); history.back(); } };
-  const top = <div class="ld-top pg-top"><a class="ld-round" href="/learn" aria-label="Back" onClick={back}><BackIcon /></a></div>;
+  const top = <div class="lx-top pg-top"><a class="lx-round" href="/learn" aria-label="Back" onClick={back}><BackIcon /></a></div>;
   if (!data) return <>{top}<h1 class="lx-page-title">Your universe</h1><span class="lx-skeleton pg-sk" aria-busy="true" /></>;
 
   const p = computeProgress(data);
@@ -164,7 +164,7 @@ export default function Progress() {
                 <li key={c.id} class={c.done ? 'done' : ''}>
                   <span class="pg-con-star" aria-hidden="true"><StarIcon size={22} /></span>
                   <span class="pg-con-text"><b>{c.label}</b><span>{c.done ? 'Unlocked' : `${c.progress} of ${c.goal}`}</span></span>
-                  <span class="mw-bar" role="img" aria-label={`${Math.round((c.progress / c.goal) * 100)}% done`}><span style={{ width: `${(c.progress / c.goal) * 100}%` }} /></span>
+                  <span class="lx-bar" role="img" aria-label={`${Math.round((c.progress / c.goal) * 100)}% done`}><span style={{ width: `${(c.progress / c.goal) * 100}%` }} /></span>
                 </li>
               ))}
             </ul>

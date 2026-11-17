@@ -153,3 +153,16 @@ test('writing formats: every format has a layout and rules; exam groups carry th
     }
   }
 });
+
+test('notebook: two saves at the same moment both survive', async () => {
+  const before = (await allNotes()).length;
+  await Promise.all([addNote({ title: 'One' }), addNote({ title: 'Two' })]);
+  const titles = (await allNotes()).map((n) => n.title);
+  assert.equal(titles.length, before + 2);
+  assert.ok(titles.includes('One') && titles.includes('Two'));
+});
+
+test('practice test: a new seed gives a different order', async () => {
+  const path = await loadPath('waec');
+  assert.notDeepEqual(buildTest(path, 10, 'test0').map((x) => x.key), buildTest(path, 10, 'test1').map((x) => x.key));
+});

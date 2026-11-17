@@ -11,6 +11,7 @@ import './paths.css';
 const asText = (f) => f.template.join('\n');
 
 function FormatCard({ group, f }) {
+  const { route } = useLocation();
   const [open, setOpen] = useState(false);
   const [target] = f.practice || [];
   async function copy() {
@@ -20,7 +21,7 @@ function FormatCard({ group, f }) {
   async function save() {
     try {
       await addNote({ title: `${f.title} (${group.title})`, body: `${f.use}\n\n${asText(f)}\n\nRules:\n${f.rules.map((r) => `• ${r}`).join('\n')}`, tag: group.title });
-      toast({ text: 'Saved to your notebook', kind: 'success', action: 'Open', onAction: () => { location.href = '/words?tab=notebook'; } });
+      toast({ text: 'Saved to your notebook', kind: 'success', action: 'Open', onAction: () => route('/words?tab=notebook') });
     } catch { toast({ text: "Couldn't save the note", kind: 'error' }); }
   }
   return (
@@ -54,7 +55,7 @@ export default function Formats() {
   const shown = group === 'all' ? FORMAT_GROUPS : FORMAT_GROUPS.filter((g) => g.id === group);
   return (
     <>
-      <div class="ld-top"><a class="ld-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>
+      <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>
       <h1 class="lx-page-title lx-rise">Writing formats</h1>
       <p class="pt-sub lx-rise lx-d1">The layout and rules for each kind of writing. Open one, copy the template or save it to your notebook.</p>
       <div class="fm-filter lx-rise lx-d1" role="group" aria-label="Show formats for">

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { useRoute } from 'preact-iso';
+import { useRoute, useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { CheckIcon, CloseIcon, PenIcon } from '../../app/icons.jsx';
 import { toast } from '../../components/toast.jsx';
@@ -16,6 +16,7 @@ import './paths.css';
 
 export default function Lesson() {
   const { params } = useRoute();
+  const { route } = useLocation();
   const [path, setPath] = useState(undefined);
   useEffect(() => { loadPath(params.id).then(setPath).catch(() => setPath(null)); }, [params.id]);
   const lessons = path ? lessonsOf(path) : [];
@@ -85,7 +86,7 @@ export default function Lesson() {
           </ul>
         )}
         <button type="button" class="lx-btn ghost small ls-save" onClick={() => addNote(cardToNote(card, path.title))
-          .then(() => toast({ text: 'Saved to your notebook', kind: 'success', action: 'Open', onAction: () => { location.href = '/words?tab=notebook'; } }))
+          .then(() => toast({ text: 'Saved to your notebook', kind: 'success', action: 'Open', onAction: () => route('/words?tab=notebook') }))
           .catch(() => toast({ text: "Couldn't save the note", kind: 'error' }))}><PenIcon size={18} />Save to notebook</button>
         <div class="ps-foot">
           <button type="button" class="lx-btn" onClick={() => setStage(last ? { part: 'ex', i: 0 } : { part: 'cards', i: stage.i + 1 })}>{last ? 'Start the practice' : 'Next'}</button>

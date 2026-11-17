@@ -75,7 +75,7 @@ export default function Words() {
       </>
     );
   }
-  if (!data) return <><h1 class="lx-page-title">My Words</h1>{tabs}<div class="mw-grid" aria-busy="true">{[0, 1, 2, 3].map((i) => <span key={i} class="lx-skeleton mw-sk" />)}</div></>;
+  if (!data) return <><h1 class="lx-page-title">My Words</h1>{tabs}<div class="mw-grid" aria-busy="true">{[0, 1, 2, 3].map((i) => <span key={i} class="lx-skeleton lx-sk" />)}</div></>;
   const total = data.saved.length;
   const recent = showAll ? data.recent : data.recent.slice(0, 5);
 
@@ -89,8 +89,8 @@ export default function Words() {
       <div id="mw-panel" role="tabpanel" aria-labelledby="mw-tab-words" class="mw-panel">
 
       {total === 0 && data.lists.length === 0 ? (
-        <section class="mw-empty lx-card lx-rise lx-d1" aria-labelledby="mw-empty-h">
-          <div class="mw-empty-orbit" aria-hidden="true"><span class="ring"><span class="moon" /></span><span class="core" /></div>
+        <section class="lx-empty lx-card lx-rise lx-d1" aria-labelledby="mw-empty-h">
+          <div class="lx-empty-orbit" aria-hidden="true"><span class="ring"><span class="moon" /></span><span class="core" /></div>
           <h2 id="mw-empty-h">Your galaxy is empty</h2>
           <p>Tap the bookmark on any word to save it here. Saved words come back for review so you remember them.</p>
           <a class="lx-btn" href="/">Save today's word</a>
@@ -98,7 +98,7 @@ export default function Words() {
         </section>
       ) : (
         <>
-          <div class="mw-search lx-rise lx-d1">
+          <div class="lx-search lx-rise lx-d1">
             <SearchIcon />
             <label for="mw-q" class="lx-sr">Search your saved words</label>
             <input id="mw-q" type="search" value={q} placeholder="Search your saved words" autocomplete="off" onInput={(e) => setQ(e.currentTarget.value)} />
@@ -111,7 +111,7 @@ export default function Words() {
                 <ul class="mw-rows">{matches.map((w, i) => (
                   <li key={w.id}><a class="mw-row" href={`/word/${w.id}`}><span class="mw-dot" style={{ background: DOTS[i % DOTS.length] }} aria-hidden="true">{w.id[0]}</span><span><b>{w.id}</b>{defs.get(w.id) && <span>{defs.get(w.id)}</span>}</span></a></li>
                 ))}</ul>
-              ) : <p class="mw-none">No saved word matches “{q}”. <a href={`/search?q=${encodeURIComponent(q)}`}>Search the dictionary</a></p>}
+              ) : <p class="lx-none">No saved word matches “{q}”. <a href={`/search?q=${encodeURIComponent(q)}`}>Search the dictionary</a></p>}
             </section>
           ) : (
             <>
@@ -122,7 +122,7 @@ export default function Words() {
                       <span class="mw-card-top"><ListPlanet list={list} size={52} /><Badge stats={stats} /></span>
                       <b>{list.name}</b>
                       <span class="mw-meta">{stats.count} word{stats.count === 1 ? '' : 's'} · {stats.known}% known</span>
-                      <span class="mw-bar" aria-hidden="true"><span style={{ width: `${stats.known}%`, background: list.colour }} /></span>
+                      <span class="lx-bar" aria-hidden="true"><span style={{ width: `${stats.known}%`, background: list.colour }} /></span>
                     </a>
                   </li>
                 ))}

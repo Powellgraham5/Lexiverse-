@@ -15,7 +15,7 @@ export const words = (text) => (text.match(/[A-Za-z][A-Za-z'-]*/g) || []);
 export const paragraphs = (text) => text.split(/\n\s*\n/).map((p) => p.trim()).filter((p) => words(p).length >= 3);
 const sentences = (text) => text.split(/(?<=[.!?])\s+|\n+/).map((s) => s.trim()).filter(Boolean);
 
-// kind: 'essay' | 'letter-formal' | 'letter-informal' | 'email' | 'email-formal' | 'paragraph' | 'summary' | 'story' | 'report'
+// kind: 'essay' | 'letter-formal' | 'letter-informal' | 'email' | 'email-formal' | 'paragraph' | 'summary' | 'story' | 'report' | 'notes'
 // q (the task) is optional: its own words are the topic, so repeating them is not flagged.
 export function checkWriting(text, { minWords = 0, maxWords = Infinity, kind = 'paragraph', minParagraphs, subject = false, q = '' } = {}) {
   const out = [];
@@ -76,6 +76,13 @@ export function checkWriting(text, { minWords = 0, maxWords = Infinity, kind = '
     const starts = sentences(text).map((x) => (words(x)[0] || '').toLowerCase()).filter(Boolean);
     const top = Object.entries(starts.reduce((m, w) => ({ ...m, [w]: (m[w] || 0) + 1 }), {})).sort((a, b) => b[1] - a[1])[0];
     if (top && starts.length >= 4 && top[1] / starts.length > 0.5) out.push({ ok: false, label: 'Sentence openings', tip: `Most sentences start with “${top[0][0].toUpperCase()}${top[0].slice(1)}”. Vary how your sentences begin.` });
+  }
+  if (kind === 'notes') {
+    // Agendas and minutes: short headed sections, no linking words needed.
+    const heads = text.split('\n').map((l) => l.trim()).filter((l) => l && words(l).length <= 6 && !/[.!?,;]$/.test(l));
+    out.push(heads.length >= 3
+      ? { ok: true, label: 'Headings', tip: `You used ${heads.length} headings.` }
+      : { ok: false, label: 'Headings', tip: 'Use short headings on their own lines, such as “Date”, “Items” or “Actions”.' });
   }
   if (kind === 'report') {
     const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);

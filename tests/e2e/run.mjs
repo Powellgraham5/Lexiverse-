@@ -1136,7 +1136,7 @@ await check('notebook: write, autosave, reload, search, delete and undo; tabs wo
   await p.fill('#nb-q', 'nearer');
   await p.waitForSelector('.nb-card:has-text("Concord rules")');
   await p.fill('#nb-q', 'zzz');
-  await p.waitForSelector('.mw-none');
+  await p.waitForSelector('.lx-none');
   await p.goto(url);
   await p.click('button[aria-label="Delete note"]');
   await p.waitForURL('**/words?tab=notebook');
@@ -1228,6 +1228,109 @@ await check('IELTS: listening plays the script and the speaking cue card counts 
   await p.waitForSelector('[role=timer]:has-text("Speak now")');
   await c.clock.runFor(121000);
   await p.waitForSelector('.lx-feedback:has-text("Check yourself")');
+  await c.close();
+});
+
+
+// Critique fixes: shared styles, focus, scroll memory, note saving, layout
+await check('critique: path screens are styled on a fresh load (back button size, progress bar)', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/waec');
+  await p.waitForSelector('.pd-lesson');
+  const r = await p.evaluate(() => {
+    const back = document.querySelector('.lx-round').getBoundingClientRect();
+    const bar = document.querySelector('.pd-prog .lx-bar').getBoundingClientRect();
+    return { w: back.width, h: back.height, bar: bar.height };
+  });
+  assert.ok(r.w >= 44 && r.h >= 44, `back button is ${r.w}x${r.h}`);
+  assert.ok(r.bar >= 4, 'progress bar is visible');
+  await c.close();
+});
+
+await check('critique: focus lands on the new heading after opening a path', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/paths');
+  await p.click('a.pt-row:has-text("IELTS")');
+  await p.waitForFunction(() => document.activeElement?.tagName === 'H1' && document.activeElement.textContent.includes('IELTS'), null, { timeout: 4000 });
+  await c.close();
+});
+
+await check('critique: Back returns to the same scroll position', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/waec');
+  await p.waitForSelector('.pd-lesson');
+  await p.evaluate(() => scrollTo(0, 900));
+  await p.waitForTimeout(150);
+  const before = await p.evaluate(() => scrollY);
+  await p.evaluate(() => document.querySelectorAll('.pd-lesson')[6].click()); // a real click, without Playwright scrolling first
+  await p.waitForSelector('.ps-tag');
+  await p.goBack();
+  await p.waitForSelector('.pd-lesson');
+  await p.waitForFunction((y) => Math.abs(scrollY - y) < 5, before, { timeout: 3000 });
+  await c.close();
+});
+
+await check('critique: writing check moves focus to the results; a quick Back keeps a note edit', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/emails/email-end');
+  for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
+  await p.fill('#ls-write', 'Hi, can we move it?');
+  await p.click('button:text("Check my writing")');
+  await p.waitForFunction(() => document.activeElement?.id === 'ls-checks-h');
+  await p.goto(BASE + '/words?tab=notebook');
+  await p.click('button:text("Write your first note")');
+  await p.waitForURL('**/words/note/*');
+  await p.fill('#ne-body', 'Typed just before leaving');
+  await p.click('a[aria-label="Back to notebook"]');
+  await p.waitForSelector('.nb-card:has-text("Typed just before leaving")');
+  await c.close();
+});
+
+await check('critique: the Level control fits on one row on a phone, and Me has no build jargon', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/me');
+  await p.waitForSelector('.lx-seg.stretch button');
+  const tops = await p.$eval('.me-learning .lx-seg.stretch', (seg) => [...new Set([...seg.children].map((b) => Math.round(b.getBoundingClientRect().top)))]);
+  assert.equal(tops.length, 1, 'all level buttons share one row');
+  assert.ok(!(await p.textContent('#main')).includes('phase 5'));
+  await c.close();
+});
+
+await check('critique: a toast stays while it has focus', async () => {
+  const c = await clockContext();
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/sat/sat-punctuation');
+  await p.waitForSelector('h1:text("Two complete sentences")');
+  await p.click('button:text("Save to notebook")');
+  await p.waitForSelector('.lx-toast button:text("Open")');
+  await p.focus('.lx-toast button:text("Open")');
+  await c.clock.runFor(15000);
+  assert.ok(await p.isVisible('.lx-toast:has-text("Saved to your notebook")'), 'toast should wait while focused');
+  await p.locator('.lx-toast button:text("Open")').blur();
+  await c.clock.runFor(8000);
+  await p.waitForSelector('.lx-toast', { state: 'detached' });
+  await c.close();
+});
+
+await check('critique: the speaking timer runs after pausing in preparation', async () => {
+  const c = await clockContext();
+  await c.addInitScript(SPEECH_STUB);
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/ielts/ielts-speaking');
+  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 2; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
+  await p.click('button:text("Start: 1:00 to prepare")');
+  await p.click('.ls-timer button:text("Pause")');
+  await p.click('.ls-timer button:text("Start speaking")');
+  await p.waitForSelector('[role=timer]:has-text("Speak now")');
+  await c.clock.runFor(5000);
+  await p.waitForSelector('[role=timer]:has-text("1:55")');
   await c.close();
 });
 

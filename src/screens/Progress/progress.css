@@ -37,8 +37,8 @@
 
 .pg-cons { display: flex; flex-direction: column; gap: .625rem; margin: 0; padding: 0; list-style: none; }
 .pg-cons li { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: .75rem; row-gap: .375rem; align-items: center; }
-.pg-cons .mw-bar { grid-column: 2; margin: 0; }
-.pg-cons .mw-bar span { background: var(--lx-primary); }
+.pg-cons .lx-bar { grid-column: 2; margin: 0; }
+.pg-cons .lx-bar span { background: var(--lx-primary); }
 .pg-con-star { grid-row: span 2; display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--lx-raised); color: var(--lx-muted); }
 .pg-cons li.done .pg-con-star { background: var(--lx-gold, #E5B000); color: #14123A; }
 .pg-con-text { display: flex; flex-direction: column; }

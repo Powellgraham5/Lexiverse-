@@ -26,7 +26,6 @@
 .pd-head .lx-btn { width: 100%; }
 .pd-cat { font-size: .8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lx-link); }
 .pd-prog { display: flex; flex-direction: column; align-items: center; gap: .375rem; width: 100%; max-width: 18rem; font-size: .875rem; font-weight: 600; color: var(--lx-muted); }
-.pd-prog .mw-bar { width: 100%; }
 .pd-done { display: flex; align-items: center; gap: .375rem; font-weight: 700; color: var(--lx-family-ink); }
 .pd-note { font-size: .8125rem; color: var(--lx-muted); line-height: 1.5; }
 .pd-unit { display: flex; flex-direction: column; gap: .5rem; }
@@ -93,7 +92,7 @@
 /* Learn hub: Your path card */
 .ln-path { display: flex; flex-direction: column; gap: .625rem; padding: 1.125rem; border-radius: 1.5rem; }
 .ln-path-head { display: flex; align-items: center; gap: .75rem; }
-.ln-path-head > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.ln-path-head > span:first-child { flex: 1; display: flex; flex-direction: column; gap: .125rem; min-width: 0; }
 .ln-path-head small { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lx-link); }
 .ln-path-head b { font-size: 1.125rem; }
 .ln-path-row { display: flex; gap: .5rem; flex-wrap: wrap; }

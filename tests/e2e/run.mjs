@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/meetings', 'path-soon'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -213,12 +213,12 @@ await ctx.close();
 
 await check('onboarding: each goal leads to its own question, level title and ready screen', async () => {
   const cases = [
-    ['Everyday English', 'Where do you use English most?', 'Travel', 'Which word feels just right?', 'Your universe is ready', 'e'],
-    ['Exam preparation', 'Which exam are you preparing for?', 'IELTS', 'Which word would you want in your IELTS answer?', 'Your IELTS universe is ready', 'x'],
-    ['Better writing', 'What do you write most?', 'Stories', 'Which word would you love to use in your stories?', 'Your writing universe is ready', 'w'],
-    ['Work and career', 'Where do you need English at work?', 'Meetings', 'Which word would you use in your meetings?', 'Your career universe is ready', 'k']
+    ['Everyday English', 'Where do you use English most?', 'Travel', 'Your universe is ready', 'e'],
+    ['Exam preparation', 'Which exam are you preparing for?', 'IELTS', 'Your IELTS universe is ready', 'x'],
+    ['Better writing', 'What do you write most?', 'Letters', 'Your writing universe is ready', 'w'],
+    ['Work and career', 'Where do you need English at work?', 'Meetings', 'Your career universe is ready', 'k']
   ];
-  for (const [goal, question, focus, levelTitle, ready, code] of cases) {
+  for (const [goal, question, focus, ready, code] of cases) {
     const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
     const p = await c.newPage();
     await p.goto(BASE + '/welcome');
@@ -228,8 +228,8 @@ await check('onboarding: each goal leads to its own question, level title and re
     await p.waitForSelector(`h1:text("${question}")`);
     await p.click(`[role=radio]:has-text("${focus}")`);
     await p.click('button:text("Continue")');
-    await p.waitForSelector(`h1:text("${levelTitle}")`);
-    await p.click('button:text("Continue")');
+    // No level question any more: the subject leads straight on (level is set in Me).
+    await p.waitForSelector('h1:text("Make it comfortable")');
     await p.click('button:text("Finish setup")');
     await p.waitForSelector(`h1:text("${ready}")`);
     const first = (await p.textContent('.ob-first b')).trim();
@@ -278,9 +278,6 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   assert.ok(await p.isVisible('h1:text("What do you write most?")'), 'continue without a choice should not advance');
   await p.click('[role=radio]:has-text("Essays")');
   await p.click('button:text("Continue")');
-  await p.waitForSelector('h1:text("Which word would you love to use in your essays?")');
-  await p.click('[role=radio]:has-text("Advanced")');
-  await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Make it comfortable")');
   await p.fill('#ob-size', '1.2');
   await p.click('[role=switch]:near(:text("High contrast"))');
@@ -290,7 +287,7 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   await p.waitForSelector('h1:text("Your writing universe is ready")');
   const first = await p.textContent('.ob-first b');
   assert.ok(first && first !== 'ready', 'first word shown');
-  assert.deepEqual(JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile'))).level, 3);
+  assert.deepEqual(JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile'))).level, 2);
   await p.click('button:text("Start exploring")');
   await p.waitForSelector('.lx-orbit-planet');
   assert.equal((await p.textContent('.lx-orbit-planet b')).trim(), first.trim());
@@ -928,10 +925,13 @@ await check('paths: four categories, each with its own destination', async () =>
   await p.goto(BASE + '/learn');
   await p.click('a:text("Explore learning paths")');
   await p.waitForURL('**/learn/paths');
-  for (const [name, desc] of [['Everyday English', 'Talk and understand with confidence'], ['Exam preparation', 'IELTS, WAEC, SAT and more'], ['Better writing', 'Essays, reports and stories'], ['Work and career', 'Emails, meetings and interviews']]) {
+  for (const [name, desc] of [['Exam preparation', 'IELTS, WAEC, SAT and more'], ['Better writing', 'Essays, reports, stories and letters'], ['Work and career', 'Emails, meetings and interviews']]) {
     await p.waitForSelector(`.pt-cat:has(h2:text("${name}")):has-text("${desc}")`);
   }
-  assert.equal(await p.getAttribute('.pt-cat:has(h2:text("Everyday English")) a', 'href'), '/learn');
+  assert.equal(await p.locator('.pt-cat').count(), 3, 'exactly three categories');
+  for (const row of ['IELTS', 'WAEC / NECO English', 'SAT', 'Essays', 'Reports', 'Stories', 'Letters', 'Emails', 'Meetings', 'Interviews']) {
+    assert.equal(await p.locator(`a.pt-row:has-text("${row}")`).count() >= 1, true, `${row} opens a course`);
+  }
   const titles = {};
   for (const [cat, row, id] of [['Exam preparation', 'WAEC / NECO English', 'waec'], ['Better writing', 'Essays', 'essays'], ['Work and career', 'Emails', 'emails']]) {
     await p.goto(BASE + '/learn/paths');
@@ -943,7 +943,7 @@ await check('paths: four categories, each with its own destination', async () =>
   assert.equal(new Set(Object.values(titles)).size, 3, 'each path is different');
   await p.goto(BASE + '/learn/paths');
   assert.equal(await p.locator('.pt-row.soon a, a.pt-row.soon').count(), 0, 'coming-soon items are not links');
-  assert.ok(await p.locator('.pt-row.soon:has-text("Meetings")').count());
+  assert.ok(await p.locator('.pt-row.soon:has-text("More examinations")').count());
   await c.close();
 });
 
@@ -1023,7 +1023,6 @@ await check('paths: onboarding with Exam then WAEC offers the WAEC path, and Lea
   await p.click('button:text("Continue")');
   await p.click('[role=radio]:has-text("WAEC")');
   await p.click('button:text("Continue")');
-  await p.click('button:text("Continue")');
   await p.click('button:text("Finish setup")');
   await p.click('a:text("Start your WAEC path")');
   await p.waitForURL('**/learn/path/waec');
@@ -1083,15 +1082,15 @@ await check('guides: every category and path explains how to use it', async () =
   const p = await c.newPage();
   await p.goto(BASE + '/learn/paths');
   await p.waitForSelector('.pt-cat');
-  assert.equal(await p.locator('.pt-cat .pt-how').count(), 4);
-  for (const id of ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'emails']) {
+  assert.equal(await p.locator('.pt-cat .pt-how').count(), 3);
+  for (const id of ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'letters', 'emails', 'meetings', 'interviews']) {
     await p.goto(BASE + `/learn/path/${id}`);
     await p.waitForSelector('.pd-guide li');
-    assert.ok(await p.isVisible('a.pd-test:has-text("Timed practice test")'), `${id} has a test`);
+    assert.ok(await p.isVisible('a.pd-test:has-text("Practice test")'), `${id} has a test`);
     assert.ok(await p.isVisible('a.pd-test:has-text("Writing formats")'), `${id} links to formats`);
   }
   await p.click('.pd-guide summary');
-  await p.waitForFunction(() => (localStorage.getItem('lx-guide-closed') || '').includes('emails'));
+  await p.waitForFunction(() => (localStorage.getItem('lx-guide-closed') || '').includes('interviews'));
   await p.reload();
   await p.waitForSelector('.pd-guide');
   assert.equal(await p.getAttribute('.pd-guide', 'open'), null, 'closed guide stays closed');
@@ -1177,7 +1176,7 @@ await check('timed test: countdown, pause, timer off, and time running out', asy
   let c = await clockContext();
   let p = await c.newPage();
   await p.goto(BASE + '/learn/path/sat/test');
-  await p.click('button:text("Start the test")');
+  await p.click('button:has-text("Timed:")');
   await p.waitForSelector('[role=timer]:has-text("10:00")');
   await c.clock.runFor(5000);
   await p.waitForSelector('[role=timer]:has-text("9:55")');
@@ -1198,7 +1197,7 @@ await check('timed test: countdown, pause, timer off, and time running out', asy
   c = await clockContext();
   p = await c.newPage();
   await p.goto(BASE + '/learn/path/emails/test');
-  await p.click('button:text("Start the test")');
+  await p.click('button:has-text("Timed:")');
   await p.click('button:text("Turn off timer")');
   await p.waitForSelector('.pt-timer:has-text("Timer off")');
   assert.equal(await p.locator('[role=timer]').count(), 0);
@@ -1337,6 +1336,52 @@ await check('critique: the speaking timer runs after pausing in preparation', as
   await p.waitForSelector('[role=timer]:has-text("Speak now")');
   await c.clock.runFor(5000);
   await p.waitForSelector('[role=timer]:has-text("1:55")');
+  await c.close();
+});
+
+
+// Learning section restructure
+await check('learning: a wrong answer offers the explanation again; tests can be untimed; writing gets a score', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/letters/letter-formal-layout');
+  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 6; i++) await p.click('button[aria-label^="Move"]:not([disabled])').catch(() => {});
+  await p.click('button:text("Check order")');
+  await p.click('button:text("Continue")');
+  await p.click('.lx-opt:has-text("Yours sincerely,")');
+  await p.click('button:text("Explain it again")');
+  await p.waitForSelector('.ls-help-card:has-text("Matching greeting and ending")');
+  await p.goto(BASE + '/learn/path/letters/test');
+  await p.click('button:has-text("Untimed")');
+  await p.waitForSelector('.pt-timer:has-text("Timer off")');
+  await p.goto(BASE + '/learn/path/emails/email-end');
+  for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
+  await p.fill('#ls-write', 'Hi, can we move it?');
+  await p.click('button:text("Check my writing")');
+  await p.waitForSelector('#ls-checks-h:has-text("/ 10")');
+  await c.close();
+});
+
+await check('learning: the path page shows performance and how to improve after a lesson', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/interviews/interview-star');
+  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  for (let i = 0; i < 6; i++) await p.click('button[aria-label^="Move"]:not([disabled])').catch(() => {});
+  await p.click('button:text("Check order")');
+  await p.click('button:text("Continue")');
+  for (let i = 0; i < 2; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
+  await p.click('button:text("Start: 1:00 to prepare")');
+  await p.click('.ls-timer button:text("Start speaking")');
+  await p.click('.ls-timer button:text("Finish")');
+  await p.click('button:text("Continue")');
+  await p.waitForSelector('h1:text("Lesson complete!")');
+  await p.waitForSelector('.ls-improve li');
+  await p.goto(BASE + '/learn/path/interviews');
+  await p.waitForSelector('.pd-stats:has-text("lessons done")');
+  await p.waitForSelector('#pd-improve');
   await c.close();
 });
 

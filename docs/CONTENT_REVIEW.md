@@ -115,6 +115,22 @@ Please ask an English teacher to check each lesson. Tick the box when a lesson i
 - [ ] **Writing dialogue** (`story-dialogue`): 3 teaching cards, 4 exercises (choice, write)
 - [ ] **Description and the senses** (`story-description`): 2 teaching cards, 3 exercises (choice, write)
 
+## Letters (`letters.js`)
+
+### Letters at a glance
+
+- [ ] **What a letter is, and the three kinds** (`letter-intro`): 3 teaching cards, 4 exercises (choice)
+
+### Formal letters
+
+- [ ] **Formal letter layout** (`letter-formal-layout`): 3 teaching cards, 4 exercises (order, choice, error)
+- [ ] **Formal language and expressions** (`letter-formal-language`): 3 teaching cards, 4 exercises (choice, gap, write)
+
+### Informal and semi-formal letters
+
+- [ ] **Informal letters** (`letter-informal`): 3 teaching cards, 4 exercises (choice, write)
+- [ ] **Formal or informal: spot the difference** (`letter-compare`): 2 teaching cards, 4 exercises (choice, error)
+
 ## Emails (`emails.js`)
 
 ### Parts of an email
@@ -131,6 +147,36 @@ Please ask an English teacher to check each lesson. Tick the box when a lesson i
 
 - [ ] **Requests and follow-ups** (`email-followup`): 1 teaching cards, 3 exercises (choice, write)
 - [ ] **Apologies and complaints** (`email-apology`): 2 teaching cards, 4 exercises (order, choice, write)
+
+## Meetings (`meetings.js`)
+
+### Before the meeting
+
+- [ ] **Preparing and the agenda** (`meeting-prepare`): 3 teaching cards, 4 exercises (order, choice, write)
+
+### During the meeting
+
+- [ ] **Giving opinions, agreeing and disagreeing** (`meeting-speak`): 4 teaching cards, 4 exercises (choice, gap, speak)
+- [ ] **Short presentations in meetings** (`meeting-present`): 3 teaching cards, 3 exercises (choice, speak)
+
+### After the meeting
+
+- [ ] **Taking minutes** (`meeting-minutes`): 3 teaching cards, 3 exercises (choice, write)
+
+## Interviews (`interviews.js`)
+
+### Getting ready
+
+- [ ] **Preparing and introducing yourself** (`interview-prepare`): 3 teaching cards, 4 exercises (choice, speak)
+
+### Answering questions
+
+- [ ] **The STAR method** (`interview-star`): 3 teaching cards, 4 exercises (order, choice, speak)
+- [ ] **Difficult questions** (`interview-hard`): 3 teaching cards, 4 exercises (choice, speak)
+
+### Mock interview
+
+- [ ] **A full mock interview** (`interview-mock`): 2 teaching cards, 4 exercises (speak, choice)
 
 ## Writing formats (`formats.js`)
 

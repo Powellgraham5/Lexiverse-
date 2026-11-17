@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useSettings } from '../../app/settings-context.jsx';
@@ -7,7 +7,7 @@ import { Switch } from '../../components/controls.jsx';
 import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
 import { saveProfile, GOALS, LEVELS } from '../../lib/profile.js';
 import { recordActivity } from '../../lib/streak.js';
-import { GOAL_FLOW, focusLabel, levelSamples } from '../../lib/goals.js';
+import { GOAL_FLOW, focusLabel } from '../../lib/goals.js';
 import { focusPath, pathById } from '../../lib/paths.js';
 import './onboarding.css';
 
@@ -17,10 +17,10 @@ const GOAL_OPTIONS = [
   ['writing', 'Better writing', 'Essays, reports and stories', 'var(--lx-note-bg)', PenIcon],
   ['work', 'Work and career', 'Emails, meetings and interviews', 'var(--lx-info-bg)', CaseIcon]
 ];
-const LEVEL_KEYS = { 1: 'happy', 2: 'curious', 3: 'serendipity' };
-// Steps: 1 welcome, 2 goal, 3 the goal's own question, 4 level, 5 comfort, 6 ready.
-const STEP_NAMES = [null, 'welcome', 'goal', 'focus', 'level', 'comfort', 'ready'];
-const PROGRESS = [0, 0, 20, 45, 70, 90, 100];
+// Steps: 1 welcome, 2 goal, 3 the goal's own question, 4 comfort, 5 ready. The level starts at
+// Intermediate and can be changed in Me; picking a subject leads straight to its course.
+const STEP_NAMES = [null, 'welcome', 'goal', 'focus', 'comfort', 'ready'];
+const PROGRESS = [0, 0, 30, 65, 90, 100];
 const GREETINGS = [['bonjour', 'fr', 'top'], ['báwo', 'yo', 'right'], ['sannu', 'ha', 'bottom'], ['hola', 'es', 'left']];
 
 // Radio group with arrow-key movement, as screen reader and keyboard users expect.
@@ -55,14 +55,11 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [goal, setGoal] = useState(null);
   const [focus, setFocus] = useState(null);
-  const [level, setLevel] = useState('curious');
+  const level = 'curious';
   const [firstWord, setFirstWord] = useState(null);
-  const [daily, setDaily] = useState([]);
-  useEffect(() => { loadDaily().then(setDaily).catch(() => {}); }, []);
   const code = GOALS[goal || 'everyday'];
   const flow = GOAL_FLOW[code];
   const label = focusLabel(code, focus);
-  const samples = useMemo(() => levelSamples(daily, code), [daily, code]);
   const pickGoal = (g) => { if (g !== goal) setFocus(null); setGoal(g); };
 
   const go = (n) => setStep(n);
@@ -81,12 +78,12 @@ export default function Onboarding() {
       const words = await loadDaily();
       setFirstWord(wordOfTheDay(words, profile).w);
     } catch { setFirstWord(null); }
-    go(6);
+    go(5);
   }
 
   return (
     <div class={`ob step-${STEP_NAMES[step]}`}>
-      {step > 1 && step < 6 && (
+      {step > 1 && step < 5 && (
         <div class="ob-bar">
           <button type="button" class="ob-icon-btn" aria-label="Back" onClick={() => go(step - 1)}><BackIcon /></button>
           <div class="ob-progress" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={PROGRESS[step]}>
@@ -150,18 +147,6 @@ export default function Onboarding() {
 
       {step === 4 && (
         <section class="ob-step">
-          <p class="ob-kicker lx-rise">{label}</p>
-          <h1 class="lx-rise">{flow.levelTitle(label)}</h1>
-          <p class="ob-sub lx-rise lx-d1">Pick the one you'd like to learn next. It sets your starting level.</p>
-          <Choices label="Your level" value={level} onChange={setLevel} options={samples.map((x) => [LEVEL_KEYS[x.level], x.word, x.hint])} render={([, word, hint]) => (
-            <span class="ob-level"><b>{word}</b><span>{hint}</span></span>
-          )} />
-          <button type="button" class="lx-btn ob-next" onClick={() => go(5)}>Continue</button>
-        </section>
-      )}
-
-      {step === 5 && (
-        <section class="ob-step">
           <h1 class="lx-rise">Make it comfortable</h1>
           <p class="ob-sub lx-rise lx-d1">Set it up for your {code === 'x' ? `${label} practice` : flow.name.toLowerCase()}. Change these any time in Me.</p>
           <div class="ob-preview lx-rise lx-d2" aria-hidden="true">
@@ -182,7 +167,7 @@ export default function Onboarding() {
         </section>
       )}
 
-      {step === 6 && (
+      {step === 5 && (
         <section class="ob-step ob-ready">
           <div class="ob-burst" aria-hidden="true">
             {['#FF6B3D', '#3DDC97', '#FFD23F', '#FF9ECF', '#7AD7FF', '#4A2FE0', '#FF6B3D', '#3DDC97'].map((c, i) => <span key={i} class={`ob-spark s${i}`} style={{ background: c }} />)}

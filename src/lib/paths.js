@@ -8,13 +8,14 @@ export const PATHS = [
   { id: 'waec', goal: 'x', focus: 'waec', title: 'WAEC / NECO English', sub: 'Lexis, comprehension, summary, essays and oral English', load: () => import('../content/paths/waec.js') },
   { id: 'ielts', goal: 'x', focus: 'ielts', title: 'IELTS', sub: 'Reading, writing, listening and speaking', load: () => import('../content/paths/ielts.js') },
   { id: 'sat', goal: 'x', focus: 'sat', title: 'SAT', sub: 'Reading and Writing: grammar and words in context', load: () => import('../content/paths/sat.js') },
-  { id: 'other-exams', goal: 'x', focus: 'other', title: 'Other exams', sub: 'JAMB, TOEFL and more' },
+  { id: 'other-exams', goal: 'x', focus: 'other', title: 'More examinations', sub: 'JAMB, TOEFL and others are being written' },
   { id: 'essays', goal: 'w', focus: 'essays', title: 'Essays', sub: 'Structure, essay types and strong sentences', load: () => import('../content/paths/essays.js') },
   { id: 'reports', goal: 'w', focus: 'reports', title: 'Reports', sub: 'Formal structure and clear, professional language', load: () => import('../content/paths/reports.js') },
   { id: 'stories', goal: 'w', focus: 'stories', title: 'Stories', sub: 'Characters, plot, dialogue and description', load: () => import('../content/paths/stories.js') },
+  { id: 'letters', goal: 'w', focus: 'letters', title: 'Letters', sub: 'Formal, informal and semi-formal letters', load: () => import('../content/paths/letters.js') },
   { id: 'emails', goal: 'k', focus: 'emails', title: 'Emails', sub: 'Clear, polite and professional emails', load: () => import('../content/paths/emails.js') },
-  { id: 'meetings', goal: 'k', focus: 'meetings', title: 'Meetings', sub: 'Opinions, questions, agreeing and disagreeing' },
-  { id: 'interviews', goal: 'k', focus: 'interviews', title: 'Interviews', sub: 'Introduce yourself and answer with confidence' }
+  { id: 'meetings', goal: 'k', focus: 'meetings', title: 'Meetings', sub: 'Preparation, agendas, speaking up, presenting and minutes', load: () => import('../content/paths/meetings.js') },
+  { id: 'interviews', goal: 'k', focus: 'interviews', title: 'Interviews', sub: 'Preparation, STAR answers, hard questions and a mock interview', load: () => import('../content/paths/interviews.js') }
 ];
 
 export const pathById = (id) => PATHS.find((p) => p.id === id) || null;

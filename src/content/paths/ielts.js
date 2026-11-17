@@ -5,6 +5,12 @@ const MARKETS = 'Floating markets, where traders sell goods from boats, are foun
 export default {
   note: 'Practice questions written for Lexiverse to help you prepare. They are not official IELTS questions. Check the official IELTS website for the current test format.',
   guide: ['Start with “The test at a glance” to learn the four parts.', 'Work through Writing, Reading, Listening and Speaking in order, or jump to your weakest skill.', 'Look up each writing layout in Writing formats.', 'Take the timed practice test, then save rules you want to remember in your notebook.'],
+  improve: [
+    'Write one Task 1 and one Task 2 answer each week, timed: 20 and 40 minutes.',
+    'Keep a notebook page of trend and linking language and reuse it in every essay.',
+    'Read one long article a day and practise True / False / Not Given on it.',
+    'Record yourself answering a Part 2 cue card and listen for pauses and filler words.'
+  ],
   units: [
     {
       title: 'The test at a glance',

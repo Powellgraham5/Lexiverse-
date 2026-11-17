@@ -2,6 +2,12 @@
 export default {
   note: 'Lessons and practice written for Lexiverse. The automatic checks look at length, headings and formal style; they cannot judge your findings, so compare with the model report.',
   guide: ['Learn the parts of a report first, then practise each part.', 'Use the report layout in Writing formats as a template.', 'Each lesson ends with a short writing task and a model answer.', 'Save useful phrases to your notebook.'],
+  improve: [
+    'Always start with the reader: what do they need to decide?',
+    'Use headings on their own lines and keep each section short.',
+    'Back every finding with a number or a specific example.',
+    'Check that each recommendation follows from a finding.'
+  ],
   units: [
     {
       title: 'What a report is',

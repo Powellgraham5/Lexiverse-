@@ -61,7 +61,10 @@ export default function Lesson() {
           missed={graded.filter((e) => !e.ok).map((e) => ({ word: e.word, detail: e.detail, link: false }))}
           onRetry={() => { setLog([]); setStage({ part: 'cards', i: 0 }); started.current = Date.now(); }} retryLabel="Do it again"
           doneHref={nextLesson ? `/learn/path/${path.id}/${nextLesson.id}` : back} doneLabel={nextLesson ? `Next: ${nextLesson.title}` : 'Back to the path'}
-          extra={nextLesson && <a class="lx-btn ghost" href={back}>Back to the path</a>} />
+          extra={<>
+            {path.improve && <section class="pd-card lx-card ls-improve" aria-labelledby="ls-improve-h"><h2 id="ls-improve-h">To improve further</h2><ul class="pd-improve">{path.improve.slice(0, 2).map((t) => <li key={t}>{t}</li>)}</ul></section>}
+            {nextLesson && <a class="lx-btn ghost" href={back}>Back to the path</a>}
+          </>} />
       </div>
     );
   }
@@ -103,7 +106,7 @@ export default function Lesson() {
       <SessionTop done={at} total={steps} label={lesson.title} closeHref={back} />
       {x.type !== 'write' && <span class="ps-tag lx-rise">Practice · {stage.i + 1} of {lesson.exercises.length}</span>}
       {x.passage && <Passage text={x.passage} />}
-      <View key={`${lesson.id}-${stage.i}`} x={x} seed={`${lesson.id}${stage.i}`} onDone={exerciseDone} />
+      <View key={`${lesson.id}-${stage.i}`} x={x} seed={`${lesson.id}${stage.i}`} onDone={exerciseDone} help={lesson.cards} />
     </div>
   );
 }

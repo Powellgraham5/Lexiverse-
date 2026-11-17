@@ -5,6 +5,12 @@ const MARKET = 'Every last Saturday of the month, the traders of Oja Tuntun mark
 export default {
   note: 'Practice questions written for Lexiverse to help you prepare. They are not official WAEC or NECO past questions. Always check your school and the exam body for the current syllabus.',
   guide: ['Start with “Know the exam” so you know what each paper tests.', 'Work through the units in order: lexis, comprehension and summary, essays and letters, then oral English.', 'Check letter and essay layouts in Writing formats.', 'Take the timed practice test, and save rules to your notebook.'],
+  improve: [
+    'Do one past-style objective set every week and keep a list of the concord and preposition rules you miss.',
+    'Practise one essay or letter a week within the time you will have in the exam, then check its layout against Writing formats.',
+    'Read a newspaper article daily and summarise it in three sentences in your own words.',
+    'Say new words aloud with the Listen button so oral English questions feel familiar.'
+  ],
   units: [
     {
       title: 'Know the exam',

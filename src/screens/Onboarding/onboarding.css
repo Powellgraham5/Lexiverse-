@@ -93,18 +93,16 @@
   .step-welcome .ob-step h1 { font-size: 3rem; }
   .step-welcome .ob-actions { margin-top: 1rem; }
   /* Setup steps: a comfortable centred column, choices in a grid. */
-  .ob-bar, .step-goal .ob-step, .step-focus .ob-step, .step-ready .ob-step, .step-level .ob-step, .step-comfort .ob-step, .step-ready .ob-step { width: 100%; max-width: 46rem; margin-left: auto; margin-right: auto; }
+  .ob-bar, .step-goal .ob-step, .step-focus .ob-step, .step-ready .ob-step, .step-comfort .ob-step, .step-ready .ob-step { width: 100%; max-width: 46rem; margin-left: auto; margin-right: auto; }
   .ob-step h1 { font-size: 2.25rem; }
   :is(.step-goal, .step-focus) .ob-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .875rem; }
   :is(.step-goal, .step-focus) .ob-choice { min-height: 7rem; }
-  .step-level .ob-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .875rem; }
-  .step-level .ob-choice { align-items: flex-start; min-height: 9rem; }
   .ob .lx-btn { max-width: 24rem; align-self: center; }
   .ob-next { margin-top: 2rem; }
   .ob-burst { width: min(100%, 360px); }
 }
 :root[data-large-text] .step-welcome .ob-step { display: flex; }
-:root[data-large-text] :is(.step-goal, .step-focus, .step-level) .ob-choices { display: flex; }
+:root[data-large-text] :is(.step-goal, .step-focus) .ob-choices { display: flex; }
 
 .ob-kicker { font-size: .8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lx-link); }
 .ob-level .ob-focus-title { font-family: var(--lx-font-body); font-size: 1.0625rem; }

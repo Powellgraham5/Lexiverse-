@@ -7,24 +7,6 @@ export const FORMAT_GROUPS = [
     id: 'waec', title: 'WAEC / NECO', note: CHECK,
     formats: [
       {
-        id: 'waec-formal', title: 'Formal letter', use: 'Writing to an official, an editor, or someone you do not know.',
-        template: ['                              Your address', '                              Date', '', 'The receiver’s title', 'The receiver’s address', '', 'Dear Sir,', '', 'HEADING THAT STATES THE SUBJECT', '', 'Paragraph 1: why you are writing.', 'Paragraphs 2 to 4: details, one point each.', 'Last paragraph: what you want done.', '', 'Yours faithfully,', 'Signature', 'Full name'],
-        rules: ['Use formal words; no slang or contractions.', 'Give the letter a heading.', 'End with “Yours faithfully,” after “Dear Sir” or “Dear Madam”.', 'The continuous-writing question usually asks for about 450 words; follow the word count on your paper.'],
-        mistake: 'Ending with “Yours sincerely” after “Dear Sir”, or writing “Yours Faithfully” with a capital F.', practice: ['waec', 'waec-letters']
-      },
-      {
-        id: 'waec-informal', title: 'Informal letter', use: 'Writing to a friend, cousin or family member.',
-        template: ['                              Your address', '                              Date', '', 'Dear Ada,', '', 'A warm opening: greetings and news.', 'The purpose of the letter.', 'Details in a friendly tone.', 'A friendly close and greetings to family.', '', 'Your loving friend,', 'First name'],
-        rules: ['Only your address and the date; no receiver’s address.', 'Use a friendly, natural tone, but still correct English.', 'End with “Your loving friend,” “Your sister,” or similar.'],
-        mistake: 'Adding the receiver’s address, or using text-message spelling.', practice: ['waec', 'waec-letters']
-      },
-      {
-        id: 'waec-semiformal', title: 'Semi-formal letter', use: 'Writing to someone you know but respect, such as a teacher or family friend.',
-        template: ['                              Your address', '                              Date', '', 'Dear Mr Okafor,', '', 'A polite opening.', 'The purpose and details.', 'A polite close.', '', 'Yours sincerely,', 'Full name'],
-        rules: ['Greet by name: “Dear Mr Okafor,” or “Dear Mrs Bello,”.', 'Polite and warm, but not casual.', 'End with “Yours sincerely,” and your full name.'],
-        mistake: 'Using “Dear Sir” to someone you know well.', practice: ['waec', 'waec-letters']
-      },
-      {
         id: 'waec-speech', title: 'Speech', use: 'A talk to an audience, such as on prize-giving day or at a debate.',
         template: ['TITLE OF THE SPEECH', '', 'The Principal, members of staff, parents and my fellow students,', '', 'Introduce yourself and the topic.', 'Points, each in its own paragraph.', 'Speak to the audience directly.', '', 'Thank you for listening.'],
         rules: ['Address the audience at the start.', 'Use a title.', 'End with “Thank you for listening.”'],
@@ -41,6 +23,29 @@ export const FORMAT_GROUPS = [
         template: ['TITLE', '', 'Introduction: the topic and your side.', 'Point 1 with a reason and an example.', 'Point 2 with a reason and an example.', 'Point 3 with a reason and an example.', 'The other side, and why your side is stronger.', 'Conclusion: restate your side.'],
         rules: ['State your side clearly at the start.', 'One point per paragraph.', 'Answer the opposing view.'],
         mistake: 'Arguing both sides equally and never choosing one.', practice: ['waec', 'waec-essays']
+      }
+    ]
+  },
+  {
+    id: 'letters', title: 'Letters', note: 'These layouts are also the ones WAEC and NECO letter questions expect.',
+    formats: [
+      {
+        id: 'waec-formal', title: 'Formal letter', use: 'Writing to an official, an editor, or someone you do not know.',
+        template: ['                              Your address', '                              Date', '', 'The receiver’s title', 'The receiver’s address', '', 'Dear Sir,', '', 'HEADING THAT STATES THE SUBJECT', '', 'Paragraph 1: why you are writing.', 'Paragraphs 2 to 4: details, one point each.', 'Last paragraph: what you want done.', '', 'Yours faithfully,', 'Signature', 'Full name'],
+        rules: ['Use formal words; no slang or contractions.', 'Give the letter a heading.', 'End with “Yours faithfully,” after “Dear Sir” or “Dear Madam”.', 'In WAEC and NECO the continuous-writing question usually asks for about 450 words; follow the word count on your paper.'],
+        mistake: 'Ending with “Yours sincerely” after “Dear Sir”, or writing “Yours Faithfully” with a capital F.', practice: ['letters', 'letter-formal-layout']
+      },
+      {
+        id: 'waec-informal', title: 'Informal letter', use: 'Writing to a friend, cousin or family member.',
+        template: ['                              Your address', '                              Date', '', 'Dear Ada,', '', 'A warm opening: greetings and news.', 'The purpose of the letter.', 'Details in a friendly tone.', 'A friendly close and greetings to family.', '', 'Your loving friend,', 'First name'],
+        rules: ['Only your address and the date; no receiver’s address.', 'Use a friendly, natural tone, but still correct English.', 'End with “Your loving friend,” “Your sister,” or similar.'],
+        mistake: 'Adding the receiver’s address, or using text-message spelling.', practice: ['letters', 'letter-informal']
+      },
+      {
+        id: 'waec-semiformal', title: 'Semi-formal letter', use: 'Writing to someone you know but respect, such as a teacher or family friend.',
+        template: ['                              Your address', '                              Date', '', 'Dear Mr Okafor,', '', 'A polite opening.', 'The purpose and details.', 'A polite close.', '', 'Yours sincerely,', 'Full name'],
+        rules: ['Greet by name: “Dear Mr Okafor,” or “Dear Mrs Bello,”.', 'Polite and warm, but not casual.', 'End with “Yours sincerely,” and your full name.'],
+        mistake: 'Using “Dear Sir” to someone you know well.', practice: ['letters', 'letter-compare']
       }
     ]
   },
@@ -98,6 +103,29 @@ export const FORMAT_GROUPS = [
         template: ['Title', '', 'Introduction', 'The purpose of the report and how the information was gathered.', '', 'Findings', 'What you found, under clear sub-headings, with numbers.', '', 'Conclusion', 'What the findings mean.', '', 'Recommendations', 'What should be done.'],
         rules: ['Use headings on their own lines.', 'Formal, impersonal language: “It was found that …”.', 'Recommendations must follow from the findings.'],
         mistake: 'Writing it as one long essay with no headings.', practice: ['reports', 'report-structure']
+      }
+    ]
+  },
+  {
+    id: 'work', title: 'Meetings and interviews',
+    formats: [
+      {
+        id: 'agenda', title: 'Meeting agenda', use: 'Sent before a meeting so people can prepare.',
+        template: ['Title of the meeting', 'Purpose: what the meeting must decide', 'Date, time and place', 'People invited', '1. Item (who leads, minutes)', '2. Item (who leads, minutes)', 'Any other business', 'Next meeting'],
+        rules: ['Number the items and give each a lead and a time.', 'Say what each item must decide, not just its topic.', 'Send it before the meeting.'],
+        mistake: 'Items like “Stuff” or “Updates” that do not say what will be decided.', practice: ['meetings', 'meeting-prepare']
+      },
+      {
+        id: 'minutes', title: 'Meeting minutes', use: 'A short record of what was decided and who will do what.',
+        template: ['Minutes: title of the meeting', 'Date', 'Attendees', 'Decisions', 'Actions: person, task, deadline', 'Next meeting'],
+        rules: ['Record decisions and actions, not every word.', 'Each action names a person and a deadline.', 'Use the past tense and neutral language.'],
+        mistake: 'Actions like “Someone will look into it”.', practice: ['meetings', 'meeting-minutes']
+      },
+      {
+        id: 'star', title: 'Interview answer (STAR)', use: 'Answering “Tell me about a time when…” questions.',
+        template: ['Situation: the background in one or two sentences', 'Task: what you had to do', 'Action: what you did (say “I”)', 'Result: what happened, with numbers if possible'],
+        rules: ['Pick an example that fits the job.', 'Spend most of the answer on Action and Result.', 'Keep it to about two minutes.'],
+        mistake: 'Saying “we” throughout, so the interviewer cannot see your part.', practice: ['interviews', 'interview-star']
       }
     ]
   },

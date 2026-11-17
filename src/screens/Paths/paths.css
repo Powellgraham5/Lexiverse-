@@ -2,7 +2,7 @@
 .pt-sub { color: var(--lx-muted); font-weight: 600; }
 .pt-sk { display: block; height: 20rem; border-radius: 1.5rem; }
 .pt-cats { display: grid; gap: .875rem; }
-@media (min-width: 1024px) { .pt-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+@media (min-width: 1280px) { .pt-cats { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; } }
 :root[data-large-text] .pt-cats { grid-template-columns: 1fr; }
 .pt-cat { display: flex; flex-direction: column; gap: .75rem; padding: 1.125rem; border-radius: 1.5rem; }
 .pt-cat.mine { box-shadow: inset 0 0 0 2.5px var(--lx-primary); }
@@ -145,3 +145,21 @@
 .pt-timer > span { flex: 1; font-weight: 600; }
 .pt-timer b { font-family: var(--lx-font-display); font-size: 1.375rem; font-variant-numeric: tabular-nums; }
 .pt-timer b.low { color: var(--lx-error-ink); }
+.ls-help { display: flex; flex-direction: column; gap: .5rem; margin-top: .25rem; }
+.ls-help .lx-btn { align-self: flex-start; padding-inline: 0; }
+.ls-help-card { padding: .75rem .875rem; border-radius: 1rem; background: var(--lx-surface); }
+.ls-help-card p { margin: .25rem 0 0; }
+.ls-help-card ul { margin: .375rem 0 0; padding-left: 1.125rem; }
+.ls-help-card li.bad { text-decoration: line-through; text-decoration-color: var(--lx-error); }
+.pd-card { display: flex; flex-direction: column; gap: .625rem; padding: 1rem 1.125rem; border-radius: 1.25rem; }
+.pd-card h2 { font-size: 1rem; }
+.pd-improve { margin: 0; padding-left: 1.25rem; line-height: 1.55; display: flex; flex-direction: column; gap: .25rem; }
+.pd-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 0; padding: 0; list-style: none; }
+:root[data-large-text] .pd-stats { grid-template-columns: 1fr; }
+.pd-stats li { display: flex; flex-direction: column; padding: .625rem; border-radius: .875rem; background: var(--lx-raised); }
+.pd-stats b { font-family: var(--lx-font-display); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.pd-stats span { font-size: .75rem; font-weight: 600; color: var(--lx-muted); }
+.pd-tests { display: flex; flex-direction: column; gap: .25rem; margin: 0; padding: 0; list-style: none; }
+.pd-tests li { display: flex; justify-content: space-between; gap: .5rem; font-size: .875rem; font-variant-numeric: tabular-nums; }
+.pd-tests li span { color: var(--lx-muted); }
+.ls-improve { text-align: left; }

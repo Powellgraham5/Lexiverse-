@@ -7,11 +7,12 @@ import { checkWriting } from './writing.js';
 
 const open = PATHS.filter((p) => p.load);
 
-test('seven paths are open; Other exams, Meetings and Interviews are coming soon', () => {
-  assert.deepEqual(open.map((p) => p.id), ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'emails']);
+test('ten paths are open; only More examinations is coming soon', () => {
+  assert.deepEqual(open.map((p) => p.id), ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'letters', 'emails', 'meetings', 'interviews']);
   assert.equal(focusPath('x', 'waec'), 'waec');
   assert.equal(focusPath('x', 'ielts'), 'ielts');
-  assert.equal(focusPath('k', 'meetings'), null);
+  assert.equal(focusPath('k', 'meetings'), 'meetings');
+  assert.equal(focusPath('x', 'other'), null);
   assert.equal(focusPath('k', 'emails'), 'emails');
 });
 
@@ -19,7 +20,7 @@ test('every lesson and exercise in every open path is well formed', async () => 
   const ids = new Set();
   for (const meta of open) {
     const path = await loadPath(meta.id);
-    assert.ok(path.note && path.units.length && path.guide?.length >= 3, `${meta.id} needs a note, a guide and units`);
+    assert.ok(path.note && path.units.length && path.guide?.length >= 3 && path.improve?.length >= 3, `${meta.id} needs a note, a guide, improvement tips and units`);
     const text = JSON.stringify(path);
     assert.ok(!text.includes('—'), `${meta.id} contains an em dash`);
     for (const l of lessonsOf(path)) {

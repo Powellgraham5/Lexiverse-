@@ -4,6 +4,12 @@ const WEAK = 'Reading is good. Reading is good for students because it is good f
 export default {
   note: 'Lessons and practice written for Lexiverse. The automatic checks look at length, paragraphs and linking words; they cannot judge your ideas, so compare your work with the model answers.',
   guide: ['Learn the essay structure first, then the four essay types.', 'Every lesson ends with a short piece to write: try it before you look at the model.', 'Use Writing formats for essay layouts.', 'Save good linking words and phrases to your notebook.'],
+  improve: [
+    'Plan every essay for five minutes: thesis, three points, one example each.',
+    'Read your essay aloud; any sentence you stumble over needs rewriting.',
+    'Replace every “good”, “bad” and “thing” with a precise word.',
+    'Compare your work with the model answer and copy one technique into your next essay.'
+  ],
   units: [
     {
       title: 'Essay structure',

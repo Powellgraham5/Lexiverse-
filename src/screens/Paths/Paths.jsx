@@ -9,7 +9,7 @@ import './paths.css';
 export const CATEGORIES = [
   { goal: 'e', name: 'Everyday English', desc: 'Talk and understand with confidence', Icon: ChatIcon, tint: 'var(--lx-opposite-bg)', how: 'Meet one new word a day, then review it with flashcards, quizzes, listening and spelling.' },
   { goal: 'x', name: 'Exam preparation', desc: 'IELTS, WAEC, SAT and more', Icon: LearnIcon, tint: 'var(--lx-family-bg)', how: 'Pick your exam, learn its format, practise each skill, then take a timed test.' },
-  { goal: 'w', name: 'Better writing', desc: 'Essays, reports and stories', Icon: PenIcon, tint: 'var(--lx-note-bg)', how: 'Learn the layout, study the examples, write your own piece and compare it with a model.' },
+  { goal: 'w', name: 'Better writing', desc: 'Essays, reports, stories and letters', Icon: PenIcon, tint: 'var(--lx-note-bg)', how: 'Learn the layout, study the examples, write your own piece and compare it with a model.' },
   { goal: 'k', name: 'Work and career', desc: 'Emails, meetings and interviews', Icon: CaseIcon, tint: 'var(--lx-info-bg)', how: 'Learn the parts and the tone, practise real situations, and keep templates you can reuse.' }
 ];
 
@@ -22,14 +22,15 @@ export default function Paths() {
     Promise.all(PATHS.filter(isOpen).map(async (p) => [p.id, pathProgress(await loadPath(p.id), await loadProgress(p.id))]))
       .then((rows) => setProgress(Object.fromEntries(rows))).catch(() => {});
   }, []);
-  const ordered = [...CATEGORIES].sort((a, b) => (b.goal === mine) - (a.goal === mine));
+  // The learning section has three categories; Everyday English lives on Today and Learn.
+  const ordered = CATEGORIES.filter((c) => c.goal !== 'e').sort((a, b) => (b.goal === mine) - (a.goal === mine));
 
   return (
     <>
       <div class="lx-top"><a class="lx-round" href="/learn" aria-label="Back to Learn"><BackIcon /></a></div>
       <h1 class="lx-page-title lx-rise">Learning paths</h1>
-      <p class="pt-sub lx-rise lx-d1">Pick a path for step-by-step lessons and practice. Your goal comes first.</p>
-      <a class="pd-test lx-rise lx-d1" href="/learn/formats"><PenIcon /><span><b>Writing formats</b><span>Letters, essays, IELTS tasks, reports, stories and emails</span></span><ChevronIcon /></a>
+      <p class="pt-sub lx-rise lx-d1">Three areas, each with complete courses: lessons, examples, practice, tests and feedback. Your goal comes first.</p>
+      <a class="pd-test lx-rise lx-d1" href="/learn/formats"><PenIcon /><span><b>Writing formats</b><span>Layouts for letters, essays, reports, stories, emails and exam tasks</span></span><ChevronIcon /></a>
       <div class="pt-cats">
         {ordered.map((c, i) => (
           <section key={c.goal} class={`pt-cat lx-card lx-rise lx-d${Math.min(i + 1, 4)} ${c.goal === mine ? 'mine' : ''}`} aria-labelledby={`pt-${c.goal}`}>

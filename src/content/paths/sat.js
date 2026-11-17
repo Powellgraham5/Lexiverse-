@@ -3,6 +3,12 @@
 export default {
   note: 'Practice questions written for Lexiverse in the style of the digital SAT. They are not official SAT questions. Check the College Board website for the current test format.',
   guide: ['Start with the test format so you know what to expect.', 'Each lesson covers one type of Reading and Writing question.', 'Take the timed practice test to build speed.', 'Save grammar rules to your notebook and review them before test day.'],
+  improve: [
+    'Do ten Reading and Writing questions a day and note why each wrong answer was wrong.',
+    'Learn the comma, semicolon and colon rules until you can explain them to someone else.',
+    'When you meet a new word in context, write its meaning and the sentence in your notebook.',
+    'Take the timed practice test weekly to build speed.'
+  ],
   units: [
     {
       title: 'Know the test',

@@ -26,17 +26,37 @@ export function Passage({ text }) {
   );
 }
 
-function Feedback({ ok, title, why, extra }) {
+// When an answer is wrong, the learner can open the lesson's explanation again, worded the
+// same way they were taught, without leaving the question.
+function Help({ help }) {
+  const [open, setOpen] = useState(false);
+  if (!help?.length) return null;
+  return (
+    <div class="ls-help">
+      <button type="button" class="lx-btn ghost small" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? 'Hide the explanation' : 'Explain it again'}</button>
+      {open && help.map((c) => (
+        <div key={c.title} class="ls-help-card">
+          <b>{c.title}</b>
+          <p>{c.body}</p>
+          {c.examples?.length > 0 && <ul>{c.examples.map((e) => <li key={e.text} class={e.good === false ? 'bad' : 'good'}><span class="lx-sr">{e.good === false ? 'Avoid: ' : 'Example: '}</span>{e.text}</li>)}</ul>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Feedback({ ok, title, why, extra, help }) {
   return (
     <div class={`lx-feedback lx-rise ${ok ? 'right' : 'wrong'}`} role="status">
       <b>{title}</b>
       {extra}
       {why && <span>{why}</span>}
+      {!ok && <Help help={help} />}
     </div>
   );
 }
 
-function Choice({ x, onDone, onAnswer }) {
+function Choice({ x, onDone, onAnswer, help }) {
   const [picked, setPicked] = useState(null);
   const answered = picked !== null;
   const ok = picked === x.answer;
@@ -58,12 +78,12 @@ function Choice({ x, onDone, onAnswer }) {
           );
         })}
       </div>
-      {answered && <Foot><Feedback ok={ok} title={ok ? 'Brilliant!' : `Not quite. The answer is “${x.options[x.answer]}”`} why={x.why} /><Next onClick={() => onDone(ok, ok ? '' : `You chose “${x.options[picked]}”. ${x.why}`)} /></Foot>}
+      {answered && <Foot><Feedback ok={ok} title={ok ? 'Brilliant!' : `Not quite. The answer is “${x.options[x.answer]}”`} why={x.why} help={help} /><Next onClick={() => onDone(ok, ok ? '' : `You chose “${x.options[picked]}”. ${x.why}`)} /></Foot>}
     </>
   );
 }
 
-function SpotError({ x, onDone, onAnswer }) {
+function SpotError({ x, onDone, onAnswer, help }) {
   const [picked, setPicked] = useState(null);
   const answered = picked !== null;
   const ok = picked === x.answer;
@@ -84,7 +104,7 @@ function SpotError({ x, onDone, onAnswer }) {
       </div>
       {answered && (
         <Foot>
-          <Feedback ok={ok} title={ok ? 'Well spotted!' : `Not quite. The mistake is “${x.parts[x.answer]}”`}
+          <Feedback ok={ok} help={help} title={ok ? 'Well spotted!' : `Not quite. The mistake is “${x.parts[x.answer]}”`}
             extra={<span>Correct: <b>{x.fix}</b></span>} why={x.why} />
           <Next onClick={() => onDone(ok, ok ? '' : `The mistake was “${x.parts[x.answer]}”. ${x.why}`)} />
         </Foot>
@@ -93,7 +113,7 @@ function SpotError({ x, onDone, onAnswer }) {
   );
 }
 
-function Order({ x, seed, onDone }) {
+function Order({ x, seed, onDone, help }) {
   const start = useMemo(() => {
     let s = shuffle(x.parts, seed);
     if (s.every((p, i) => p === x.parts[i])) s = [...s.slice(1), s[0]];
@@ -132,7 +152,7 @@ function Order({ x, seed, onDone }) {
       <p class="lx-sr" aria-live="polite">{msg}</p>
       {!checked ? <div class="ps-foot"><button type="button" class="lx-btn" onClick={() => setChecked(true)}>Check order</button></div> : (
         <Foot>
-          <Feedback ok={ok} title={ok ? 'Perfect order!' : 'Not quite. Here is the right order:'}
+          <Feedback ok={ok} help={help} title={ok ? 'Perfect order!' : 'Not quite. Here is the right order:'}
             extra={!ok && <ol class="ls-right-order">{x.parts.map((p) => <li key={p}>{p}</li>)}</ol>} why={x.why} />
           <Next onClick={() => onDone(ok, ok ? '' : `Right order: ${x.parts.join(' → ')}.`)} />
         </Foot>
@@ -140,6 +160,9 @@ function Order({ x, seed, onDone }) {
     </>
   );
 }
+
+// A score out of 10 from the automatic checks: the share that passed, rounded.
+const score = (checks) => Math.round((10 * checks.filter((c) => c.ok).length) / Math.max(1, checks.length));
 
 function Write({ x, onDone }) {
   const [text, setText] = useState('');
@@ -162,7 +185,7 @@ function Write({ x, onDone }) {
         }}>Check my writing</button>
         {checks && (
           <section class="ls-checks lx-rise" aria-labelledby="ls-checks-h">
-            <h2 id="ls-checks-h">Automatic checks</h2>
+            <h2 id="ls-checks-h">Automatic checks: {score(checks)} / 10</h2>
             <p class="ls-hint">These look at length, layout and linking words. They can’t judge your ideas, so compare with the model answer too.</p>
             <ul>{checks.map((c) => <li key={c.label} class={c.ok ? 'ok' : 'bad'}>{c.ok ? <CheckIcon size={18} /> : <CloseIcon size={18} />}<span><b>{c.label}</b><span>{c.tip}</span></span></li>)}</ul>
           </section>
@@ -186,7 +209,7 @@ function Next({ onClick, focus = true }) {
 
 // Listening: the device voice reads a short script, then a choice question. A transcript is
 // always available, so deaf and hard-of-hearing learners can still do the exercise.
-function Listen({ x, onDone, onAnswer }) {
+function Listen({ x, onDone, onAnswer, help }) {
   const [played, setPlayed] = useState(0);
   const [script, setScript] = useState(!canSpeak());
   useEffect(() => () => stopSpeaking(), []);
@@ -202,7 +225,7 @@ function Listen({ x, onDone, onAnswer }) {
       {!canSpeak() && <p class="ls-hint">Your device has no voice, so the transcript is shown.</p>}
       {played > 0 && <p class="ls-hint">Played {played} time{played === 1 ? '' : 's'}. In the real test you hear it once.</p>}
       {script && <p class="ls-passage ls-script">{x.script}</p>}
-      <Choice x={{ ...x, type: 'choice' }} onDone={onDone} onAnswer={onAnswer} />
+      <Choice x={{ ...x, type: 'choice' }} onDone={onDone} onAnswer={onAnswer} help={help} />
     </>
   );
 }

@@ -3,7 +3,7 @@
 
 const LINKERS = ['however', 'therefore', 'firstly', 'secondly', 'finally', 'moreover', 'furthermore', 'in addition', 'also',
   'because', 'although', 'for example', 'for instance', 'in conclusion', 'as a result', 'on the other hand', 'consequently',
-  'in summary', 'besides', 'meanwhile', 'then', 'next', 'lastly', 'while', 'whereas', 'since', 'yet', 'in short', 'over time'];
+  'in summary', 'besides', 'meanwhile', 'then', 'next', 'lastly', 'while', 'whereas', 'since', 'yet', 'in short', 'over time', 'afterwards', 'later', 'first'];
 const COMMON = new Set(('the a an and or but of to in on at for with is are was were be been it this that these those i you he she we they my your ' +
   'our their his her its as by from not no so if do does did have has had will would can could should shall may might must me us them').split(' '));
 const GREETING = /^(dear|hi|hello|good (morning|afternoon|evening))\b/im;

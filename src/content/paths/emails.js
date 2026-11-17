@@ -2,6 +2,12 @@
 export default {
   note: 'Lessons and practice written for Lexiverse. The automatic checks look for a subject, greeting, closing and length; they cannot judge your message, so compare it with the model email.',
   guide: ['Start with the parts of an email, then tone and real situations.', 'Write each practice email, check it, then compare with the model.', 'Copy email templates from Writing formats.', 'Save phrases you like to your notebook.'],
+  improve: [
+    'Write the subject line last, once you know exactly what the email asks for.',
+    'Read every email once as the reader before you send it.',
+    'Keep a set of polite request and closing phrases in your notebook.',
+    'Reply to real messages using the structure: purpose, details, next step.'
+  ],
   units: [
     {
       title: 'Parts of an email',

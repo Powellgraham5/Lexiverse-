@@ -8,7 +8,7 @@ import { CATEGORIES } from './Paths.jsx';
 import './paths.css';
 
 // Which Writing formats group fits each path.
-export const FORMAT_GROUP = { waec: 'waec', ielts: 'ielts', sat: 'sat', essays: 'writing', stories: 'writing', reports: 'writing', emails: 'emails' };
+export const FORMAT_GROUP = { waec: 'waec', ielts: 'ielts', sat: 'sat', essays: 'writing', stories: 'writing', reports: 'writing', letters: 'letters', emails: 'emails', meetings: 'work', interviews: 'work' };
 const GUIDE_KEY = 'lx-guide-closed';
 const guideClosed = (id) => { try { return JSON.parse(localStorage.getItem(GUIDE_KEY) || '[]').includes(id); } catch { return false; } };
 function setGuideClosed(id, closed) {
@@ -17,6 +17,30 @@ function setGuideClosed(id, closed) {
     closed ? list.add(id) : list.delete(id);
     localStorage.setItem(GUIDE_KEY, JSON.stringify([...list]));
   } catch { /* private mode */ }
+}
+
+// How the learner is doing: lessons finished, their average lesson score, and recent tests.
+function Performance({ path, progress }) {
+  const done = Object.values(progress.done || {});
+  const graded = done.filter((d) => d.total);
+  const avg = graded.length ? Math.round((100 * graded.reduce((a, d) => a + d.score, 0)) / graded.reduce((a, d) => a + d.total, 0)) : null;
+  const tests = [...(progress.tests || [])].reverse().slice(0, 5);
+  if (!done.length && !tests.length) return null;
+  return (
+    <section class="pd-card lx-card" aria-labelledby="pd-perf">
+      <h2 id="pd-perf">Your performance</h2>
+      <ul class="pd-stats">
+        <li><b>{done.length}</b><span>lessons done</span></li>
+        <li><b>{avg === null ? '–' : `${avg}%`}</b><span>lesson score</span></li>
+        <li><b>{(progress.tests || []).length}</b><span>tests taken</span></li>
+      </ul>
+      {tests.length > 0 && (
+        <ol class="pd-tests" aria-label="Recent tests">
+          {tests.map((t) => <li key={t.at}><span>{new Date(t.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span><b>{t.score}/{t.total}</b><span>{Math.round(t.secs / 60) || 1} min</span></li>)}
+        </ol>
+      )}
+    </section>
+  );
 }
 
 export default function PathDetail() {
@@ -69,6 +93,13 @@ export default function PathDetail() {
               : <p class="pd-done" role="status"><CheckIcon size={18} /> Path complete. Revisit any lesson to practise again.</p>}
           </header>
           <p class="pd-note">{path.note}</p>
+          <Performance path={path} progress={progress} />
+          {path.improve && (
+            <section class="pd-card lx-card" aria-labelledby="pd-improve">
+              <h2 id="pd-improve">How to improve</h2>
+              <ul class="pd-improve">{path.improve.map((t) => <li key={t}>{t}</li>)}</ul>
+            </section>
+          )}
         </div>
         <div class="lx-col">
           {path.guide && (
@@ -80,7 +111,7 @@ export default function PathDetail() {
           <div class="pd-tools lx-rise lx-d1">
             <a class="pd-test" href={`/learn/path/${path.id}/test`}>
               <SlowIcon />
-              <span><b>Timed practice test</b><span>{testSize} questions · {testSize} minutes{best ? ` · Best: ${best.score}/${best.total}` : ''}</span></span>
+              <span><b>Practice test</b><span>{testSize} questions · timed or untimed{best ? ` · Best: ${best.score}/${best.total}` : ''}</span></span>
               <ChevronIcon />
             </a>
             {FORMAT_GROUP[path.id] && (

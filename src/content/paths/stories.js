@@ -2,6 +2,12 @@
 export default {
   note: 'Lessons and practice written for Lexiverse. The automatic checks look at length, paragraphs and dialogue punctuation; they cannot judge your story, so read it aloud and compare with the model.',
   guide: ['Read each lesson’s cards, then try the practice questions.', 'Every lesson ends with a short scene to write: try it before you look at the model.', 'Keep ideas, names and good sentences in your notebook.', 'Check story layout and dialogue rules in Writing formats.'],
+  improve: [
+    'Read short stories and note how writers open them; try the same technique.',
+    'Write a 150-word scene every few days and focus on one skill at a time.',
+    'Read your dialogue aloud to check it sounds like real people.',
+    'Cut any sentence that does not move the story or show the character.'
+  ],
   units: [
     {
       title: 'Story shape',

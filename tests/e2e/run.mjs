@@ -89,6 +89,8 @@ for (const [w, h] of WIDTHS) {
     for (const [route, name] of ROUTES) {
       await page.goto(BASE + route);
       await page.waitForSelector('#main h1');
+      // Screens that load data show a busy placeholder first; check the finished screen.
+      await page.waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, { timeout: 8000 }).catch(() => {});
       // Search results arrive after the 250 ms debounce.
       if (route.includes('q=')) await page.waitForSelector('.sr-rows:not([aria-busy]), .sr-state, .lx-error-card, .sr-section h2', { timeout: 5000 }).catch(() => {});
       if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
@@ -112,6 +114,8 @@ for (const [w, h] of [[1280, 800], [1920, 1080]]) {
   for (const [route, name] of ROUTES) {
     await page.goto(BASE + route);
     await page.waitForSelector('#main h1');
+    // Screens that load data show a busy placeholder first; check the finished screen.
+    await page.waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, { timeout: 8000 }).catch(() => {});
     if (route.includes('q=')) await page.waitForSelector('.sr-rows:not([aria-busy]), .sr-state, .lx-error-card, .sr-section h2', { timeout: 5000 }).catch(() => {});
     if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
     if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
@@ -185,6 +189,8 @@ await check('200% text: layout holds and the nav still fits', async () => {
   for (const [route, name] of ROUTES) {
     await page.goto(BASE + route);
     await page.waitForSelector('#main h1');
+    // Screens that load data show a busy placeholder first; check the finished screen.
+    await page.waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, { timeout: 8000 }).catch(() => {});
     await settle(page);
     assert.deepEqual(await overflow(page), [], `${name} overflows at 200%`);
   }

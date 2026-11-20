@@ -1007,8 +1007,9 @@ await check('paths: order and write tasks (email checks flag a missing closing)'
   await p.click('button:text("Check order")');
   await p.waitForSelector('.lx-feedback:has-text("Perfect order!")');
   await p.click('button:text("Continue")');
+  await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Lesson complete!")');
-  assert.match(await p.textContent('.rs-sub'), /4 of 4 correct/);
+  assert.match(await p.textContent('.rs-sub'), /5 of 5 correct/);
   await p.click('.rs-actions a.lx-btn:not(.ghost)');
   await p.waitForURL('**/email-end');
   await skipCards(p);
@@ -1416,6 +1417,7 @@ await check('learning: the path page shows performance and how to improve after 
   await p.click('.ls-timer button:text("Start speaking")');
   await p.click('.ls-timer button:text("Finish")');
   await p.click('button:text("Continue")');
+  await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Lesson complete!")');
   await p.waitForSelector('.ls-improve li');
   await p.goto(BASE + '/learn/path/interviews');

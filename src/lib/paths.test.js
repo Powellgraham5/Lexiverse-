@@ -51,6 +51,28 @@ test('every lesson and exercise in every open path is well formed', async () => 
   }
 });
 
+test('every course is a full course: introduction, units with common mistakes, final assessment', async () => {
+  for (const meta of open) {
+    const path = await loadPath(meta.id);
+    const all = lessonsOf(path);
+    assert.ok(all.length >= 12, `${meta.id} has only ${all.length} lessons`);
+    assert.equal(all[0].kind, 'intro', `${meta.id} must start with an introduction`);
+    assert.equal(all.at(-1).kind, 'final', `${meta.id} must end with a final assessment`);
+    for (const l of all) {
+      if (l.kind === 'final') {
+        assert.ok(l.cards.length >= 1 && l.exercises.length >= 12, `${l.id} final assessment needs 12 or more questions`);
+        assert.ok(l.exercises.every((x) => ['choice', 'gap', 'error', 'order', 'listen'].includes(x.type)), `${l.id} final assessment must be marked automatically`);
+      } else {
+        assert.ok(l.cards.length >= 3, `${l.id} needs 3 or more teaching cards (has ${l.cards.length})`);
+        assert.ok(l.exercises.length >= 5, `${l.id} needs 5 or more exercises (has ${l.exercises.length})`);
+      }
+    }
+    for (const u of path.units.filter((x) => !x.lessons.every((l) => l.kind === 'final'))) {
+      assert.ok(u.lessons.some((l) => l.cards.some((c) => /mistake/i.test(c.title))), `${meta.id} unit "${u.title}" needs a common-mistakes card`);
+    }
+  }
+});
+
 test('every model answer passes its own automatic checks', async () => {
   for (const meta of open) {
     for (const l of lessonsOf(await loadPath(meta.id))) {

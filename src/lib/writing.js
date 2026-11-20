@@ -7,7 +7,7 @@ const LINKERS = ['however', 'therefore', 'firstly', 'secondly', 'finally', 'more
 const COMMON = new Set(('the a an and or but of to in on at for with is are was were be been it this that these those i you he she we they my your ' +
   'our their his her its as by from not no so if do does did have has had will would can could should shall may might must me us them').split(' '));
 const GREETING = /^(dear|hi|hello|good (morning|afternoon|evening))\b/im;
-const CLOSING = /\b(yours (faithfully|sincerely|truly)|best regards|kind regards|warm regards|regards|best wishes|thank you|thanks|cheers|your (loving|dear) \w+)\b[,.!]?\s*\n*\s*\S*/i;
+const CLOSING = /\b(yours (faithfully|sincerely|truly)|best regards|kind regards|warm regards|regards|best wishes|with love|lots of love|thank you|thanks|cheers|your (loving|dear) \w+)\b[,.!]?\s*\n*\s*\S*/i;
 // Not "'s" in general: "the school's library" is a possessive, not a contraction.
 const CONTRACTION = /\b(\w+n['’]t|\w+['’](re|ve|ll|d|m)|(it|that|there|he|she|what|who|let)['’]s)\b/i;
 

@@ -39,9 +39,9 @@ Lexiverse is a mobile-first, installable vocabulary-learning app with a built-in
   - **Exam preparation:** IELTS (writing tasks, reading, listening with the device voice, a timed speaking cue card), WAEC / NECO English and SAT Reading and Writing. More examinations are coming.
   - **Better writing:** Essays, Reports, Stories and Letters (formal, informal and semi-formal).
   - **Work and career:** Emails, Meetings (agendas, speaking up, presenting, minutes) and Interviews (preparation, STAR answers, hard questions, a timed mock interview).
-  - **Every course:** a guide, lessons with explanations, examples, real-life use and common mistakes; practice with answers and explanations; "Explain it again" on a wrong answer; writing tasks scored out of 10 with corrections and a model answer; timed or untimed practice tests; performance tracking; and how-to-improve advice.
+  - **Every course** (147 lessons across 10 courses, 12 to 18 each): starts with an introduction and ends with a final assessment marked automatically. It has a guide, lessons with explanations, examples, real-life use and common mistakes; practice with answers and explanations; "Explain it again" on a wrong answer; writing tasks scored out of 10 with corrections and a model answer; timed or untimed practice tests; performance tracking; and how-to-improve advice.
   - **Writing formats** and a **Notebook** in My Words. Choosing a subject in onboarding leads straight to its course.
-  - Content is practice material, not official past questions. A teacher checklist is in [docs/CONTENT_REVIEW.md](docs/CONTENT_REVIEW.md).
+  - Content is practice material, not official past questions. A teacher checklist is in [docs/CONTENT_REVIEW.md](docs/CONTENT_REVIEW.md) (rebuild it with `node scripts/content-review.mjs`).
 - Next: phase 5, account and settings (optional sign-in and sync).
 - `prototype/` is the old clickable prototype, kept for reference until the real screens replace it.
 

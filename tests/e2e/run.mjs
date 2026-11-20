@@ -99,7 +99,19 @@ for (const [w, h] of WIDTHS) {
       if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero, .pt-cat, .pd-lesson, .ps-tag, .fm-card', { timeout: 8000 }).catch(() => {});
       await settle(page);
       await page.screenshot({ path: `${SHOTS}${name}-${w}-${theme}.png`, fullPage: true });
-      await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
+      // Clicks through a lesson's teaching cards, however many it has, to the first exercise.
+async function skipCards(p) {
+  for (let i = 0; i < 15; i++) {
+    const b = p.locator('.ps-foot .lx-btn:not(.ghost)');
+    await b.waitFor();
+    const text = await b.textContent();
+    await b.click();
+    if (text.includes('Start the practice')) return;
+  }
+  throw new Error('lesson has too many cards');
+}
+
+await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
       if (w === 390 || w === 1440) await check(`${name} ${w}px ${theme}: axe has no serious issues`, async () => assert.deepEqual(await axe(page), []));
     }
     await check(`${w}px ${theme}: no script errors`, async () => assert.deepEqual(errors, []));
@@ -953,7 +965,7 @@ await check('paths: a full WAEC lesson by keyboard, then progress shows', async 
   await p.goto(BASE + '/learn/path/waec/waec-concord');
   await p.waitForSelector('h1:text("Find the real subject")');
   assert.ok(!(await p.isVisible('.lx-nav')), 'lessons are full screen');
-  for (const heading of ['Each, every, one of', 'Either … or, neither … nor']) {
+  for (const heading of ['Each, every, one of', 'Either … or, neither … nor', 'Common mistakes']) {
     await p.click('.ps-foot button:text-is("Next")');
     await p.waitForSelector(`h1:text("${heading}")`);
   }
@@ -983,7 +995,7 @@ await check('paths: order and write tasks (email checks flag a missing closing)'
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
   await p.goto(BASE + '/learn/path/emails/email-start');
-  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 3; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
   // Order task: sort by repeatedly moving the right item up.
   const want = ['Subject line', 'Greeting', 'Purpose of the email', 'Details', 'Closing line or request', 'Sign-off and your name'];
@@ -999,7 +1011,7 @@ await check('paths: order and write tasks (email checks flag a missing closing)'
   assert.match(await p.textContent('.rs-sub'), /4 of 4 correct/);
   await p.click('.rs-actions a.lx-btn:not(.ghost)');
   await p.waitForURL('**/email-end');
-  for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
   await p.waitForSelector('#ls-write');
   await p.fill('#ls-write', 'Subject: Moving tomorrow’s meeting\n\nDear Mr Eze,\n\nCould we move tomorrow’s 10am meeting to 2pm? I have a client call in the morning that cannot be moved. Please let me know if that works for the team.');
@@ -1011,6 +1023,33 @@ await check('paths: order and write tasks (email checks flag a missing closing)'
   assert.equal(await p.locator('.ls-checks li.bad').count(), 0);
   await p.click('button:text("See a model answer")');
   await p.waitForSelector('.ls-model:has-text("Kind regards")');
+  await c.close();
+});
+
+await check('paths: every course runs from an introduction to a final assessment that is marked', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/path/letters');
+  await p.waitForSelector('.pd-unit');
+  assert.match(await p.textContent('.pd-unit >> nth=0'), /What a letter is/);
+  assert.match(await p.textContent('.pd-unit >> nth=-1'), /Final assessment/);
+  assert.ok((await p.locator('.pd-lesson').count()) >= 12, 'a full course has 12 or more lessons');
+  await p.click('.pd-lesson:has-text("Final assessment")');
+  await p.waitForURL('**/learn/path/letters/letter-final');
+  await skipCards(p);
+  let answered = 0;
+  while (!(await p.isVisible('h1:text("Lesson complete!")'))) {
+    await p.waitForSelector('.ls-order, .lx-opt, .ls-part');
+    if (await p.isVisible('.ls-order')) await p.click('button:text("Check order")');
+    else await p.locator('.lx-opt, .ls-part').first().click();
+    await p.click('button:text("Continue")');
+    answered++;
+    await p.waitForFunction(() => !document.querySelector('.lx-feedback'));
+  }
+  assert.ok(answered >= 12, `final assessment had ${answered} questions`);
+  assert.match(await p.textContent('.rs-sub'), new RegExp(`of ${answered} correct`));
+  await p.goto(BASE + '/learn/path/letters');
+  await p.waitForSelector('.pd-lesson.done:has-text("Final assessment")');
   await c.close();
 });
 
@@ -1037,7 +1076,7 @@ await check('paths: screens with progress pass overflow, axe and 200% text', asy
       const c = await newContext({ viewport: { width: w, height: h }, colorScheme: theme });
       const p = await c.newPage();
       await p.goto(BASE + '/learn/path/essays/essay-shape');
-      for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+      await skipCards(p);
       await p.locator('.lx-opt').nth(1).click();
       await p.waitForSelector('.lx-feedback');
       await settle(p);
@@ -1045,7 +1084,7 @@ await check('paths: screens with progress pass overflow, axe and 200% text', asy
       assert.deepEqual(await overflow(p), [], `lesson feedback ${w} ${theme}`);
       assert.deepEqual(await axe(p), [], `lesson feedback ${w} ${theme} axe`);
       await p.goto(BASE + '/learn/path/emails/email-end');
-      for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+      await skipCards(p);
       for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
       await p.fill('#ls-write', 'Hi, can we move it?');
       await p.click('button:text("Check my writing")');
@@ -1055,7 +1094,7 @@ await check('paths: screens with progress pass overflow, axe and 200% text', asy
       assert.deepEqual(await overflow(p), [], `write ${w} ${theme}`);
       assert.deepEqual(await axe(p), [], `write ${w} ${theme} axe`);
       await p.goto(BASE + '/learn/path/emails/email-start');
-      for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+      await skipCards(p);
       for (let i = 0; i < 3; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
       await p.waitForSelector('.ls-order');
       await settle(p);
@@ -1217,7 +1256,7 @@ await check('IELTS: listening plays the script and the speaking cue card counts 
   await c.addInitScript(SPEECH_STUB);
   const p = await c.newPage();
   await p.goto(BASE + '/learn/path/ielts/ielts-listening');
-  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   await p.click('button[aria-label="Play the recording"]');
   await p.waitForFunction(() => window.__spoken.some((x) => x.text.includes('Greenfield Sports Centre')));
   await p.click('button:text("Read the transcript")');
@@ -1225,7 +1264,7 @@ await check('IELTS: listening plays the script and the speaking cue card counts 
   await p.click('.lx-opt:has-text("Thursday, 6.30")');
   await p.waitForSelector('.lx-feedback:has-text("Brilliant")');
   await p.goto(BASE + '/learn/path/ielts/ielts-speaking');
-  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 2; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
   await p.click('button:text("Start: 1:00 to prepare")');
   await p.waitForSelector('[role=timer]:has-text("1:00")');
@@ -1282,7 +1321,7 @@ await check('critique: writing check moves focus to the results; a quick Back ke
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
   await p.goto(BASE + '/learn/path/emails/email-end');
-  for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
   await p.fill('#ls-write', 'Hi, can we move it?');
   await p.click('button:text("Check my writing")');
@@ -1328,7 +1367,7 @@ await check('critique: the speaking timer runs after pausing in preparation', as
   await c.addInitScript(SPEECH_STUB);
   const p = await c.newPage();
   await p.goto(BASE + '/learn/path/ielts/ielts-speaking');
-  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 2; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
   await p.click('button:text("Start: 1:00 to prepare")');
   await p.click('.ls-timer button:text("Pause")');
@@ -1345,7 +1384,7 @@ await check('learning: a wrong answer offers the explanation again; tests can be
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
   await p.goto(BASE + '/learn/path/letters/letter-formal-layout');
-  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 6; i++) await p.click('button[aria-label^="Move"]:not([disabled])').catch(() => {});
   await p.click('button:text("Check order")');
   await p.click('button:text("Continue")');
@@ -1356,7 +1395,7 @@ await check('learning: a wrong answer offers the explanation again; tests can be
   await p.click('button:has-text("Untimed")');
   await p.waitForSelector('.pt-timer:has-text("Timer off")');
   await p.goto(BASE + '/learn/path/emails/email-end');
-  for (let i = 0; i < 2; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 3; i++) { await p.locator('.lx-opt, .ls-part').first().click(); await p.click('button:text("Continue")'); }
   await p.fill('#ls-write', 'Hi, can we move it?');
   await p.click('button:text("Check my writing")');
@@ -1368,7 +1407,7 @@ await check('learning: the path page shows performance and how to improve after 
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
   await p.goto(BASE + '/learn/path/interviews/interview-star');
-  for (let i = 0; i < 3; i++) await p.click('.ps-foot .lx-btn:not(.ghost)');
+  await skipCards(p);
   for (let i = 0; i < 6; i++) await p.click('button[aria-label^="Move"]:not([disabled])').catch(() => {});
   await p.click('button:text("Check order")');
   await p.click('button:text("Continue")');

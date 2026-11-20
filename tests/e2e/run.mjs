@@ -34,6 +34,18 @@ const ROUTES = [
 ];
 
 // A context with the fake APIs and, unless fresh, a learner who has finished onboarding.
+// Clicks through a lesson's teaching cards, however many it has, to the first exercise.
+async function skipCards(p) {
+  for (let i = 0; i < 15; i++) {
+    const b = p.locator('.ps-foot .lx-btn:not(.ghost)');
+    await b.waitFor();
+    const text = await b.textContent();
+    await b.click();
+    if (text.includes('Start the practice')) return;
+  }
+  throw new Error('lesson has too many cards');
+}
+
 async function newContext(options = {}, { fresh = false } = {}) {
   const ctx = await browser.newContext({ serviceWorkers: 'block', ...options });
   await ctx.clock.setFixedTime(FIXED_NOW);
@@ -99,19 +111,7 @@ for (const [w, h] of WIDTHS) {
       if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero, .pt-cat, .pd-lesson, .ps-tag, .fm-card', { timeout: 8000 }).catch(() => {});
       await settle(page);
       await page.screenshot({ path: `${SHOTS}${name}-${w}-${theme}.png`, fullPage: true });
-      // Clicks through a lesson's teaching cards, however many it has, to the first exercise.
-async function skipCards(p) {
-  for (let i = 0; i < 15; i++) {
-    const b = p.locator('.ps-foot .lx-btn:not(.ghost)');
-    await b.waitFor();
-    const text = await b.textContent();
-    await b.click();
-    if (text.includes('Start the practice')) return;
-  }
-  throw new Error('lesson has too many cards');
-}
-
-await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
+      await check(`${name} ${w}px ${theme}: no overflow`, async () => assert.deepEqual(await overflow(page), []));
       if (w === 390 || w === 1440) await check(`${name} ${w}px ${theme}: axe has no serious issues`, async () => assert.deepEqual(await axe(page), []));
     }
     await check(`${w}px ${theme}: no script errors`, async () => assert.deepEqual(errors, []));

@@ -6,7 +6,7 @@ import { Results } from '../../components/Results.jsx';
 import { Segmented } from '../../components/controls.jsx';
 import { SessionTop } from '../Learn/SessionTop.jsx';
 import { TIMER } from '../../lib/paths.js';
-import { BANK_NOTE, loadBank, loadBankProgress, drawSet, recordBankSession, bestSession, seenCount } from '../../lib/bank.js';
+import { BANK_NOTE, loadBank, loadBankProgress, drawSet, drawMix, loadMix, mySubjects, recordBankSession, bestSession, seenCount } from '../../lib/bank.js';
 import { recordActivity } from '../../lib/streak.js';
 import { VIEWS } from '../Paths/exercises.jsx';
 import '../../components/options.css';
@@ -16,6 +16,7 @@ import './bank.css';
 
 const SECS_PER_QUESTION = 45;
 const SIZES = [['20', '20'], ['40', '40'], ['60', '60'], ['all', 'All']];
+const MIX_SIZES = [['10', '10'], ['20', '20'], ['40', '40']];
 const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.max(0, s) % 60).padStart(2, '0')}`;
 const short = (q) => (q.length > 70 ? `${q.slice(0, 67)}…` : q);
 
@@ -24,13 +25,26 @@ export default function BankSession() {
   const { params } = useRoute();
   const [bank, setBank] = useState(undefined);
   const [prog, setProg] = useState(null);
+  const mix = params.subject === 'mix';
+  const [seenBy, setSeenBy] = useState({});
   useEffect(() => {
+    if (mix) {
+      const ids = mySubjects();
+      Promise.all([loadMix(ids), ...ids.map(loadBankProgress)])
+        .then(([b, ...ps]) => {
+          const by = Object.fromEntries(ids.map((id, k) => [id, ps[k].seen || {}]));
+          setSeenBy(by);
+          setBank(b);
+          setProg({ seen: Object.assign({}, ...Object.values(by)), sessions: [] });
+        }).catch(() => setBank(null));
+      return;
+    }
     Promise.all([loadBank(params.subject), loadBankProgress(params.subject)])
       .then(([b, p]) => { setBank(b); setProg(p); }).catch(() => setBank(null));
   }, [params.subject]);
   usePage(bank ? `JAMB ${bank.title}` : 'JAMB practice');
 
-  const [size, setSize] = useState('20');
+  const [size, setSize] = useState(mix ? '10' : '20');
   const [items, setItems] = useState([]);
   const [phase, setPhase] = useState('setup'); // setup | run | done
   const [i, setI] = useState(0);
@@ -39,7 +53,7 @@ export default function BankSession() {
   const [say, setSay] = useState('');
   const picked = useRef({});
   const started = useRef(0);
-  const back = '/learn/bank/jamb';
+  const back = params.subject === 'mix' ? '/' : '/learn/bank/jamb';
 
   useEffect(() => {
     if (phase !== 'run' || !timer || timer.paused || timer.off) return undefined;
@@ -63,7 +77,7 @@ export default function BankSession() {
     setTimer(timed ? t : TIMER.off(t));
     setPhase('run');
   }
-  const fresh = (timed) => begin(drawSet(bank.questions, size === 'all' ? bank.questions.length : Number(size), prog.seen), timed);
+  const fresh = (timed) => begin(mix ? drawMix(bank, Number(size), seenBy) : drawSet(bank.questions, size === 'all' ? bank.questions.length : Number(size), prog.seen), timed);
 
   async function finish(entries, timedOut = false) {
     const all = [...entries, ...items.slice(entries.length).map((x, k) => {
@@ -73,8 +87,17 @@ export default function BankSession() {
     setLog(all);
     setPhase('done');
     const secs = Math.round((Date.now() - started.current) / 1000);
-    const next = await recordBankSession(bank.id, { score: all.filter((e) => e.ok).length, total: items.length, secs, ids: items.map((x) => x.id) }).catch(() => null);
-    if (next) setProg(next);
+    if (mix) {
+      // Save each subject's share of the set to that subject's progress.
+      for (const id of [...new Set(items.map((x) => x.subject))]) {
+        const mine = items.map((x, k) => [x, all[k]]).filter(([x]) => x.subject === id);
+        const saved = await recordBankSession(id, { score: mine.filter(([, e]) => e.ok).length, total: mine.length, secs: Math.round((secs * mine.length) / items.length), ids: mine.map(([x]) => x.id) }).catch(() => null);
+        if (saved) setSeenBy((m) => ({ ...m, [id]: saved.seen }));
+      }
+    } else {
+      const next = await recordBankSession(bank.id, { score: all.filter((e) => e.ok).length, total: items.length, secs, ids: items.map((x) => x.id) }).catch(() => null);
+      if (next) setProg(next);
+    }
     recordActivity('quiz', undefined, undefined, Math.max(1, Math.round(secs / 60)));
     if (timedOut) setSay('Time is up');
   }
@@ -95,16 +118,16 @@ export default function BankSession() {
     return (
       <div class="ps">
         <SessionTop done={0} total={0} label="JAMB practice" closeHref={back} />
-        <span class="ps-tag lx-rise">JAMB · {bank.questions.length} questions</span>
+        <span class="ps-tag lx-rise">JAMB · {mix ? bank.topics.join(', ') : `${bank.questions.length} questions`}</span>
         <h1 class="lx-rise lx-d1">{bank.title}</h1>
         <ul class="ls-checklist lx-rise lx-d2">
           <li>A new random set each time, starting with questions you have not seen</li>
           <li>The answer and an explanation after every question, and a full review at the end</li>
-          <li>Topics: {bank.topics.join(', ')}</li>
+          <li>{mix ? 'Questions from each of your subjects, mixed together' : `Topics: ${bank.topics.join(', ')}`}</li>
         </ul>
-        <p class="pt-sub">{seenCount(prog)} of {bank.questions.length} seen{best ? ` · Best: ${best.score}/${best.total}` : ''}</p>
+        {!mix && <p class="pt-sub">{seenCount(prog)} of {bank.questions.length} seen{best ? ` · Best: ${best.score}/${best.total}` : ''}</p>}
         <div class="bk-size lx-card lx-rise lx-d3">
-          <Segmented label="How many questions?" value={size} onChange={setSize} options={SIZES} />
+          <Segmented label="How many questions?" value={size} onChange={setSize} options={mix ? MIX_SIZES : SIZES} />
         </div>
         <p class="pd-note">{BANK_NOTE}</p>
         <div class="ps-foot">
@@ -124,7 +147,7 @@ export default function BankSession() {
       <div class="ps">
         <p class="lx-sr" aria-live="assertive">{say}</p>
         <Results title={say === 'Time is up' ? 'Time is up!' : 'Session complete!'} score={score} total={items.length} unit="correct"
-          missed={missed} onRetry={() => fresh(timed)} retryLabel="New set of questions" doneHref={back} doneLabel="All subjects"
+          missed={missed} onRetry={() => fresh(timed)} retryLabel="New set of questions" doneHref={back} doneLabel={mix ? "Back home" : "All subjects"}
           extra={<>
             <p class="rs-sub">Time taken: {mmss(secs)}</p>
             {missed.length > 0 && <button type="button" class="lx-btn secondary" onClick={() => begin(items.filter((x) => missed.some((m) => m.id === x.id)), timed)}>Retry the {missed.length} you missed</button>}

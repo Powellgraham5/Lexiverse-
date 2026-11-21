@@ -131,6 +131,7 @@ export default function Learn() {
       </div>
       </div>
       <div class="ln-bottom">
+        <a class="ln-setup lx-card" href="/today"><span><b>Word of the day</b><span>Today’s word, its meaning, sound and related words</span></span><ChevronIcon size={20} /></a>
         <a class="ln-setup lx-card" href="/learn/setup"><span><b>Set up practice</b><span>Choose words, how many and question types</span></span><ChevronIcon size={20} /></a>
         <WeekStrip id="ln-st" />
       </div>

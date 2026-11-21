@@ -9,6 +9,7 @@ import { SettingsProvider } from './app/settings-context.jsx';
 import { Shell } from './app/Shell.jsx';
 import { registerServiceWorker } from './app/sw.js';
 import Today from './screens/Today/Today.jsx';
+import Home from './screens/Home/Home.jsx';
 
 // Today loads with the app; every other screen is split into its own chunk.
 const Search = lazy(() => import('./screens/Search/Search.jsx'));
@@ -44,7 +45,8 @@ function App() {
         <ErrorBoundary>
           <Shell>
             <Router>
-              <Route path="/" component={Today} />
+              <Route path="/" component={Home} />
+              <Route path="/today" component={Today} />
               <Route path="/search" component={Search} />
               <Route path="/words" component={Words} />
               <Route path="/words/list/:id" component={ListDetail} />

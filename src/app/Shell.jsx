@@ -9,14 +9,14 @@ import { requestHeadingFocus } from './usePage.js';
 import './shell.css';
 
 const TABS = [
-  { href: '/', label: 'Today', Icon: TodayIcon },
+  { href: '/', label: 'Home', Icon: TodayIcon },
   { href: '/search', label: 'Search', Icon: SearchIcon },
   { href: '/words', label: 'Words', Icon: WordsIcon },
   { href: '/learn', label: 'Learn', Icon: LearnIcon },
   { href: '/me', label: 'Me', Icon: MeIcon }
 ];
 
-const isActive = (href, path) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
+const isActive = (href, path) => (href === '/' ? path === '/' || path === '/today' : path === href || path.startsWith(href + '/'));
 
 // Focused flows (and path lessons) fill the screen without the tab bar.
 const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup'];

@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/today', 'today-word'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -267,6 +267,52 @@ await check('onboarding: a subject with a course opens straight away; other choi
   await c.close();
 });
 
+await check('home: each subject has its own home; Everyday English keeps the word of the day', async () => {
+  const visit = async (profile) => {
+    const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
+    await c.addInitScript((pr) => localStorage.setItem('lx-profile', JSON.stringify(pr)), profile);
+    const p = await c.newPage();
+    await p.goto(BASE + '/');
+    return { c, p };
+  };
+  let { c, p } = await visit({ goal: 'x', focus: 'jamb', level: 2, done: true });
+  await p.waitForSelector('h1:text("Your JAMB practice")');
+  await p.waitForSelector('a.pt-row:has-text("seen")');
+  await settle(p);
+  assert.deepEqual(await overflow(p), [], 'JAMB home overflow');
+  assert.deepEqual(await axe(p), [], 'JAMB home axe');
+  assert.ok(!(await p.isVisible('.lx-orbit-planet')), 'no word of the day on the JAMB home');
+  assert.equal(await p.locator('a.pt-row').count(), 4, 'English and three more subjects');
+  await p.click('button:text("Change")');
+  await p.click('.hm-chip:has-text("Chemistry")');
+  await p.click('.hm-chip:has-text("Government")');
+  await p.click('button:text("Done")');
+  await p.waitForSelector('a.pt-row:has-text("Government")');
+  await p.click('a:text("Start today’s set")');
+  await p.waitForSelector('h1:text("Mixed practice")');
+  await p.click('button:text("Untimed: take your time")');
+  for (let i = 0; i < 10; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
+  await p.waitForSelector('h1:text("Session complete!")');
+  await p.click('a:text("Back home")');
+  await p.waitForSelector('a:has-text("Continue")');
+  await c.close();
+
+  ({ c, p } = await visit({ goal: 'k', focus: 'emails', level: 2, done: true }));
+  await p.waitForSelector('h1:text("Your Emails course")');
+  await settle(p);
+  assert.deepEqual(await overflow(p), [], 'course home overflow');
+  assert.deepEqual(await axe(p), [], 'course home axe');
+  assert.ok(await p.isVisible('a.lx-btn:has-text("Start:")'), 'the next lesson is one tap away');
+  assert.ok(await p.isVisible('a.pd-test:has-text("Practise writing")'));
+  assert.ok(!(await p.isVisible('.lx-orbit-planet')));
+  assert.equal(await p.getAttribute('.lx-nav a[href="/"]', 'aria-current'), 'page');
+  await c.close();
+
+  ({ c, p } = await visit({ goal: 'e', focus: 'travel', level: 2, done: true }));
+  await p.waitForSelector('.lx-orbit-planet');
+  await c.close();
+});
+
 await check('me: changing the goal changes Today\'s word and chip', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
@@ -277,6 +323,8 @@ await check('me: changing the goal changes Today\'s word and chip', async () => 
   await p.selectOption('#me-goal', 'x');
   await p.selectOption('#me-focus', 'ielts');
   await p.goto(BASE + '/');
+  await p.waitForSelector('h1:text("Your IELTS course")');
+  await p.goto(BASE + '/today');
   await p.waitForSelector('.lx-goal-chip:has-text("IELTS")');
   const after = (await p.textContent('.lx-orbit-planet b')).trim();
   assert.ok(DAILY.find((w) => w.w === after).goals.includes('x'), `${after} is not an exam word`);

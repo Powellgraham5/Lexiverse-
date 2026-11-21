@@ -47,3 +47,33 @@ export async function recordBankSession(id, { score, total, secs, ids = [] }, no
 
 export const bestSession = (p) => (p.sessions || []).reduce((b, s) => (!b || s.score / s.total > b.score / b.total ? s : b), null);
 export const seenCount = (p) => Object.keys(p.seen || {}).length;
+
+// The learner's four UTME subjects (English is compulsory), kept on this device.
+const MINE = 'lx-jamb-subjects';
+export const DEFAULT_SUBJECTS = ['english', 'mathematics', 'biology', 'chemistry'];
+export function mySubjects(storage = globalThis.localStorage) {
+  try {
+    const ids = JSON.parse(storage?.getItem(MINE) || 'null');
+    return Array.isArray(ids) && ids.length ? ['english', ...ids.filter((id) => id !== 'english' && subjectById(id))].slice(0, 4) : DEFAULT_SUBJECTS;
+  } catch { return DEFAULT_SUBJECTS; }
+}
+export function saveMySubjects(ids, storage = globalThis.localStorage) {
+  try { storage?.setItem(MINE, JSON.stringify(ids)); } catch { /* private mode: defaults next time */ }
+}
+
+// A mixed set across several subjects: each question keeps its subject so progress is saved per subject.
+export async function loadMix(ids) {
+  const banks = (await Promise.all(ids.map(loadBank))).filter(Boolean);
+  return {
+    id: 'mix', title: 'Mixed practice', topics: banks.map((b) => b.title),
+    questions: banks.flatMap((b) => b.questions.map((q) => ({ ...q, subject: b.id, topic: b.title })))
+  };
+}
+
+// Draws n questions spread evenly across the subjects in a mixed bank.
+export function drawMix(bank, n, seenBySubject = {}, rand = Math.random) {
+  const ids = [...new Set(bank.questions.map((q) => q.subject))];
+  const per = Math.ceil(n / ids.length);
+  const picked = ids.flatMap((id) => drawSet(bank.questions.filter((q) => q.subject === id), per, seenBySubject[id] || {}, rand));
+  return drawSet(picked, n, {}, rand);
+}

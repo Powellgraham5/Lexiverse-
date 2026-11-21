@@ -20,7 +20,7 @@ function setGuideClosed(id, closed) {
 }
 
 // How the learner is doing: lessons finished, their average lesson score, and recent tests.
-function Performance({ path, progress }) {
+export function Performance({ path, progress }) {
   const done = Object.values(progress.done || {});
   const graded = done.filter((d) => d.total);
   const avg = graded.length ? Math.round((100 * graded.reduce((a, d) => a + d.score, 0)) / graded.reduce((a, d) => a + d.total, 0)) : null;

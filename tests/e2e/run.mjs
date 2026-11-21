@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -1009,7 +1009,7 @@ await check('paths: order and write tasks (email checks flag a missing closing)'
   await p.click('button:text("Continue")');
   await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Lesson complete!")');
-  assert.match(await p.textContent('.rs-sub'), /5 of 5 correct/);
+  assert.match(await p.textContent('.rs-sub'), /of 5 correct/);
   await p.click('.rs-actions a.lx-btn:not(.ghost)');
   await p.waitForURL('**/email-end');
   await skipCards(p);
@@ -1069,6 +1069,20 @@ await check('paths: onboarding with Exam then WAEC offers the WAEC path, and Lea
   await p.goto(BASE + '/learn');
   await p.waitForSelector('.ln-path:has-text("WAEC / NECO English"):has-text("Start: What the English paper tests")');
   await c.close();
+  // JAMB, which onboarding already offered, now has its own course too.
+  const c2 = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
+  const p2 = await c2.newPage();
+  await p2.goto(BASE + '/welcome');
+  await p2.click('button:text("Let\'s go")');
+  await p2.click('[role=radio]:has-text("Exam preparation")');
+  await p2.click('button:text("Continue")');
+  await p2.click('[role=radio]:has-text("JAMB")');
+  await p2.click('button:text("Continue")');
+  await p2.click('button:text("Finish setup")');
+  await p2.click('a:has-text("Start your JAMB")');
+  await p2.waitForURL('**/learn/path/jamb');
+  await p2.waitForSelector('h1:text("JAMB (UTME) Use of English")');
+  await c2.close();
 });
 
 await check('paths: screens with progress pass overflow, axe and 200% text', async () => {
@@ -1123,7 +1137,7 @@ await check('guides: every category and path explains how to use it', async () =
   await p.goto(BASE + '/learn/paths');
   await p.waitForSelector('.pt-cat');
   assert.equal(await p.locator('.pt-cat .pt-how').count(), 3);
-  for (const id of ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'letters', 'emails', 'meetings', 'interviews']) {
+  for (const id of ['waec', 'ielts', 'sat', 'jamb', 'toefl', 'essays', 'reports', 'stories', 'letters', 'emails', 'meetings', 'interviews']) {
     await p.goto(BASE + `/learn/path/${id}`);
     await p.waitForSelector('.pd-guide li');
     assert.ok(await p.isVisible('a.pd-test:has-text("Practice test")'), `${id} has a test`);

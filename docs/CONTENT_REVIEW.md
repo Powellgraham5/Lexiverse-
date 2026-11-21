@@ -123,6 +123,78 @@ Please ask an English teacher to check each lesson. Tick the box when a lesson i
 
 - [ ] **Final assessment: SAT Reading and Writing** (`sat-final`): 2 teaching cards, 14 exercises (choice, gap)
 
+## JAMB (UTME) Use of English (`jamb.js`)
+
+### The exam at a glance
+
+- [ ] **The UTME Use of English paper** (`jamb-intro`): 4 teaching cards, 5 exercises (choice, order)
+
+### Comprehension
+
+- [ ] **Reading passages** (`jamb-comprehension`): 4 teaching cards, 5 exercises (choice)
+- [ ] **Cloze passages** (`jamb-cloze`): 4 teaching cards, 5 exercises (gap, choice)
+
+### Lexis and structure
+
+- [ ] **Nearest and opposite in meaning** (`jamb-synonyms`): 4 teaching cards, 6 exercises (choice)
+- [ ] **Sentence interpretation and idioms** (`jamb-interpretation`): 4 teaching cards, 6 exercises (choice)
+- [ ] **Grammar: concord, tenses and prepositions** (`jamb-structure`): 4 teaching cards, 7 exercises (gap, error)
+- [ ] **Spelling and word choice** (`jamb-spelling`): 4 teaching cards, 6 exercises (choice, gap)
+
+### Oral forms
+
+- [ ] **Vowels, consonants and rhymes** (`jamb-vowels`): 4 teaching cards, 6 exercises (choice)
+- [ ] **Word stress and emphatic stress** (`jamb-stress`): 4 teaching cards, 6 exercises (choice)
+
+### The recommended text
+
+- [ ] **Studying the recommended novel** (`jamb-novel`): 4 teaching cards, 6 exercises (choice, order, gap)
+
+### CBT strategy
+
+- [ ] **Computer-based test strategy** (`jamb-cbt`): 4 teaching cards, 5 exercises (choice)
+
+### Final assessment
+
+- [ ] **Final assessment: JAMB Use of English** (`jamb-final`): 2 teaching cards, 15 exercises (choice, gap, error)
+
+## TOEFL iBT (`toefl.js`)
+
+### The test at a glance
+
+- [ ] **The TOEFL iBT, section by section** (`toefl-intro`): 4 teaching cards, 6 exercises (choice, order)
+
+### Reading
+
+- [ ] **Complete the Words** (`toefl-words`): 4 teaching cards, 6 exercises (gap, choice, error)
+- [ ] **Read in Daily Life** (`toefl-daily`): 4 teaching cards, 5 exercises (choice)
+- [ ] **Read an Academic Passage** (`toefl-academic`): 4 teaching cards, 5 exercises (choice)
+
+### Listening
+
+- [ ] **Listen and Choose a Response** (`toefl-response`): 4 teaching cards, 6 exercises (listen, choice)
+- [ ] **Conversations and announcements** (`toefl-conversation`): 4 teaching cards, 6 exercises (listen, choice, gap)
+- [ ] **Listen to an Academic Talk** (`toefl-lecture`): 4 teaching cards, 6 exercises (listen, choice)
+
+### Writing
+
+- [ ] **Build a Sentence** (`toefl-build`): 4 teaching cards, 6 exercises (order, choice, error)
+- [ ] **Write an Email** (`toefl-email`): 4 teaching cards, 6 exercises (choice, gap, error, write)
+- [ ] **Write for an Academic Discussion** (`toefl-discussion`): 4 teaching cards, 6 exercises (choice, gap, order, write)
+
+### Speaking
+
+- [ ] **Listen and Repeat** (`toefl-repeat`): 4 teaching cards, 5 exercises (listen, choice, speak)
+- [ ] **Take an Interview** (`toefl-interview`): 4 teaching cards, 6 exercises (choice, gap, speak)
+
+### Vocabulary and strategy
+
+- [ ] **Academic vocabulary and test-day strategy** (`toefl-strategy`): 4 teaching cards, 6 exercises (gap, choice, error)
+
+### Final assessment
+
+- [ ] **Final assessment: TOEFL iBT** (`toefl-final`): 2 teaching cards, 14 exercises (choice, gap, listen, order)
+
 ## Essays (`essays.js`)
 
 ### Introduction to essays
@@ -372,6 +444,8 @@ Please ask an English teacher to check each lesson. Tick the box when a lesson i
 - [ ] **IELTS: Writing Task 1 (General Training): letter**
 - [ ] **IELTS: Writing Task 2: essay**
 - [ ] **SAT: Reading and Writing questions**
+- [ ] **TOEFL iBT: Write an Email**
+- [ ] **TOEFL iBT: Write for an Academic Discussion**
 - [ ] **Essays, stories and reports: Essay**
 - [ ] **Essays, stories and reports: Story**
 - [ ] **Essays, stories and reports: Report**

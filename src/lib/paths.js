@@ -8,7 +8,9 @@ export const PATHS = [
   { id: 'waec', goal: 'x', focus: 'waec', title: 'WAEC / NECO English', sub: 'Lexis, comprehension, summary, essays and oral English', load: () => import('../content/paths/waec.js') },
   { id: 'ielts', goal: 'x', focus: 'ielts', title: 'IELTS', sub: 'Reading, writing, listening and speaking', load: () => import('../content/paths/ielts.js') },
   { id: 'sat', goal: 'x', focus: 'sat', title: 'SAT', sub: 'Reading and Writing: grammar and words in context', load: () => import('../content/paths/sat.js') },
-  { id: 'other-exams', goal: 'x', focus: 'other', title: 'More examinations', sub: 'JAMB, TOEFL and others are being written' },
+  { id: 'jamb', goal: 'x', focus: 'jamb', title: 'JAMB (UTME) Use of English', sub: 'Comprehension, lexis and structure, oral forms and the set text', load: () => import('../content/paths/jamb.js') },
+  { id: 'toefl', goal: 'x', focus: 'toefl', title: 'TOEFL iBT', sub: 'Reading, listening, writing and speaking in the 2026 format', load: () => import('../content/paths/toefl.js') },
+  { id: 'other-exams', goal: 'x', focus: 'other', title: 'More examinations', sub: 'Other exams are being written' },
   { id: 'essays', goal: 'w', focus: 'essays', title: 'Essays', sub: 'Structure, essay types and strong sentences', load: () => import('../content/paths/essays.js') },
   { id: 'reports', goal: 'w', focus: 'reports', title: 'Reports', sub: 'Formal structure and clear, professional language', load: () => import('../content/paths/reports.js') },
   { id: 'stories', goal: 'w', focus: 'stories', title: 'Stories', sub: 'Characters, plot, dialogue and description', load: () => import('../content/paths/stories.js') },
@@ -44,6 +46,9 @@ export function buildTest(path, size = 10, seed = 'test') {
   const items = lessonsOf(path).flatMap((l) => l.exercises.filter((x) => ['choice', 'gap', 'error', 'listen'].includes(x.type)).map((x, i) => ({ ...x, key: `${l.id}#${i}` })));
   return shuffle(items, seed + path.id, (x) => x.key).slice(0, size);
 }
+
+// The order to show a question's options in: a stable shuffle, so the answer's place varies.
+export const optionOrder = (x) => shuffle(x.options.map((_, i) => i), x.q, (i) => x.options[i]);
 
 // Countdown for a practice test. Pure, so pausing, switching off and expiry are easy to test.
 export const TIMER = {

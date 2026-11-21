@@ -5,6 +5,7 @@ import { speak, stopSpeaking, canSpeak } from '../../lib/speech.js';
 import { SpeakerIcon } from '../../app/icons.jsx';
 import '../Learn/spell.css';
 import { shuffle } from '../../lib/hash.js';
+import { optionOrder } from '../../lib/paths.js';
 import '../../components/options.css';
 import '../Learn/practice.css';
 import './paths.css';
@@ -61,16 +62,19 @@ function Choice({ x, onDone, onAnswer, help }) {
   const answered = picked !== null;
   const ok = picked === x.answer;
   const gap = x.type === 'gap';
+  // Show the options in a stable shuffled order, so the right answer is not always first.
+  const order = useMemo(() => optionOrder(x), [x]);
   return (
     <>
       {gap ? <h1 class="ls-q lx-rise">{x.q.split('___').map((part, i) => (i ? [<span key={i} class="ls-blank">{answered ? x.options[x.answer] : <span class="lx-sr">blank</span>}</span>, part] : part))}</h1>
         : <h1 class="ls-q lx-rise">{x.q}</h1>}
       <div role="group" aria-label="Answers" class={`lx-opts ${x.options.every((o) => o.length <= 40) ? 'short' : ''}`}>
-        {x.options.map((o, k) => {
+        {order.map((k, d) => {
+          const o = x.options[k];
           const st = answered && k === x.answer ? 'right' : answered && k === picked ? 'wrong' : answered ? 'dim' : '';
           return (
             <button key={o} type="button" class={`lx-opt ${st}`} aria-disabled={answered} onClick={() => { if (answered) return; setPicked(k); onAnswer?.(k === x.answer, k === x.answer ? '' : `You chose “${x.options[k]}”. ${x.why}`); }}>
-              <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[k]}</span></> : KEYS[k]}</span>
+              <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[d]}</span></> : KEYS[d]}</span>
               <span>{o}</span>
               {st === 'right' && <span class="lx-sr">, correct answer</span>}
               {st === 'wrong' && <span class="lx-sr">, your answer, not correct</span>}

@@ -84,6 +84,23 @@ export const FORMAT_GROUPS = [
     ]
   },
   {
+    id: 'toefl', title: 'TOEFL iBT', note: CHECK,
+    formats: [
+      {
+        id: 'toefl-email', title: 'Write an Email', use: 'An email for an everyday or academic situation, such as writing to a professor.',
+        template: ['Subject: what the email is about', 'Dear Dr Adeyemi,', 'Purpose in the first sentence.', 'One short paragraph for each point in the task.', 'A clear request or thanks.', 'Kind regards,', 'Your name'],
+        rules: ['Cover every point the task lists.', 'Match the tone to the reader: formal for a professor or organisation.', 'Keep it short and clear; there is a time limit.'],
+        mistake: 'Leaving out one of the points the task asks for.', practice: ['toefl', 'toefl-email']
+      },
+      {
+        id: 'toefl-discussion', title: 'Write for an Academic Discussion', use: 'A reply to a professor’s question in an online class discussion, after two classmates have posted.',
+        template: ['Your position in one sentence.', 'Your main reason.', 'An example or explanation that develops it.', 'A link to a classmate’s idea, agreeing or disagreeing politely.', 'A new point that adds to the discussion.'],
+        rules: ['State a clear opinion at the start.', 'Add something new; do not repeat the classmates.', 'Specific examples score better than general claims.'],
+        mistake: 'Copying a classmate’s idea instead of adding your own.', practice: ['toefl', 'toefl-discussion']
+      }
+    ]
+  },
+  {
     id: 'writing', title: 'Essays, stories and reports',
     formats: [
       {

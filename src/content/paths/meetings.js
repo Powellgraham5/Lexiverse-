@@ -106,7 +106,7 @@ export default {
             { type: 'choice', q: 'You did not hear a figure. What do you say?', options: ['Sorry, I didn’t catch that. Could you repeat the figure?', 'What?', 'Speak up!', '(Say nothing.)'], answer: 0, why: 'It is polite and specific.' },
             { type: 'choice', q: 'Which sentence checks understanding?', options: ['So, if I understand correctly, the deadline is now 15 March?', 'Okay.', 'Whatever you say.', 'Fine.'], answer: 0, why: 'Paraphrasing confirms the key fact.' },
             { type: 'choice', q: 'Which is an open question?', options: ['How could we attract more customers?', 'Is the room booked?', 'Did you send it?', 'Are you coming?'], answer: 0, why: 'Open questions invite ideas.' },
-            { type: 'gap', q: 'Could you ___ what you mean by “phase two”?', options: ['clarify', 'clearify', 'clean', 'claim'], answer: 0, why: '“Clarify” means make clear.' },
+            { type: 'gap', q: 'Sorry, I didn’t ___ that. Could you say it again?', options: ['catch', 'hold', 'grab', 'keep'], answer: 0, why: '“I didn’t catch that” is a polite way to say you did not hear something.' },
             { type: 'error', q: 'Find the part that sounds like an attack.', parts: ['Thanks for the update.', 'Why on earth would you do that?', 'Could you explain the reason?', 'It would help me understand.'], answer: 1, fix: 'Could you tell us more about the reasons?', why: 'Neutral questions keep the discussion calm.' },
             { type: 'speak', q: 'Your manager explains a new process quickly and you are not sure what your role is. Ask for clarification politely and check your understanding.', points: ['thank them', 'say which part is unclear', 'paraphrase what you think you heard', 'confirm your next step'], prep: 30, talk: 60, checklist: ['I was polite', 'I named the unclear part', 'I paraphrased to check', 'I confirmed my action'] }
           ]
@@ -146,7 +146,7 @@ export default {
             { type: 'choice', q: 'Someone asks a question you cannot answer. What should you say?', options: ['I don’t have that figure now, but I’ll send it to you today.', 'Guess a number.', 'That’s not important.', 'Ignore the question.'], answer: 0, why: 'It is honest and promises a follow-up.' },
             { type: 'speak', q: 'Give a one-minute update on a project you know (school, work or community).', points: ['say what you will cover', 'one result', 'one problem', 'the next step'], prep: 45, talk: 60, checklist: ['I signposted my talk at the start', 'I gave one clear result', 'I named a problem honestly', 'I ended with a next step'] },
             { type: 'choice', q: 'What should you do with slides?', options: ['Use few words and talk about them', 'Read every word aloud', 'Fill each slide with text', 'Turn your back to the audience'], answer: 0, why: 'Slides support you; they are not a script.' },
-            { type: 'gap', q: 'To ___ up, sales rose by 10% this quarter.', options: ['sum', 'some', 'summing', 'summed'], answer: 0, why: '“To sum up” signals a summary.' }
+            { type: 'gap', q: 'Let me ___ you through the figures on this slide.', options: ['walk', 'speak', 'tell', 'say'], answer: 0, why: '“Walk someone through” means explain step by step.' }
           ]
         },
         {

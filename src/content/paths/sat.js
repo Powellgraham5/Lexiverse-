@@ -225,7 +225,7 @@ export default {
             { type: 'gap', q: 'The committee released ___ report on Monday.', options: ['its', 'their', 'it’s', 'there'], answer: 0, why: 'A single committee is “it”, so the possessive is “its”. “It’s” means “it is”.' },
             { type: 'gap', q: 'By the time the rescue team arrived, the hikers ___ for two days.', options: ['had waited', 'have waited', 'wait', 'will wait'], answer: 0, why: 'The past perfect shows an action completed before another past action.' },
             { type: 'gap', q: 'Neither the coach nor the players ___ ready for the rain.', options: ['were', 'was', 'is', 'has been'], answer: 0, why: 'With “neither … nor”, the verb agrees with the nearer subject, “players”.' },
-            { type: 'gap', q: 'The collection of rare coins ___ valuable.', options: ['is', 'are', 'were', 'have been'], answer: 0, why: 'The subject is “collection”.' }
+            { type: 'gap', q: 'Either the teacher or the students ___ going to present first.', options: ['are', 'is', 'was', 'has'], answer: 0, why: 'With “either … or”, the verb agrees with the nearer subject, “students”, which is plural.' }
           ]
         },
         {
@@ -260,7 +260,7 @@ export default {
           ],
           exercises: [
             { type: 'choice', q: 'How many questions are in each Reading and Writing module?', options: ['27', '10', '52', '100'], answer: 0, why: 'Each module has 27 questions.' },
-            { type: 'choice', q: 'Is there a penalty for wrong answers?', options: ['No, so answer every question', 'Yes, half a point', 'Yes, one point', 'Only in module 2'], answer: 0, why: 'Blank answers can only lose you points.' },
+            { type: 'choice', q: 'Is there a penalty for wrong answers?', options: ['No, so answer every question', 'Yes, half a point', 'Yes, one point', 'Only in module 2'], answer: 0, why: 'A wrong answer costs nothing, so a sensible guess can only help.' },
             { type: 'choice', q: 'A question is taking too long. What should you do?', options: ['Choose your best answer, flag it and move on', 'Keep working on it for five minutes', 'Leave it blank', 'Restart the test'], answer: 0, why: 'Time is better spent on questions you can answer.' },
             { type: 'choice', q: 'What decides the difficulty of module 2?', options: ['Your performance in module 1', 'The day of the week', 'Your school', 'Random choice'], answer: 0, why: 'The test adapts to your first-module performance.' },
             { type: 'choice', q: 'About how long do you have per question on average?', options: ['A little over a minute', 'Ten seconds', 'Five minutes', 'Ten minutes'], answer: 0, why: '32 minutes for 27 questions is just over a minute each.' }
@@ -287,7 +287,7 @@ export default {
             { type: 'gap', q: 'The scientist collected samples from the river; ___, she tested them in the lab.', options: ['then', 'however', 'for instance', 'in contrast'], answer: 0, why: 'The actions happen in sequence.' },
             { type: 'choice', q: 'The word “meticulous” in “a meticulous researcher who checked every figure twice” most nearly means', options: ['careful', 'careless', 'quick', 'famous'], answer: 0, why: 'Checking every figure twice shows great care.' },
             { type: 'gap', q: 'The results were surprising___ the team repeated the experiment.', options: [', so', ',', ' so,', ';so'], answer: 0, why: 'Two independent clauses can be joined with a comma and a conjunction.' },
-            { type: 'gap', q: 'My favourite subjects are clear___ history, biology and art.', options: [':', ';', ',', ' and'], answer: 0, why: 'A colon introduces a list after a complete clause.' },
+            { type: 'gap', q: 'I study three sciences___ biology, chemistry and physics.', options: [':', ';', ',', ' and'], answer: 0, why: 'A colon introduces a list after a complete clause.' },
             { type: 'gap', q: 'The list of winners ___ posted on the board.', options: ['was', 'were', 'are', 'have been'], answer: 0, why: 'The subject is “list” (singular).' },
             { type: 'gap', q: 'The organisation changed ___ name last year.', options: ['its', 'their', 'it’s', 'theirs'], answer: 0, why: '“Organisation” is singular.' },
             { type: 'choice', q: 'Which sentence is correct?', options: ['Running for the bus, Musa dropped his phone.', 'Running for the bus, the phone fell.', 'Running for the bus, it was dropped.', 'Running for the bus, his phone dropped by Musa.'], answer: 0, why: 'The opening phrase must describe Musa.' },

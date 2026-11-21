@@ -1,14 +1,16 @@
 import 'fake-indexeddb/auto';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PATHS, loadPath, lessonsOf, pathProgress, markLessonDone, loadProgress, focusPath, buildTest, TIMER, recordTest, bestTest } from './paths.js';
+import { PATHS, loadPath, lessonsOf, optionOrder, pathProgress, markLessonDone, loadProgress, focusPath, buildTest, TIMER, recordTest, bestTest } from './paths.js';
 import { addNote, allNotes, updateNote, deleteNote, restoreNote, searchNotes, cardToNote } from './notebook.js';
 import { checkWriting } from './writing.js';
 
 const open = PATHS.filter((p) => p.load);
 
-test('ten paths are open; only More examinations is coming soon', () => {
-  assert.deepEqual(open.map((p) => p.id), ['waec', 'ielts', 'sat', 'essays', 'reports', 'stories', 'letters', 'emails', 'meetings', 'interviews']);
+test('twelve paths are open; only More examinations is coming soon', () => {
+  assert.deepEqual(open.map((p) => p.id), ['waec', 'ielts', 'sat', 'jamb', 'toefl', 'essays', 'reports', 'stories', 'letters', 'emails', 'meetings', 'interviews']);
+  assert.equal(focusPath('x', 'jamb'), 'jamb');
+  assert.equal(focusPath('x', 'toefl'), 'toefl');
   assert.equal(focusPath('x', 'waec'), 'waec');
   assert.equal(focusPath('x', 'ielts'), 'ielts');
   assert.equal(focusPath('k', 'meetings'), 'meetings');
@@ -71,6 +73,20 @@ test('every course is a full course: introduction, units with common mistakes, f
       assert.ok(u.lessons.some((l) => l.cards.some((c) => /mistake/i.test(c.title))), `${meta.id} unit "${u.title}" needs a common-mistakes card`);
     }
   }
+});
+
+test('the right answer is spread across the option positions', async () => {
+  const at = [0, 0, 0, 0, 0, 0];
+  let n = 0;
+  for (const meta of open) {
+    for (const x of lessonsOf(await loadPath(meta.id)).flatMap((l) => l.exercises).filter((e) => e.options)) {
+      const order = optionOrder(x);
+      assert.deepEqual([...order].sort(), x.options.map((_, i) => i), 'every option is shown once');
+      at[order.indexOf(x.answer)]++; n++;
+    }
+  }
+  assert.ok(at[0] / n < 0.4, `the answer is first in ${Math.round((100 * at[0]) / n)}% of questions`);
+  assert.ok(at[1] > 0 && at[2] > 0 && at[3] > 0, 'answers appear in every position');
 });
 
 test('every model answer passes its own automatic checks', async () => {
@@ -164,7 +180,7 @@ test('writing formats: every format has a layout and rules; exam groups carry th
   const { FORMAT_GROUPS } = await import('../content/formats.js');
   const ids = new Set();
   for (const g of FORMAT_GROUPS) {
-    if (['waec', 'ielts', 'sat'].includes(g.id)) assert.match(g.note, /official guide/);
+    if (['waec', 'ielts', 'sat', 'toefl'].includes(g.id)) assert.match(g.note, /official guide/);
     for (const f of g.formats) {
       assert.ok(!ids.has(f.id), `duplicate format ${f.id}`); ids.add(f.id);
       assert.ok(f.title && f.use && f.template.length >= 3 && f.rules.length >= 2 && f.mistake, `${f.id} incomplete`);

@@ -25,7 +25,7 @@ export default {
           cards: [
             { title: 'Four parts', body: 'IELTS tests Listening (about 30 minutes), Reading (60 minutes), Writing (60 minutes, two tasks) and Speaking (11 to 14 minutes, a face-to-face talk with an examiner).' },
             { title: 'Academic or General Training', body: 'Listening and Speaking are the same for everyone. Reading and Writing are different: Academic is for university study; General Training is often for work or moving abroad.' },
-            { title: 'Band scores', body: 'Each skill gets a band from 0 to 9, and half bands such as 6.5 are possible. Your overall band is the average of the four.' },
+            { title: 'Band scores', body: 'Each skill gets a band from 0 to 9, and half bands such as 6.5 are possible. Your overall band is the average of the four, rounded to the nearest half band.' },
             { title: 'Common mistakes', body: 'Taking the wrong version (Academic or General Training), not knowing the timing of each part, and practising only one skill.' }
           ],
           exercises: [

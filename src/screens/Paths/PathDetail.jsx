@@ -8,7 +8,7 @@ import { CATEGORIES } from './Paths.jsx';
 import './paths.css';
 
 // Which Writing formats group fits each path.
-export const FORMAT_GROUP = { waec: 'waec', ielts: 'ielts', sat: 'sat', essays: 'writing', stories: 'writing', reports: 'writing', letters: 'letters', emails: 'emails', meetings: 'work', interviews: 'work' };
+export const FORMAT_GROUP = { waec: 'waec', ielts: 'ielts', sat: 'sat', jamb: 'waec', toefl: 'toefl', essays: 'writing', stories: 'writing', reports: 'writing', letters: 'letters', emails: 'emails', meetings: 'work', interviews: 'work' };
 const GUIDE_KEY = 'lx-guide-closed';
 const guideClosed = (id) => { try { return JSON.parse(localStorage.getItem(GUIDE_KEY) || '[]').includes(id); } catch { return false; } };
 function setGuideClosed(id, closed) {

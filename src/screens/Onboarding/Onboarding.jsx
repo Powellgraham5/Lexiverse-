@@ -8,7 +8,7 @@ import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
 import { saveProfile, GOALS, LEVELS } from '../../lib/profile.js';
 import { recordActivity } from '../../lib/streak.js';
 import { GOAL_FLOW, focusLabel } from '../../lib/goals.js';
-import { focusPath, pathById } from '../../lib/paths.js';
+import { focusPath, pathHome } from '../../lib/paths.js';
 import './onboarding.css';
 
 const GOAL_OPTIONS = [
@@ -69,6 +69,16 @@ export default function Onboarding() {
     if (step > 1 && h1) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
     scrollTo(0, 0);
   }, [step]);
+
+  // A subject with its own course opens straight away: no comfort step, no word of the day.
+  function next() {
+    if (!focus) return;
+    const id = focusPath(code, focus);
+    if (!id) return go(4);
+    saveProfile({ goal: code, focus, level: LEVELS[level], done: true, startedAt: Date.now() });
+    recordActivity('start');
+    route(pathHome(id));
+  }
 
   async function finish() {
     const profile = { goal: code, focus, level: LEVELS[level], done: true, startedAt: Date.now() };
@@ -141,7 +151,7 @@ export default function Onboarding() {
             <span class="ob-level"><b class="ob-focus-title">{title}</b><span>{desc}</span></span>
           )} />
           <p class="lx-sr" aria-live="polite">{focus ? '' : 'Choose one to continue'}</p>
-          <button type="button" class="lx-btn ob-next" aria-disabled={!focus} onClick={() => focus && go(4)}>Continue</button>
+          <button type="button" class="lx-btn ob-next" aria-disabled={!focus} onClick={next}>Continue</button>
         </section>
       )}
 
@@ -179,8 +189,7 @@ export default function Onboarding() {
           <h1 class="lx-rise lx-d3">{flow.ready(label).title}</h1>
           <p class="ob-lead lx-rise lx-d4">{flow.ready(label).lead}</p>
           <p class="ob-streak lx-rise lx-d4"><span aria-hidden="true"><FlameIcon /></span>Day 1 streak started</p>
-          {focusPath(code, focus) && <a class="lx-btn ob-next lx-rise lx-d4" href={`/learn/path/${focusPath(code, focus)}`}>Start your {pathById(focusPath(code, focus)).title.split(' ')[0]} path</a>}
-          <button type="button" class={`lx-btn ob-next lx-rise lx-d4 ${focusPath(code, focus) ? 'secondary' : ''}`} onClick={() => route('/')}>Start exploring</button>
+          <button type="button" class="lx-btn ob-next lx-rise lx-d4" onClick={() => route('/')}>Start exploring</button>
         </section>
       )}
     </div>

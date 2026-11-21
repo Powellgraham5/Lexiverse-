@@ -1,0 +1,6 @@
+/* JAMB question bank: subject list and session setup, built on the paths styles. */
+.bk-head { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; margin-bottom: 1.25rem; }
+.bk-subjects { display: grid; gap: .5rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+@media (min-width: 1024px) { .bk-subjects { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+[data-large-text] .bk-subjects { grid-template-columns: 1fr; }
+.bk-size { padding: .75rem 1rem; margin: .75rem 0; }

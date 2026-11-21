@@ -123,7 +123,7 @@ Please ask an English teacher to check each lesson. Tick the box when a lesson i
 
 - [ ] **Final assessment: SAT Reading and Writing** (`sat-final`): 2 teaching cards, 14 exercises (choice, gap)
 
-## JAMB (UTME) Use of English (`jamb.js`)
+## JAMB (UTME) (`jamb.js`)
 
 ### The exam at a glance
 

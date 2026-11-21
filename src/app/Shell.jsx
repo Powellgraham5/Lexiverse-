@@ -56,7 +56,7 @@ function restoreScroll(y) {
 
 export function Shell({ children }) {
   const { path } = useLocation();
-  const bare = FULLSCREEN.includes(path) || /^\/learn\/path\/[^/]+\/[^/]+$/.test(path);
+  const bare = FULLSCREEN.includes(path) || /^\/learn\/(path|bank)\/[^/]+\/[^/]+$/.test(path);
   const first = useRef(true);
 
   // Forward navigation starts the new screen at the top and focuses its heading (see usePage).

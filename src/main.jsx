@@ -19,6 +19,8 @@ const Paths = lazy(() => import('./screens/Paths/Paths.jsx'));
 const PathDetail = lazy(() => import('./screens/Paths/PathDetail.jsx'));
 const Lesson = lazy(() => import('./screens/Paths/Lesson.jsx'));
 const PracticeTest = lazy(() => import('./screens/Paths/PracticeTest.jsx'));
+const Bank = lazy(() => import('./screens/Bank/Bank.jsx'));
+const BankSession = lazy(() => import('./screens/Bank/BankSession.jsx'));
 const Formats = lazy(() => import('./screens/Paths/Formats.jsx'));
 const Note = lazy(() => import('./screens/Words/NoteEditor.jsx'));
 const Learn = lazy(() => import('./screens/Learn/Learn.jsx'));
@@ -54,6 +56,8 @@ function App() {
               <Route path="/learn/match" component={Match} />
               <Route path="/learn/setup" component={Setup} />
               <Route path="/learn/paths" component={Paths} />
+              <Route path="/learn/bank/jamb" component={Bank} />
+              <Route path="/learn/bank/jamb/:subject" component={BankSession} />
               <Route path="/learn/path/:id" component={PathDetail} />
               <Route path="/learn/path/:id/test" component={PracticeTest} />
               <Route path="/learn/path/:id/:lesson" component={Lesson} />

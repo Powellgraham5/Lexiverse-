@@ -2,7 +2,7 @@ import { toast } from '../components/toast.jsx';
 
 // Screens where reloading would lose the learner's place: lessons, tests, games and the note editor.
 const BUSY = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match'];
-export const isBusy = (path) => BUSY.includes(path) || /^\/learn\/path\/[^/]+\/[^/]+$/.test(path) || path.startsWith('/words/note/');
+export const isBusy = (path) => BUSY.includes(path) || /^\/learn\/(path|bank)\/[^/]+\/[^/]+$/.test(path) || path.startsWith('/words/note/');
 
 const HOUR = 60 * 60 * 1000;
 

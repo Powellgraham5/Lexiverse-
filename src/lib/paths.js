@@ -8,7 +8,7 @@ export const PATHS = [
   { id: 'waec', goal: 'x', focus: 'waec', title: 'WAEC / NECO English', sub: 'Lexis, comprehension, summary, essays and oral English', load: () => import('../content/paths/waec.js') },
   { id: 'ielts', goal: 'x', focus: 'ielts', title: 'IELTS', sub: 'Reading, writing, listening and speaking', load: () => import('../content/paths/ielts.js') },
   { id: 'sat', goal: 'x', focus: 'sat', title: 'SAT', sub: 'Reading and Writing: grammar and words in context', load: () => import('../content/paths/sat.js') },
-  { id: 'jamb', goal: 'x', focus: 'jamb', title: 'JAMB (UTME) Use of English', sub: 'Comprehension, lexis and structure, oral forms and the set text', load: () => import('../content/paths/jamb.js') },
+  { id: 'jamb', goal: 'x', focus: 'jamb', title: 'JAMB (UTME)', sub: 'Practice questions in every subject, plus Use of English lessons', load: () => import('../content/paths/jamb.js') },
   { id: 'toefl', goal: 'x', focus: 'toefl', title: 'TOEFL iBT', sub: 'Reading, listening, writing and speaking in the 2026 format', load: () => import('../content/paths/toefl.js') },
   { id: 'other-exams', goal: 'x', focus: 'other', title: 'More examinations', sub: 'Other exams are being written' },
   { id: 'essays', goal: 'w', focus: 'essays', title: 'Essays', sub: 'Structure, essay types and strong sentences', load: () => import('../content/paths/essays.js') },
@@ -34,6 +34,9 @@ export function focusPath(goal, focus) {
   const p = PATHS.find((x) => x.goal === goal && x.focus === focus);
   return isOpen(p) ? p.id : null;
 }
+
+// Where a path opens. JAMB opens on its question bank, which links to the Use of English lessons.
+export const pathHome = (id) => (id === 'jamb' ? '/learn/bank/jamb' : `/learn/path/${id}`);
 
 export const lessonsOf = (path) => path.units.flatMap((u) => u.lessons);
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
-import { BackIcon, CheckIcon, ChevronIcon, SlowIcon, PenIcon } from '../../app/icons.jsx';
+import { BackIcon, CheckIcon, ChevronIcon, SlowIcon, PenIcon, LearnIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { loadPath, loadProgress, pathProgress, pathById, bestTest, buildTest } from '../../lib/paths.js';
 import { CATEGORIES } from './Paths.jsx';
@@ -109,6 +109,13 @@ export default function PathDetail() {
             </details>
           )}
           <div class="pd-tools lx-rise lx-d1">
+            {path.id === 'jamb' && (
+              <a class="pd-test" href="/learn/bank/jamb">
+                <LearnIcon />
+                <span><b>Practice questions in every subject</b><span>Random JAMB-style sets with answers explained</span></span>
+                <ChevronIcon />
+              </a>
+            )}
             <a class="pd-test" href={`/learn/path/${path.id}/test`}>
               <SlowIcon />
               <span><b>Practice test</b><span>{testSize} questions · timed or untimed{best ? ` · Best: ${best.score}/${best.total}` : ''}</span></span>

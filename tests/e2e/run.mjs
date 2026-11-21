@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -223,14 +223,14 @@ await check('offline banner appears and clears', async () => {
 });
 await ctx.close();
 
-await check('onboarding: each goal leads to its own question, level title and ready screen', async () => {
-  const cases = [
-    ['Everyday English', 'Where do you use English most?', 'Travel', 'Your universe is ready', 'e'],
-    ['Exam preparation', 'Which exam are you preparing for?', 'IELTS', 'Your IELTS universe is ready', 'x'],
-    ['Better writing', 'What do you write most?', 'Letters', 'Your writing universe is ready', 'w'],
-    ['Work and career', 'Where do you need English at work?', 'Meetings', 'Your career universe is ready', 'k']
+await check('onboarding: a subject with a course opens straight away; other choices see the ready screen', async () => {
+  const direct = [
+    ['Exam preparation', 'Which exam are you preparing for?', 'JAMB', '/learn/bank/jamb', 'JAMB practice questions', 'x'],
+    ['Exam preparation', 'Which exam are you preparing for?', 'IELTS', '/learn/path/ielts', 'IELTS', 'x'],
+    ['Better writing', 'What do you write most?', 'Letters', '/learn/path/letters', 'Letters', 'w'],
+    ['Work and career', 'Where do you need English at work?', 'Emails', '/learn/path/emails', 'Emails', 'k']
   ];
-  for (const [goal, question, focus, ready, code] of cases) {
+  for (const [goal, question, focus, url, title, code] of direct) {
     const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
     const p = await c.newPage();
     await p.goto(BASE + '/welcome');
@@ -240,18 +240,31 @@ await check('onboarding: each goal leads to its own question, level title and re
     await p.waitForSelector(`h1:text("${question}")`);
     await p.click(`[role=radio]:has-text("${focus}")`);
     await p.click('button:text("Continue")');
-    // No level question any more: the subject leads straight on (level is set in Me).
-    await p.waitForSelector('h1:text("Make it comfortable")');
-    await p.click('button:text("Finish setup")');
-    await p.waitForSelector(`h1:text("${ready}")`);
-    const first = (await p.textContent('.ob-first b')).trim();
-    const word = DAILY.find((w) => w.w === first);
-    assert.ok(word && word.goals.includes(code), `${goal}: first word ${first} is not tagged ${code}`);
+    await p.waitForURL(`**${url}`);
+    await p.waitForSelector(`#main h1:text-is("${title}")`);
+    assert.ok(!(await p.isVisible('text=Make it comfortable')), `${focus}: no comfort step`);
     const prof = JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile')));
     assert.equal(prof.goal, code);
-    assert.ok(prof.focus, 'focus saved');
+    assert.equal(prof.done, true);
     await c.close();
   }
+  // Everyday English has no course, so it keeps the comfort and ready screens, with a word for that goal.
+  const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
+  const p = await c.newPage();
+  await p.goto(BASE + '/welcome');
+  await p.click('button:text("Let\'s go")');
+  await p.click('[role=radio]:has-text("Everyday English")');
+  await p.click('button:text("Continue")');
+  await p.waitForSelector('h1:text("Where do you use English most?")');
+  await p.click('[role=radio]:has-text("Travel")');
+  await p.click('button:text("Continue")');
+  await p.waitForSelector('h1:text("Make it comfortable")');
+  await p.click('button:text("Finish setup")');
+  await p.waitForSelector('h1:text("Your universe is ready")');
+  const first = (await p.textContent('.ob-first b')).trim();
+  const word = DAILY.find((w) => w.w === first);
+  assert.ok(word && word.goals.includes('e'), `first word ${first} is not an everyday word`);
+  await c.close();
 });
 
 await check('me: changing the goal changes Today\'s word and chip', async () => {
@@ -284,11 +297,12 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   await p.click('[role=radio]:has-text("Exam preparation")');
   await p.keyboard.press('ArrowDown');
   assert.equal(await p.getAttribute('[role=radio]:has-text("Better writing")', 'aria-checked'), 'true');
+  await p.click('[role=radio]:has-text("Everyday English")');
   await p.click('button:text("Continue")');
-  await p.waitForSelector('h1:text("What do you write most?")');
+  await p.waitForSelector('h1:text("Where do you use English most?")');
   await p.click('button:text("Continue")', { force: true });
-  assert.ok(await p.isVisible('h1:text("What do you write most?")'), 'continue without a choice should not advance');
-  await p.click('[role=radio]:has-text("Essays")');
+  assert.ok(await p.isVisible('h1:text("Where do you use English most?")'), 'continue without a choice should not advance');
+  await p.click('[role=radio]:has-text("School")');
   await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Make it comfortable")');
   await p.fill('#ob-size', '1.2');
@@ -296,7 +310,7 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   assert.equal(await p.evaluate(() => document.documentElement.dataset.contrast), 'high');
   await p.click('[role=switch]:near(:text("High contrast"))');
   await p.click('button:text("Finish setup")');
-  await p.waitForSelector('h1:text("Your writing universe is ready")');
+  await p.waitForSelector('h1:text("Your universe is ready")');
   const first = await p.textContent('.ob-first b');
   assert.ok(first && first !== 'ready', 'first word shown');
   assert.deepEqual(JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile'))).level, 2);
@@ -1054,6 +1068,38 @@ await check('paths: every course runs from an introduction to a final assessment
   await c.close();
 });
 
+await check('jamb bank: subjects, a 20-question untimed set with explanations, then a new set and a timed set', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/paths');
+  await p.click('a.pt-row:has-text("JAMB")');
+  await p.waitForURL('**/learn/bank/jamb');
+  await p.waitForSelector('a.pt-row:has-text("Mathematics"):has-text("questions")');
+  assert.ok(await p.isVisible('.pt-row.soon:has-text("Biology")'), 'subjects not written yet are not links');
+  await p.click('a.pt-row:has-text("Mathematics")');
+  await p.waitForSelector('h1:text("Mathematics")');
+  await p.click('.lx-seg button:text("20")');
+  await p.click('button:text("Untimed: take your time")');
+  await p.waitForSelector('.pt-timer:has-text("Timer off")');
+  const firstQ = await p.textContent('.ls-q');
+  for (let i = 0; i < 20; i++) {
+    await p.locator('.lx-opt').nth(1).click();
+    await p.waitForSelector('.lx-feedback');
+    await p.click('button:text("Continue")');
+  }
+  await p.waitForSelector('h1:text("Session complete!")');
+  assert.match(await p.textContent('.rs-sub'), /of 20 correct/);
+  await p.click('button:text("New set of questions")');
+  await p.waitForSelector('.ls-q');
+  assert.notEqual(await p.textContent('.ls-q'), firstQ, 'a new set starts with a different question');
+  await p.goto(BASE + '/learn/bank/jamb');
+  await p.waitForSelector('a.pt-row:has-text("Mathematics"):has-text("20 seen")');
+  await p.click('a.pt-row:has-text("Use of English")');
+  await p.click('button:has-text("Timed:")');
+  await p.waitForSelector('[role=timer]');
+  await c.close();
+});
+
 await check('paths: onboarding with Exam then WAEC offers the WAEC path, and Learn shows it', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } }, { fresh: true });
   const p = await c.newPage();
@@ -1063,8 +1109,6 @@ await check('paths: onboarding with Exam then WAEC offers the WAEC path, and Lea
   await p.click('button:text("Continue")');
   await p.click('[role=radio]:has-text("WAEC")');
   await p.click('button:text("Continue")');
-  await p.click('button:text("Finish setup")');
-  await p.click('a:text("Start your WAEC path")');
   await p.waitForURL('**/learn/path/waec');
   await p.goto(BASE + '/learn');
   await p.waitForSelector('.ln-path:has-text("WAEC / NECO English"):has-text("Start: What the English paper tests")');
@@ -1078,10 +1122,8 @@ await check('paths: onboarding with Exam then WAEC offers the WAEC path, and Lea
   await p2.click('button:text("Continue")');
   await p2.click('[role=radio]:has-text("JAMB")');
   await p2.click('button:text("Continue")');
-  await p2.click('button:text("Finish setup")');
-  await p2.click('a:has-text("Start your JAMB")');
-  await p2.waitForURL('**/learn/path/jamb');
-  await p2.waitForSelector('h1:text("JAMB (UTME) Use of English")');
+  await p2.waitForURL('**/learn/bank/jamb');
+  await p2.waitForSelector('h1:text("JAMB practice questions")');
   await c2.close();
 });
 

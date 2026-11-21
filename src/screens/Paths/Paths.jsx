@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { usePage } from '../../app/usePage.js';
 import { BackIcon, ChevronIcon, ChatIcon, LearnIcon, PenIcon, CaseIcon } from '../../app/icons.jsx';
-import { PATHS, isOpen, loadPath, loadProgress, pathProgress } from '../../lib/paths.js';
+import { PATHS, isOpen, loadPath, loadProgress, pathProgress, pathHome } from '../../lib/paths.js';
 import { loadProfile } from '../../lib/profile.js';
 import './paths.css';
 
@@ -49,7 +49,7 @@ export default function Paths() {
                 {PATHS.filter((p) => p.goal === c.goal).map((p) => (
                   <li key={p.id}>
                     {isOpen(p) ? (
-                      <a class="pt-row" href={`/learn/path/${p.id}`}>
+                      <a class="pt-row" href={pathHome(p.id)}>
                         <span><b>{p.title}</b><span>{p.sub}</span>
                           {progress[p.id] && <span class="pt-prog">{progress[p.id].done} of {progress[p.id].total} lessons</span>}
                         </span>

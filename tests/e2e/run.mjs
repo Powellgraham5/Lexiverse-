@@ -305,7 +305,7 @@ await check('home: each subject has its own home; Everyday English keeps the wor
   assert.ok(await p.isVisible('a.lx-btn:has-text("Start:")'), 'the next lesson is one tap away');
   assert.ok(await p.isVisible('a.pd-test:has-text("Practise writing")'));
   assert.ok(!(await p.isVisible('.lx-orbit-planet')));
-  assert.equal(await p.getAttribute('.lx-nav a[href="/"]', 'aria-current'), 'page');
+  assert.equal(await p.getAttribute('.lx-nav a[href="/"]:not(.lx-brand)', 'aria-current'), 'page');
   await c.close();
 
   ({ c, p } = await visit({ goal: 'e', focus: 'travel', level: 2, done: true }));

@@ -1075,7 +1075,7 @@ await check('jamb bank: subjects, a 20-question untimed set with explanations, t
   await p.click('a.pt-row:has-text("JAMB")');
   await p.waitForURL('**/learn/bank/jamb');
   await p.waitForSelector('a.pt-row:has-text("Mathematics"):has-text("questions")');
-  assert.ok(await p.isVisible('.pt-row.soon:has-text("Biology")'), 'subjects not written yet are not links');
+  assert.equal(await p.locator('.bk-subjects a.pt-row').count(), 10, 'all ten subjects are open');
   await p.click('a.pt-row:has-text("Mathematics")');
   await p.waitForSelector('h1:text("Mathematics")');
   await p.click('.lx-seg button:text("20")');

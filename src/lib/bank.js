@@ -7,14 +7,14 @@ export const BANK_NOTE = 'Practice questions written in the style of the JAMB UT
 export const JAMB_SUBJECTS = [
   { id: 'english', title: 'Use of English', load: () => import('../content/banks/jamb/english.js') },
   { id: 'mathematics', title: 'Mathematics', load: () => import('../content/banks/jamb/mathematics.js') },
-  { id: 'biology', title: 'Biology' },
-  { id: 'chemistry', title: 'Chemistry' },
-  { id: 'physics', title: 'Physics' },
-  { id: 'economics', title: 'Economics' },
-  { id: 'government', title: 'Government' },
-  { id: 'literature', title: 'Literature in English' },
-  { id: 'crs', title: 'Christian Religious Studies' },
-  { id: 'irs', title: 'Islamic Religious Studies' }
+  { id: 'biology', title: 'Biology', load: () => import('../content/banks/jamb/biology.js') },
+  { id: 'chemistry', title: 'Chemistry', load: () => import('../content/banks/jamb/chemistry.js') },
+  { id: 'physics', title: 'Physics', load: () => import('../content/banks/jamb/physics.js') },
+  { id: 'economics', title: 'Economics', load: () => import('../content/banks/jamb/economics.js') },
+  { id: 'government', title: 'Government', load: () => import('../content/banks/jamb/government.js') },
+  { id: 'literature', title: 'Literature in English', load: () => import('../content/banks/jamb/literature.js') },
+  { id: 'crs', title: 'Christian Religious Studies', load: () => import('../content/banks/jamb/crs.js') },
+  { id: 'irs', title: 'Islamic Religious Studies', load: () => import('../content/banks/jamb/irs.js') }
 ];
 
 export const subjectById = (id) => JAMB_SUBJECTS.find((s) => s.id === id) || null;

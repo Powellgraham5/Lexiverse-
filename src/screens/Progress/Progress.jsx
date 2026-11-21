@@ -145,7 +145,7 @@ export default function Progress() {
             <section class="pg-card lx-card pg-dayone lx-rise lx-d1" aria-labelledby="pg-d1">
               <h2 id="pg-d1">Day one</h2>
               <p>Your universe starts with a single word. Meet today's word or take a quick quiz, and your stars appear here.</p>
-              <a class="lx-btn" href="/">Meet today's word</a>
+              <a class="lx-btn" href="/today">Meet today's word</a>
             </section>
           )}
           <ul class="pg-tiles lx-rise lx-d1">

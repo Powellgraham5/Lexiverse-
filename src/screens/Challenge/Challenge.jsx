@@ -27,13 +27,13 @@ export default function Challenge() {
 
   function done() {
     recordActivity('challenge');
-    route('/');
+    route('/today');
   }
 
   return (
     <div class="ch">
       <div class="ch-top">
-        <a class="ch-close" href="/" aria-label="Close challenge"><CloseIcon /></a>
+        <a class="ch-close" href="/today" aria-label="Close challenge"><CloseIcon /></a>
         <b class="ch-title">Daily challenge</b>
         <span class="ch-time">1 min</span>
       </div>

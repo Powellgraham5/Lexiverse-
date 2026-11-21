@@ -93,7 +93,7 @@ export default function Words() {
           <div class="lx-empty-orbit" aria-hidden="true"><span class="ring"><span class="moon" /></span><span class="core" /></div>
           <h2 id="mw-empty-h">Your galaxy is empty</h2>
           <p>Tap the bookmark on any word to save it here. Saved words come back for review so you remember them.</p>
-          <a class="lx-btn" href="/">Save today's word</a>
+          <a class="lx-btn" href="/today">Save today's word</a>
           <button type="button" class="lx-btn ghost" onClick={() => setCreating(true)}>Create a list first</button>
         </section>
       ) : (

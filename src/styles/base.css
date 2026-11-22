@@ -48,6 +48,8 @@ h1, h2, h3 { font-family: var(--lx-font-display); line-height: 1.2; margin: 0; l
 p { margin: 0; }
 /* Long words and IPA (no spaces, and drawn in a fallback font on some devices) may break rather than widen the page. */
 #main { overflow-wrap: break-word; hyphens: auto; }
+/* At large text sizes, a long word may still split so nothing ever scrolls sideways. */
+:root[data-large-text] #main, :root[data-large-text] .lx-btn { overflow-wrap: anywhere; }
 a { color: var(--lx-link); }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }

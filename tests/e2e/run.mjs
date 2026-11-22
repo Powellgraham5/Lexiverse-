@@ -1080,7 +1080,7 @@ await check('paths: order and write tasks (email checks flag a missing closing)'
   await p.fill('#ls-write', 'Subject: Moving tomorrow’s meeting\n\nDear Mr Eze,\n\nCould we move tomorrow’s 10am meeting to 2pm? I have a client call in the morning that cannot be moved. Please let me know if that works for the team.');
   await p.click('button:text("Check my writing")');
   await p.waitForSelector('.ls-checks li.bad:has-text("Closing")');
-  await p.fill('#ls-write', 'Subject: Moving tomorrow’s meeting\n\nDear Mr Eze,\n\nCould we move tomorrow’s 10am meeting to 2pm? I have a client call in the morning that cannot be moved, and I would like the whole team to be there. Please let me know if that works for you.\n\nBest regards,\nFunmi');
+  await p.fill('#ls-write', 'Subject: Moving tomorrow’s meeting\n\nDear Mr Eze,\n\nCould we move tomorrow’s 10am meeting to 2pm? I have a client call in the morning that cannot be moved, and I would like the whole team to be there. The afternoon also gives us more time to prepare the figures. Please let me know if that works for you.\n\nBest regards,\nFunmi');
   await p.click('button:text("Check my writing")');
   await p.waitForSelector('.ls-checks li.ok:has-text("Closing")');
   assert.equal(await p.locator('.ls-checks li.bad').count(), 0);

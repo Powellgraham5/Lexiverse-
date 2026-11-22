@@ -54,7 +54,7 @@
 
   /* Type */
   /* Self-hosted variable fonts (@fontsource-variable) register as "… Variable". */
-  --lx-font-display: "Unbounded Variable", "Unbounded", system-ui, sans-serif;
+  --lx-font-display: "Unbounded Variable", "Unbounded", "Unbounded Fallback", system-ui, sans-serif;
   --lx-font-body: "Inter Variable", "Inter", system-ui, sans-serif;
   --lx-font-reading: "Atkinson Hyperlegible", system-ui, sans-serif;
   --lx-text-scale: 1;

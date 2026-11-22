@@ -93,14 +93,14 @@ export default function PathDetail() {
               ? <a class="lx-btn" href={`/learn/path/${path.id}/${p.next.id}`}>{p.done ? 'Continue' : 'Start'}: {p.next.title}</a>
               : <p class="pd-done" role="status"><CheckIcon size={18} /> Path complete. Revisit any lesson to practise again.</p>}
           </header>
-          <p class="pd-note">{path.note}</p>
           <Performance path={path} progress={progress} />
           {path.improve && (
-            <section class="pd-card lx-card" aria-labelledby="pd-improve">
-              <h2 id="pd-improve">How to improve</h2>
+            <details class="pd-tips lx-card">
+              <summary id="pd-improve">How to improve</summary>
               <ul class="pd-improve">{path.improve.map((t) => <li key={t}>{t}</li>)}</ul>
-            </section>
+            </details>
           )}
+          <p class="pd-note">{path.note}</p>
         </div>
         <div class="lx-col">
           {path.guide && (

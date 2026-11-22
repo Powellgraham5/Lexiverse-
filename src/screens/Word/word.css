@@ -35,7 +35,7 @@
 .wd-moons .p1 { right: 0; top: 50%; translate: 0 -50%; animation-delay: 1s; }
 .wd-moons .p2 { left: 50%; bottom: 0; translate: -50% 0; animation-delay: 2s; }
 .wd-moons .p3 { left: 0; top: 50%; translate: 0 -50%; animation-delay: 3s; }
-.wd-moon { display: inline-flex; min-height: 2.25rem; padding: 0 .625rem; font-size: min(.8125rem, 15px); }
+.wd-moon { display: inline-flex; min-height: var(--lx-tap); padding: 0 .625rem; font-size: min(.8125rem, 15px); }
 /* Large text: no ring; the planet sits on its own and the related words flow below it. */
 :root[data-large-text] .wd-orbit { aspect-ratio: auto; display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; }
 :root[data-large-text] .wd-ring { display: none; }

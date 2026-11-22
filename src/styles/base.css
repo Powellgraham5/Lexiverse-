@@ -1,4 +1,6 @@
 @import '../../design/tokens.css';
+/* A local font scaled to Unbounded's width and height, so headings do not jump when the real font arrives. */
+@font-face { font-family: "Unbounded Fallback"; src: local("Arial"), local("Helvetica"), local("Liberation Sans"); size-adjust: 132%; ascent-override: 74%; descent-override: 20%; line-gap-override: 0%; }
 
 /* Dark + high contrast: pure black and white, no tints */
 :root[data-theme="dark"][data-contrast="high"] {

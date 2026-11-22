@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { AnnounceParent } from '../../app/announce.jsx';
 import { usePage } from '../../app/usePage.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { SpeakerIcon, SlowIcon } from '../../app/icons.jsx';
@@ -85,7 +86,8 @@ export default function Spell() {
       </form>
       {checked !== null && (
         <div class="ps-foot">
-          <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
+          <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`}>
+            <AnnounceParent />
             <b>{right ? (hint ? 'Got it, with a hint!' : 'Spot on!') : (nearMiss(c.w, checked) ? 'Almost! Here is how it is spelled' : 'Not quite. Here is how it is spelled')}</b>
             {!right && <SpellingFeedback word={c.w} typed={checked} />}
             <span>{c.syl ? c.syl.join(' · ') : c.w}: {c.def}</span>

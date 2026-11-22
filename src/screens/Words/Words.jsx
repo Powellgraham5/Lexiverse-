@@ -82,8 +82,8 @@ export default function Words() {
   return (
     <>
       <div class="mw-head lx-rise">
-        <div><h1 class="lx-page-title">My Words</h1><p class="mw-sub">{total} word{total === 1 ? '' : 's'} in your galaxy</p></div>
-        <button type="button" class="mw-add" aria-label="New list" onClick={() => setCreating(true)}><PlusIcon /></button>
+        <div><h1 class="lx-page-title">My Words</h1><p class="mw-sub">{total} saved word{total === 1 ? '' : 's'}</p></div>
+        <button type="button" class="lx-btn secondary mw-add" onClick={() => setCreating(true)}><PlusIcon size={20} />New list</button>
       </div>
       {tabs}
       <div id="mw-panel" role="tabpanel" aria-labelledby="mw-tab-words" class="mw-panel">
@@ -94,7 +94,7 @@ export default function Words() {
           <h2 id="mw-empty-h">Your galaxy is empty</h2>
           <p>Tap the bookmark on any word to save it here. Saved words come back for review so you remember them.</p>
           <a class="lx-btn" href="/today">Save today's word</a>
-          <button type="button" class="lx-btn ghost" onClick={() => setCreating(true)}>Create a list first</button>
+          <button type="button" class="lx-btn ghost" onClick={() => setCreating(true)}>Start a list</button>
         </section>
       ) : (
         <>

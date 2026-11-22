@@ -21,7 +21,8 @@ export function Switch({ label, hint, checked, onChange }) {
   const id = useId();
   return (
     <div class="lx-setting">
-      <span class="lx-setting-text"><b id={id}>{label}</b>{hint && <span>{hint}</span>}</span>
+      {/* Tapping the words toggles too, so the whole row is a large target. */}
+      <span class="lx-setting-text lx-setting-tap" onClick={() => onChange(!checked)}><b id={id}>{label}</b>{hint && <span>{hint}</span>}</span>
       <button type="button" role="switch" aria-checked={checked} aria-labelledby={id} class="lx-switch" onClick={() => onChange(!checked)}>
         <span />
       </button>

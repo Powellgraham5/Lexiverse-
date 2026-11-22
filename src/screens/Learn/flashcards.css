@@ -51,3 +51,5 @@
   .fc-grades { margin-top: 1rem; }
   .fc-grade { min-height: 5rem; }
 }
+/* Very narrow phones: less padding so the word and its meaning fit on the card. */
+@media (max-width: 360px) { .fc-face { padding: 1rem; } }

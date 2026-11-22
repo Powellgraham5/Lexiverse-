@@ -7,6 +7,7 @@ import { Toasts, toast } from '../components/toast.jsx';
 import { onDeviceVoice, isIOS } from '../lib/speech.js';
 import { requestHeadingFocus } from './usePage.js';
 import { homeFor } from '../lib/home.js';
+import { AnnounceRegion } from './announce.jsx';
 import { loadProfile } from '../lib/profile.js';
 import './shell.css';
 
@@ -104,6 +105,7 @@ export function Shell({ children }) {
   return (
     <>
       <a class="lx-skip" href="#main">Skip to content</a>
+      <AnnounceRegion />
       <Starfield />
       <div class={`lx-app ${bare ? 'bare' : ''}`}>
         {!bare && <nav class="lx-nav" aria-label="Main">

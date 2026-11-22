@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'preact/hooks';
+import { AnnounceParent } from '../../app/announce.jsx';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useRequest } from '../../app/useRequest.js';
@@ -64,7 +65,8 @@ export default function Challenge() {
 
           {answered && (
             <>
-              <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
+              <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`}>
+            <AnnounceParent />
                 <b>{right ? 'Spot on!' : `Not quite. It's ${KEYS[ch.answer]}.`}</b>
                 <span>{ch.explain}</span>
               </div>

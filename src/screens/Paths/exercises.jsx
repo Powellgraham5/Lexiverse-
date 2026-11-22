@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { Announce } from '../../app/announce.jsx';
 import { CheckIcon, CloseIcon, ChevronIcon } from '../../app/icons.jsx';
 import { checkWriting, words } from '../../lib/writing.js';
 import { speak, stopSpeaking, canSpeak } from '../../lib/speech.js';
@@ -48,7 +49,8 @@ function Help({ help }) {
 
 function Feedback({ ok, title, why, extra, help }) {
   return (
-    <div class={`lx-feedback lx-rise ${ok ? 'right' : 'wrong'}`} role="status">
+    <div class={`lx-feedback lx-rise ${ok ? 'right' : 'wrong'}`}>
+      <Announce text={`${title}. ${why || ''}`} />
       <b>{title}</b>
       {extra}
       {why && <span>{why}</span>}
@@ -275,7 +277,7 @@ function Speak({ x, onDone }) {
       )}
       {phase === 'done' && (
         <Foot>
-          <div class="lx-feedback right" role="status"><b>Well done. Check yourself:</b><ul class="ls-checklist">{x.checklist.map((c) => <li key={c}>{c}</li>)}</ul></div>
+          <div class="lx-feedback right"><Announce text="Well done. Check yourself against the list." /><b>Well done. Check yourself:</b><ul class="ls-checklist">{x.checklist.map((c) => <li key={c}>{c}</li>)}</ul></div>
           <Next onClick={() => onDone(null)} />
         </Foot>
       )}

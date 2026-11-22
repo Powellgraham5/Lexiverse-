@@ -871,7 +871,7 @@ await check('lists: create, rename, delete and undo', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
   await p.goto(BASE + '/words');
-  await p.click('button:text("Create a list first")');
+  await p.click('button:text("Start a list")');
   await p.click('dialog[open] button:text("Create list")', { force: true });
   assert.equal(await p.isVisible('dialog[open]'), true, 'create without a name should do nothing');
   await p.fill('#lf-name', 'Exam prep');

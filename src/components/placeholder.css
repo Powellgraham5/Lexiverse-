@@ -9,3 +9,5 @@
 .lx-placeholder-orbit span {
   position: absolute; left: 50%; top: -7px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--lx-coral);
 }
+/* At large text sizes, titles shrink to fit a phone width so whole words stay together. */
+:root[data-large-text] .lx-page-title { font-size: min(1.75rem, 11vw); }

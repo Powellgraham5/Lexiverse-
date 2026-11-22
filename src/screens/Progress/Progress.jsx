@@ -140,7 +140,7 @@ export default function Progress() {
           <header class="pg-head lx-rise">
             <h1 class="lx-page-title">Your universe</h1>
             <Universe lists={data.lists} words={p.words} />
-            <p class="pg-sub">{p.words} word{p.words === 1 ? '' : 's'} in {p.worlds} world{p.worlds === 1 ? '' : 's'}</p>
+            <p class="pg-sub">{p.words === 0 ? 'No words yet. Your first one lights up a star.' : `${p.words} word${p.words === 1 ? '' : 's'} in ${p.worlds} world${p.worlds === 1 ? '' : 's'}`}</p>
           </header>
           {fresh && (
             <section class="pg-card lx-card pg-dayone lx-rise lx-d1" aria-labelledby="pg-d1">

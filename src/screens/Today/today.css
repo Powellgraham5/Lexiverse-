@@ -1,7 +1,8 @@
 .lx-today-head { display: flex; align-items: center; justify-content: space-between; }
 .lx-wordmark { font-family: var(--lx-font-display); font-weight: 700; font-size: 1.125rem; }
 .lx-wordmark span { color: var(--lx-link); }
-@media (min-width: 900px) { .lx-today-head .lx-wordmark { visibility: hidden; } }
+/* The side rail already shows the wordmark, so the header shrinks to the streak chip with no empty band. */
+@media (min-width: 900px) { .lx-today-head { justify-content: flex-end; } .lx-today-head .lx-wordmark { display: none; } }
 .lx-streak-chip {
   display: inline-flex; align-items: center; gap: .375rem; min-height: 2.75rem; padding: 0 .875rem;
   border-radius: var(--lx-radius-pill); background: var(--lx-surface); font-weight: 700; color: var(--lx-ink); text-decoration: none;
@@ -84,7 +85,8 @@
 
 /* Desktop: the world on the left, the word and what to do with it on the right. */
 @media (min-width: 1024px) {
-  .today-split { align-items: center; min-height: calc(100dvh - 12rem); }
+  .today-split { align-items: start; }
+  .today-side { padding-top: 2rem; }
   .today-world .lx-orbit { max-width: 34rem; }
   .lx-orbit-chips .lx-chip { font-size: 1.0625rem; min-height: 3rem; padding: 0 1.125rem; }
   .lx-today-meaning { font-size: 1.625rem; }

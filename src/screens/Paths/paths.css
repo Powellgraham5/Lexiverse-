@@ -130,8 +130,9 @@
 /* Guides */
 .pt-how { font-size: .8125rem; color: var(--lx-muted); line-height: 1.5; }
 .pt-how b { color: var(--lx-ink); }
-.pd-guide { border-radius: 1.25rem; padding: 0; }
-.pd-guide summary { display: flex; align-items: center; min-height: 3.25rem; padding: 0 1rem; font-weight: 700; cursor: pointer; }
+.pd-guide, .pd-tips { border-radius: 1.25rem; padding: 0; }
+.pd-guide summary, .pd-tips summary { display: flex; align-items: center; min-height: 3.25rem; padding: 0 1rem; font-weight: 700; cursor: pointer; }
+.pd-tips .pd-improve { margin: 0; padding: 0 1rem 1rem 2.25rem; }
 .pd-guide ol { margin: 0; padding: 0 1rem 1rem 2.25rem; line-height: 1.6; }
 .pd-tools { display: grid; gap: .5rem; }
 .pd-test { display: flex; align-items: center; gap: .75rem; min-height: 4rem; padding: .625rem .875rem; border-radius: 1.25rem; background: var(--lx-surface); color: var(--lx-ink); text-decoration: none; }

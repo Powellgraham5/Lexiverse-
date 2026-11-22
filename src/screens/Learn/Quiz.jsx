@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { AnnounceParent } from '../../app/announce.jsx';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useSettings } from '../../app/settings-context.jsx';
@@ -128,7 +129,8 @@ export default function Quiz() {
 
       {answered && (
         <div class="ps-foot">
-          <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
+          <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`}>
+            <AnnounceParent />
             <b>{right ? 'Brilliant!' : q.kind === 'typed' ? (nearMiss(q.word, picked) ? 'Almost! Here is how it is spelled' : 'Not quite. Here is how it is spelled') : `Not quite. The answer is “${q.options[q.answer]}”`}</b>
             {q.kind === 'typed' && !right && <SpellingFeedback word={q.word} typed={picked} />}
             <span>{q.why}</span>

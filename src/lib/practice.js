@@ -62,10 +62,12 @@ const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const hasWord = (text, w) => new RegExp(`\\b${esc(w)}\\b`, 'i').test(text || '');
 
 // Short meaning for tight spaces (word match): first clause, at most ~60 characters.
-export function shortDef(def) {
+export function shortDef(def, max = 60) {
   const first = def.split(/[;:]/)[0].replace(/\.$/, '').trim();
-  return first.length <= 60 ? first : first.slice(0, first.lastIndexOf(' ', 57)) + '…';
+  return first.length <= max ? first : first.slice(0, first.lastIndexOf(' ', max - 3)) + '…';
 }
+// Quiz answers have room for the whole first clause, so learners are not choosing between cut-off text.
+const quizDef = (def) => shortDef(def, 140);
 
 // Quiz questions. Types: 'meaning' (pick the meaning), 'gap' (fill the gap; only when the example
 // uses the exact word), 'listen' (hear it, pick the word) and 'spell' (hear it, type it).
@@ -90,8 +92,8 @@ export function buildQuiz(cards, daily, seed = 'q', count = 5, types = ['meaning
       out.push({ type: 'Spelling', kind: 'typed', listen: true, word: c.w, card: c, text: 'Type the word you hear',
         why: `${c.syl ? c.syl.join(' · ') : c.w}: ${c.def}` });
     } else {
-      const others = shuffle(samePos.filter((w) => w.def !== c.def), seed + c.w, (w) => w.w).slice(0, 3).map((w) => shortDef(w.def));
-      const right = shortDef(c.def);
+      const others = shuffle(samePos.filter((w) => w.def !== c.def), seed + c.w, (w) => w.w).slice(0, 3).map((w) => quizDef(w.def));
+      const right = quizDef(c.def);
       const options = shuffle([right, ...others], seed + c.w + 'o');
       out.push({ type: 'Meaning', kind: 'choice', word: c.w, card: c, text: `What does “${c.w}” mean?`,
         options, answer: options.indexOf(right), why: c.ex ? `For example: “${c.ex}”` : c.def });

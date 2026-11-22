@@ -56,3 +56,7 @@
   .ln-ring { width: 8rem; height: 8rem; }
 }
 :root[data-large-text] .ln-ways, :root[data-large-text] .ln-bottom { display: flex; }
+:root[data-large-text] .ln-head { flex-wrap: wrap; }
+/* The hero is dark in both themes, so its button is always light. */
+.ln-hero .lx-btn.secondary { background: #FFFFFF; color: #14123A; }
+:root[data-contrast="high"] .ln-hero .lx-btn.secondary { background: var(--lx-cta); color: var(--lx-on-cta); }

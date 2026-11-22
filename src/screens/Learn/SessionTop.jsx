@@ -5,11 +5,12 @@ import { Sheet } from '../../components/Sheet.jsx';
 
 // Close, progress bar and counter at the top of every practice game. Once answers are at stake
 // (confirm), Close asks first, so a stray tap never throws away a half-finished set.
-export function SessionTop({ done, total, label, closeHref = "/learn", confirm = false }) {
+export function SessionTop({ done, total, label, closeHref = "/learn", confirm = false, confirmText = "Your answers so far will not be saved.", confirmTitle = "Leave this set?" }) {
   const pct = total ? Math.round((done / total) * 100) : 0;
   const { route } = useLocation();
   const [asking, setAsking] = useState(false);
-  const close = (e) => { if (confirm) { e.preventDefault(); setAsking(true); } };
+  // stopPropagation as well: the router follows any link click that reaches the window, prevented or not.
+  const close = (e) => { if (confirm) { e.preventDefault(); e.stopPropagation(); setAsking(true); } };
   return (
     <div class="ps-top">
       <a class="ps-close" href={closeHref} aria-label={`Close ${label}`} onClick={close}><CloseIcon /></a>
@@ -19,8 +20,8 @@ export function SessionTop({ done, total, label, closeHref = "/learn", confirm =
         </div>
         <span class="ps-count" aria-hidden="true">{done} / {total}</span>
       </>}
-      <Sheet open={asking} title="Leave this set?" onClose={() => setAsking(false)}>
-        <p class="lx-confirm-text">Your answers so far will not be saved.</p>
+      <Sheet open={asking} title={confirmTitle} onClose={() => setAsking(false)}>
+        <p class="lx-confirm-text">{confirmText}</p>
         <div class="lx-crash-row lx-confirm-row">
           <button type="button" class="lx-btn" onClick={() => setAsking(false)}>Keep going</button>
           <button type="button" class="lx-btn secondary" onClick={() => { setAsking(false); route(closeHref); }}>Leave</button>

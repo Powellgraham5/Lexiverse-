@@ -1,7 +1,7 @@
 import { toast } from '../components/toast.jsx';
 
 // Screens where reloading would lose the learner's place: lessons, tests, games and the note editor.
-const BUSY = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match'];
+const BUSY = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/mock'];
 // Typing is also busy: an update must never wipe text in the translator, search, a note or a form.
 const typing = () => {
   const a = document.activeElement;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { goBack } from '../../app/Shell.jsx';
 import { usePage } from '../../app/usePage.js';
-import { BackIcon, ChevronIcon, LearnIcon } from '../../app/icons.jsx';
+import { BackIcon, ChevronIcon, LearnIcon, SlowIcon } from '../../app/icons.jsx';
 import { JAMB_SUBJECTS, BANK_NOTE, loadBank, loadBankProgress, bestSession, seenCount } from '../../lib/bank.js';
 import '../Paths/paths.css';
 import './bank.css';
@@ -48,6 +48,11 @@ export default function Bank() {
           );
         })}
       </ul>
+      <a class="pd-test lx-rise lx-d2" href="/learn/mock">
+        <SlowIcon />
+        <span><b>JAMB mock exam</b><span>Use of English and your three subjects, timed like the real UTME, scored out of 400</span></span>
+        <ChevronIcon />
+      </a>
       <a class="pd-test lx-rise lx-d2" href="/learn/path/jamb">
         <LearnIcon />
         <span><b>Use of English lessons</b><span>Step-by-step lessons on comprehension, grammar, oral forms and the set text</span></span>

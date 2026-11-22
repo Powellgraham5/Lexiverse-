@@ -16,6 +16,8 @@ const GROUPS = [
     ['How do daily reminders work?', 'Tap “Remind me daily” on your plan and pick a time. Lexiverse makes a calendar event that repeats every day with an alert, so your phone reminds you even when the app is closed. To stop it, delete the event in your calendar.'],
     ['What does “Needs work” mean?', 'It lists topics where you have answered at least four questions and got fewer than 6 in 10 right. Tap Practise to get a set from just that topic.'],
     ['Where can I see my scores over time?', 'Your JAMB home shows a chart for each of your subjects, and each subject’s setup screen shows its own chart. Course pages show your practice test scores.'],
+    ['What is the JAMB mock exam?', 'A full practice paper like the computer-based UTME: 60 Use of English questions and 40 in each of your three other subjects, in 2 hours. You can move between questions, flag them and change answers. Each subject is scored out of 100, for a total out of 400. A short 45-minute version is also available.'],
+    ['What happens if I close the app during a mock?', 'Your answers are saved and the clock pauses. Open the mock exam again and tap Resume to carry on where you stopped.'],
     ['Are the JAMB questions real past questions?', 'No. They are practice questions written in the style of the JAMB UTME, each with an explanation. Check the current JAMB syllabus for your year.']
   ] },
   { title: 'Challenges and certificates', items: [

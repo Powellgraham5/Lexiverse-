@@ -27,7 +27,7 @@ const isActive = (href, path) => {
 };
 
 // Focused flows (and path lessons) fill the screen without the tab bar.
-const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup'];
+const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup', '/learn/mock'];
 
 // The first time the device voice speaks on an iPhone or iPad, explain the silent switch once.
 const TIP_KEY = 'lx-tip-silent';

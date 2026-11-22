@@ -38,6 +38,7 @@ const Word = lazy(() => import('./screens/Word/Word.jsx'));
 const Translator = lazy(() => import('./screens/Translator/Translator.jsx'));
 const Share = lazy(() => import('./screens/Share/Share.jsx'));
 const Certificate = lazy(() => import('./screens/Certificate/Certificate.jsx'));
+const Mock = lazy(() => import('./screens/Mock/Mock.jsx'));
 const Help = lazy(() => import('./screens/Help/Help.jsx'));
 const NotFound = lazy(() => import('./screens/NotFound/NotFound.jsx'));
 
@@ -82,6 +83,7 @@ function App() {
               <Route path="/words/note/:id" component={Note} />
               <Route path="/me" component={Me} />
               <Route path="/help" component={Help} />
+              <Route path="/learn/mock" component={Mock} />
               <Route path="/certificate/:id" component={CertRoute} />
               <Route path="/welcome" component={Onboarding} />
               <Route path="/challenge" component={Challenge} />

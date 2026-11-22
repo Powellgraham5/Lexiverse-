@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/today', 'today-word'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'], ['/help', 'help'], ['/certificate/emails', 'certificate-locked'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/today', 'today-word'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'], ['/help', 'help'], ['/learn/mock', 'mock-setup'], ['/certificate/emails', 'certificate-locked'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -1638,6 +1638,76 @@ await check('launch: daily plan reminder, certificate and help', async () => {
   await p.waitForSelector('details[open] p:has-text("WhatsApp")');
   await settle(p);
   assert.deepEqual(await axe(p), [], 'help axe');
+  await c.close();
+});
+
+await check('JAMB mock exam: sit, flag, leave, resume, submit and review', async () => {
+  const c = await newContext();
+  await c.addInitScript(() => localStorage.setItem('lx-profile', JSON.stringify({ goal: 'x', focus: 'jamb', level: 2, done: true })));
+  const p = await c.newPage();
+  await p.goto(BASE + '/');
+  await p.click('a.mk-cta');
+  await p.waitForSelector('h1:text("JAMB mock exam")');
+  await settle(p);
+  assert.deepEqual(await overflow(p), [], 'setup overflow');
+  assert.deepEqual(await axe(p), [], 'setup axe');
+  await p.click('.lx-seg button:has-text("Short")');
+  await p.click('button:text("Start timed: 45 minutes")');
+  await p.waitForSelector('.mk-q');
+  assert.deepEqual(await p.$$eval('.mk-tab span', (t) => t.map((x) => x.textContent)), ['0/20', '0/15', '0/15', '0/15']);
+  assert.match(await p.textContent('.mk-clock'), /45:00 left/);
+  await p.locator('.mk-opt').nth(2).click();
+  assert.equal(await p.locator('.mk-opt.chosen').count(), 1);
+  assert.equal(await p.locator('.lx-opt.right, .lx-opt.wrong').count(), 0, 'no marking before submit');
+  await p.click('button:text("Flag for review")');
+  await p.click('button:text("Next")');
+  await p.waitForFunction(() => document.activeElement?.classList.contains('mk-q'));
+  await p.locator('.mk-opt').first().click();
+  await p.waitForSelector('.mk-num[aria-label="Question 1, answered, flagged"]');
+  await settle(p);
+  assert.deepEqual(await overflow(p), [], 'paper overflow');
+  assert.deepEqual(await axe(p), [], 'paper axe');
+  await p.locator('.mk-tab').nth(1).click();
+  await p.waitForSelector('.ps-tag:has-text("Question 1 of 15")');
+  // Leaving asks first, then keeps the paper and pauses the clock.
+  await p.click('.ps-close');
+  await p.waitForSelector('dialog[open] h2:text("Leave the mock exam?")');
+  await p.click('dialog[open] button:text("Leave")');
+  await p.waitForURL(BASE + '/');
+  await p.goto(BASE + '/learn/mock');
+  await p.waitForSelector('.mk-resume:has-text("2 of 65 answered")');
+  await p.click('button:text("Resume")');
+  await p.waitForSelector('h1:text("Paused")');
+  await p.click('.ps-empty button:text("Resume")');
+  await p.click('.mk-submit');
+  await p.waitForSelector('dialog[open] .mk-sum:has-text("63")');
+  await p.click('dialog[open] button:text("Submit")');
+  await p.waitForSelector('#mk-done:text("Paper submitted")');
+  assert.match(await p.textContent('.rs-sub'), /out of 400/);
+  assert.equal(await p.locator('.mk-scores li').count(), 4);
+  await p.click('.mk-sec summary >> nth=1');
+  await p.waitForSelector('.mk-sec[open] .mk-why');
+  await settle(p);
+  assert.deepEqual(await axe(p), [], 'results axe');
+  assert.equal(await p.evaluate(() => localStorage.getItem('lx-mock-run')), null, 'the finished paper is cleared');
+  await c.close();
+});
+
+await check('closing a practice set asks first (Keep going stays, Leave goes)', async () => {
+  const c = await newContext();
+  await c.addInitScript(() => localStorage.setItem('lx-profile', JSON.stringify({ goal: 'x', focus: 'jamb', level: 2, done: true })));
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/bank/jamb/english');
+  await p.click('button:text("Untimed: take your time")');
+  await p.locator('.lx-opt').first().click();
+  await p.click('button:text("Continue")');
+  await p.click('.ps-close');
+  await p.waitForSelector('dialog[open] h2:text("Leave this set?")');
+  await p.click('dialog[open] button:text("Keep going")');
+  assert.match(p.url(), /\/learn\/bank\/jamb\/english$/);
+  await p.click('.ps-close');
+  await p.click('dialog[open] button:text("Leave")');
+  await p.waitForURL(BASE + '/learn/bank/jamb');
   await c.close();
 });
 

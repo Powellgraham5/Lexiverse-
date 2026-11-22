@@ -115,6 +115,11 @@ function JambHome() {
         </section>
       )}
 
+      <a class="mk-cta lx-card lx-rise lx-d2" href="/learn/mock">
+        <span class="mk-cta-text"><b>JAMB mock exam</b><span>Full UTME practice: Use of English and your three subjects, 180 questions in 2 hours, scored out of 400</span></span>
+        <ChevronIcon />
+      </a>
+
       <div class="pd-tools lx-rise lx-d2">
         {lastId && <a class="pd-test" href={`/learn/bank/jamb/${lastId}`}><SlowIcon /><span><b>Continue {title(lastId)}</b><span>Pick up the subject you practised last</span></span><ChevronIcon /></a>}
         <a class="pd-test" href="/learn/bank/jamb"><LearnIcon /><span><b>All ten subjects</b><span>Practise any subject, timed or untimed</span></span><ChevronIcon /></a>

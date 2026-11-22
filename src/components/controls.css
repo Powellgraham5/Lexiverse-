@@ -42,3 +42,4 @@
 :root[data-large-text] .lx-seg { border-radius: 1.25rem; }
 :root[data-large-text] .lx-seg.stretch { grid-auto-flow: row; }
 :root[data-large-text] .lx-seg button { flex: 1 1 auto; }
+.lx-seg button { min-width: var(--lx-tap); }

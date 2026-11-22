@@ -1,9 +1,10 @@
 import { useState } from 'preact/hooks';
+import { goBack } from '../../app/Shell.jsx';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { BackIcon, CopyIcon, PenIcon, ChevronIcon } from '../../app/icons.jsx';
 import { toast } from '../../components/toast.jsx';
-import { FORMAT_GROUPS } from '../../content/formats.js';
+import { FORMAT_GROUPS, CHECK } from '../../content/formats.js';
 import { addNote } from '../../lib/notebook.js';
 import { pathById } from '../../lib/paths.js';
 import './paths.css';
@@ -55,9 +56,10 @@ export default function Formats() {
   const shown = group === 'all' ? FORMAT_GROUPS : FORMAT_GROUPS.filter((g) => g.id === group);
   return (
     <>
-      <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>
+      <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back" onClick={goBack}><BackIcon /></a></div>
       <h1 class="lx-page-title lx-rise">Writing formats</h1>
       <p class="pt-sub lx-rise lx-d1">The layout and rules for each kind of writing. Open one, copy the template or save it to your notebook.</p>
+      <p class="pd-note lx-rise lx-d1">{CHECK}</p>
       <div class="fm-filter lx-rise lx-d1" role="group" aria-label="Show formats for">
         {[['all', 'All'], ...FORMAT_GROUPS.map((g) => [g.id, g.title])].map(([id, label]) => (
           <button key={id} type="button" class="fm-chip" aria-pressed={group === id} onClick={() => setGroup(id)}>{label}</button>
@@ -66,7 +68,7 @@ export default function Formats() {
       {shown.map((g) => (
         <section key={g.id} class="fm-group lx-rise lx-d2" aria-labelledby={`fm-${g.id}`}>
           <h2 id={`fm-${g.id}`}>{g.title}</h2>
-          {g.note && <p class="pd-note">{g.note}</p>}
+          {g.note && g.note !== CHECK && <p class="pd-note">{g.note}</p>}
           <ul class="fm-list">{g.formats.map((f) => <FormatCard key={f.id} group={g} f={f} />)}</ul>
         </section>
       ))}

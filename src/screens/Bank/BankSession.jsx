@@ -53,8 +53,19 @@ export default function BankSession() {
   const [say, setSay] = useState('');
   const picked = useRef({});
   const started = useRef(0);
+  const took = useRef(0);
   const back = params.subject === 'mix' ? '/' : '/learn/bank/jamb';
 
+  // Each new question (and the results) moves focus to its heading, so keyboard and screen reader
+  // users start at the question instead of the top of the page.
+  useEffect(() => {
+    if (phase === 'setup' || phase === 'intro') return;
+    const t = setTimeout(() => {
+      const h = document.querySelector('.ps-q:not([hidden]) h1, .ps h1');
+      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    }, 60);
+    return () => clearTimeout(t);
+  }, [phase, i]);
   useEffect(() => {
     if (phase !== 'run' || !timer || timer.paused || timer.off) return undefined;
     const t = setInterval(() => setTimer((x) => TIMER.tick(x)), 1000);
@@ -87,6 +98,7 @@ export default function BankSession() {
     setLog(all);
     setPhase('done');
     const secs = Math.round((Date.now() - started.current) / 1000);
+    took.current = secs;
     if (mix) {
       // Save each subject's share of the set to that subject's progress.
       for (const id of [...new Set(items.map((x) => x.subject))]) {
@@ -140,7 +152,7 @@ export default function BankSession() {
 
   if (phase === 'done') {
     const score = log.filter((e) => e.ok).length;
-    const secs = Math.round((Date.now() - started.current) / 1000);
+    const secs = took.current;
     const missed = log.filter((e) => !e.ok);
     const timed = !timer?.off;
     return (
@@ -160,21 +172,21 @@ export default function BankSession() {
   const View = VIEWS.choice;
   return (
     <div class="ps">
-      <SessionTop done={i} total={items.length} label={bank.title} closeHref={back} />
+      <SessionTop done={i} total={items.length} label={bank.title} closeHref={back} confirm={i > 0} />
       <div class="pt-timer" role="group" aria-label="Timer">
-        {timer.off ? <span>Timer off</span> : <span role="timer" aria-label="Time left"><b class={timer.left <= 60 ? 'low' : ''}>{mmss(timer.left)}</b> left{timer.paused ? ' (paused)' : ''}</span>}
+        {timer.off ? <span>Timer off</span> : <span role="timer"><b class={timer.left <= 60 ? 'low' : ''}>{mmss(timer.left)}</b> left{timer.paused ? ' (paused)' : ''}</span>}
         {!timer.off && <button type="button" class="ps-round" onClick={() => setTimer(TIMER.pause(timer))}>{timer.paused ? 'Resume' : 'Pause'}</button>}
         {!timer.off && <button type="button" class="ps-round" onClick={() => setTimer(TIMER.off(timer))}>Turn off timer</button>}
       </div>
       <p class="lx-sr" aria-live="polite">{say}</p>
-      {timer.paused ? (
+      {timer.paused && (
         <div class="ps-empty"><h1>Paused</h1><p>Take a breath. The question is hidden until you resume.</p><button type="button" class="lx-btn" onClick={() => setTimer(TIMER.pause(timer))}>Resume</button></div>
-      ) : (
-        <>
+      )}
+      {/* Kept mounted while paused, so an answer already chosen is not lost or changed. */}
+      <div class="ps-q" hidden={timer.paused}>
           <span class="ps-tag lx-rise">Question {i + 1} of {items.length} · {x.topic}</span>
           <View key={x.key} x={x} onDone={onDone} onAnswer={(ok, detail) => { picked.current[i] = { ok, detail }; }} />
-        </>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { goBack } from '../../app/Shell.jsx';
 import { usePage } from '../../app/usePage.js';
 import { BackIcon, ChevronIcon, LearnIcon } from '../../app/icons.jsx';
 import { JAMB_SUBJECTS, BANK_NOTE, loadBank, loadBankProgress, bestSession, seenCount } from '../../lib/bank.js';
@@ -13,15 +14,17 @@ export default function Bank() {
     let live = true;
     Promise.all(JAMB_SUBJECTS.map(async (s) => {
       if (!s.load) return [s.id, null];
-      const [bank, prog] = await Promise.all([loadBank(s.id), loadBankProgress(s.id)]);
-      return [s.id, { count: bank.questions.length, seen: seenCount(prog), best: bestSession(prog) }];
+      try {
+        const [bank, prog] = await Promise.all([loadBank(s.id), loadBankProgress(s.id)]);
+        return [s.id, { count: bank.questions.length, seen: seenCount(prog), best: bestSession(prog) }];
+      } catch { return [s.id, { failed: true }]; }
     })).then((rows) => live && setInfo(Object.fromEntries(rows))).catch(() => {});
     return () => { live = false; };
   }, []);
 
   return (
     <>
-      <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>
+      <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back" onClick={goBack}><BackIcon /></a></div>
       <header class="bk-head lx-rise">
         <span class="pt-planet big" style={{ background: 'var(--lx-family-bg)' }} aria-hidden="true"><LearnIcon size={34} /></span>
         <h1 class="lx-page-title">JAMB practice questions</h1>
@@ -37,7 +40,7 @@ export default function Bank() {
             <li key={s.id}>
               <a class="pt-row" href={`/learn/bank/jamb/${s.id}`}>
                 <span><b>{s.title}</b>
-                  <span>{i ? `${i.count} questions · ${i.seen} seen${i.best ? ` · best ${i.best.score}/${i.best.total}` : ''}` : 'Loading…'}</span>
+                  <span>{!i ? 'Loading…' : i.failed ? 'Connect to the internet once to load this subject' : `${i.count} questions · ${i.seen} seen${i.best ? ` · best ${i.best.score}/${i.best.total}` : ''}`}</span>
                 </span>
                 <ChevronIcon />
               </a>

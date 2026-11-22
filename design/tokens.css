@@ -43,6 +43,9 @@
   --lx-error: #E2553A;
   --lx-error-bg: #FFD9CC;
   --lx-error-ink: #9A2E0E;
+  /* Solid fills behind white text: 4.5:1 or more (success 5.3:1, error 5.6:1). */
+  --lx-success-strong: #157A4C;
+  --lx-error-strong: #B83A22;
   --lx-focus: #1D4ED8;
 
   /* Skeleton */

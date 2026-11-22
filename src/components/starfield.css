@@ -21,3 +21,6 @@
   position: absolute; right: 8%; top: 12%; width: 80px; height: 2px; border-radius: 2px;
   background: linear-gradient(90deg, #FFFFFF, rgba(255, 255, 255, 0)); animation: lx-shoot 9s ease-in 2s infinite;
 }
+/* Below laptop width the streak would cross body text, so it only flies in the wide margin. */
+@media (max-width: 1023px) { .lx-shoot { display: none; } }
+@media (min-width: 1024px) { .lx-shoot { right: 2%; } }

@@ -1,4 +1,6 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
+import { installed, canInstall, onInstallChange, promptInstall } from '../../app/sw.js';
+import { isIOS } from '../../lib/speech.js';
 import { usePage } from '../../app/usePage.js';
 import { loadProfile, saveProfile } from '../../lib/profile.js';
 import { GOAL_FLOW, LEVEL_NAMES } from '../../lib/goals.js';
@@ -24,6 +26,8 @@ export default function Me() {
           <span>Your words and progress are saved on this phone. Sign in to sync is coming soon.</span>
         </div>
       </section>
+
+      <Install />
 
       <nav class="me-links lx-rise lx-d1" aria-label="Your words and progress">
         <a href="/progress"><StarIcon /><span><b>Your universe</b><span>Streak, recall and the word archive</span></span><ChevronIcon /></a>
@@ -79,3 +83,29 @@ export default function Me() {
     </>
   );
 }
+
+// Installing keeps Lexiverse on the home screen, opens it full screen and protects saved work.
+function Install() {
+  const [, redraw] = useState(0);
+  useEffect(() => onInstallChange(() => redraw((n) => n + 1)), []);
+  if (installed()) return null;
+  if (canInstall()) {
+    return (
+      <section class="lx-card me-install lx-rise lx-d1" aria-labelledby="me-install">
+        <h2 id="me-install">Install Lexiverse</h2>
+        <p>Open it from your home screen, full screen and offline.</p>
+        <button type="button" class="lx-btn" onClick={() => promptInstall()}>Install</button>
+      </section>
+    );
+  }
+  if (isIOS()) {
+    return (
+      <section class="lx-card me-install lx-rise lx-d1" aria-labelledby="me-install">
+        <h2 id="me-install">Add Lexiverse to your home screen</h2>
+        <p>Tap the Share button in Safari, then “Add to Home Screen”. It then opens full screen, works offline and keeps your words safe.</p>
+      </section>
+    );
+  }
+  return null;
+}
+

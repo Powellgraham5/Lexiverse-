@@ -17,7 +17,7 @@
 .lf-preview { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; border-radius: 1.25rem; background: var(--lx-surface); }
 .lf-row { display: flex; gap: .5rem; flex-wrap: wrap; }
 .lf-row .lx-btn { flex: 1 1 8rem; }
-.lf-danger { background: var(--lx-error) !important; color: #FFFFFF !important; }
+.lf-danger { background: var(--lx-error-strong) !important; color: #FFFFFF !important; }
 .lf-menu { display: flex; flex-direction: column; gap: .375rem; margin: 0; padding: 0; list-style: none; }
 .lf-menu button { display: flex; align-items: center; gap: .75rem; width: 100%; min-height: 3.25rem; padding: 0 1rem; border: 0; border-radius: 1rem; background: var(--lx-surface); font-weight: 700; text-align: left; }
 .lf-menu li.sep { margin-top: .75rem; }

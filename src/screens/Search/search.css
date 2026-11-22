@@ -6,7 +6,7 @@
 .sr-box > svg { flex: none; color: var(--lx-muted); }
 .sr-box input { flex: 1; min-width: 0; border: 0; background: transparent; font-size: 1.1875rem; padding: .625rem 0; outline: none; }
 .sr-box input::-webkit-search-cancel-button { display: none; }
-.sr-box:focus-within { box-shadow: 0 0 0 4px var(--lx-primary-soft); }
+.sr-box:focus-within { box-shadow: 0 0 0 4px var(--lx-primary-soft); outline: 3px solid var(--lx-focus); outline-offset: 3px; }
 :root[data-contrast="high"] .sr-box:focus-within { outline: 3px solid var(--lx-focus); }
 .sr-clear, .sr-mic { display: flex; align-items: center; justify-content: center; flex: none; border: 0; border-radius: var(--lx-radius-pill); }
 .sr-clear { width: 2.75rem; height: 2.75rem; background: transparent; color: var(--lx-muted); }

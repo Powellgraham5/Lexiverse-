@@ -1,3 +1,4 @@
+import { local } from './store.js';
 // Streaks: a day counts when the learner finishes the daily challenge or a review.
 // Days are local calendar dates (YYYY-MM-DD) so the streak follows the learner's clock.
 import { dayKey } from './daily.js';
@@ -18,12 +19,12 @@ export function currentStreak(days, today = dayKey()) {
   return n;
 }
 
-export function loadActivity(storage = globalThis.localStorage) {
+export function loadActivity(storage = local()) {
   try { return JSON.parse(storage?.getItem(KEY) || '{}'); } catch { return {}; }
 }
 
 // activity = { days: ['2026-10-26', ...], challenge: { day: true }, minutes: { day: n }, quizzes: { day: n } }
-export function recordActivity(kind, storage = globalThis.localStorage, today = dayKey(), minutes = 0) {
+export function recordActivity(kind, storage = local(), today = dayKey(), minutes = 0) {
   const a = loadActivity(storage);
   a.days = [...new Set([...(a.days || []), today])].slice(-400);
   if (kind === 'challenge') a.challenge = { ...(a.challenge || {}), [today]: true };

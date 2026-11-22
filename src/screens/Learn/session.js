@@ -22,10 +22,13 @@ export function useSession({ size, from } = {}, key = 0) {
   const [state, setState] = useState({ cards: null, daily: null, error: null });
   useEffect(() => {
     let live = true;
+    // A retry starts from a clean slate, so the old round's cards can't be answered again.
+    if (key) setState((s) => ({ ...s, cards: null }));
     const prefs = loadPrefs();
     const list = listParam();
+    const asked = Number(new URLSearchParams(location.search).get('size')) || 0;
     loadDaily()
-      .then(async (daily) => ({ daily, cards: await buildSession({ daily, profile: loadProfile(), size: size || prefs.size, from: list ? `list:${list}` : from || prefs.from }) }))
+      .then(async (daily) => ({ daily, cards: await buildSession({ daily, profile: loadProfile(), size: size || asked || prefs.size, from: list ? `list:${list}` : from || prefs.from }) }))
       .then((s) => live && setState({ ...s, startedAt: Date.now(), error: null }))
       .catch((error) => live && setState({ cards: null, daily: null, error }));
     return () => { live = false; };

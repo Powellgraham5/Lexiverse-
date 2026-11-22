@@ -25,7 +25,7 @@ export default function Setup() {
     if (types.length) set({ types });
   };
   const SOURCES = [
-    ['due', 'Due for review', `${counts.due} word${counts.due === 1 ? '' : 's'}, best for memory`],
+    ['due', 'Due for review', counts.due ? `${counts.due} word${counts.due === 1 ? '' : 's'}, best for memory` : 'None due yet, so new words are added'],
     ['goal', 'My goal', 'Words picked for what you are learning for'],
     ['all', 'All my words', `${counts.all} word${counts.all === 1 ? '' : 's'}, mixed`]
   ];

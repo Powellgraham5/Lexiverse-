@@ -77,7 +77,7 @@ export default function Onboarding() {
     if (!id) return go(4);
     saveProfile({ goal: code, focus, level: LEVELS[level], done: true, startedAt: Date.now() });
     recordActivity('start');
-    route(pathHome(id));
+    route(pathHome(id), true);
   }
 
   async function finish() {
@@ -158,7 +158,7 @@ export default function Onboarding() {
       {step === 4 && (
         <section class="ob-step">
           <h1 class="lx-rise">Make it comfortable</h1>
-          <p class="ob-sub lx-rise lx-d1">Set it up for your {code === 'x' ? `${label} practice` : flow.name.toLowerCase()}. Change these any time in Me.</p>
+          <p class="ob-sub lx-rise lx-d1">Set it up for your {code === 'x' ? `${label} practice` : `${flow.name} practice`}. Change these any time in Me.</p>
           <div class="ob-preview lx-rise lx-d2" aria-hidden="true">
             <b>benevolent</b>
             <span>Kind and wanting to help other people.</span>
@@ -189,7 +189,7 @@ export default function Onboarding() {
           <h1 class="lx-rise lx-d3">{flow.ready(label).title}</h1>
           <p class="ob-lead lx-rise lx-d4">{flow.ready(label).lead}</p>
           <p class="ob-streak lx-rise lx-d4"><span aria-hidden="true"><FlameIcon /></span>Day 1 streak started</p>
-          <button type="button" class="lx-btn ob-next lx-rise lx-d4" onClick={() => route('/')}>Start exploring</button>
+          <button type="button" class="lx-btn ob-next lx-rise lx-d4" onClick={() => route('/', true)}>Start exploring</button>
         </section>
       )}
     </div>

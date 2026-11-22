@@ -36,8 +36,19 @@ export default function PracticeTest() {
   const [timer, setTimer] = useState(null);
   const [say, setSay] = useState('');
   const started = useRef(0);
+  const took = useRef(0);
   const back = `/learn/path/${params.id}`;
 
+  // Each new question (and the results) moves focus to its heading, so keyboard and screen reader
+  // users start at the question instead of the top of the page.
+  useEffect(() => {
+    if (phase === 'setup' || phase === 'intro') return;
+    const t = setTimeout(() => {
+      const h = document.querySelector('.ps-q:not([hidden]) h1, .ps h1');
+      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    }, 60);
+    return () => clearTimeout(t);
+  }, [phase, i]);
   useEffect(() => {
     if (phase !== 'run' || !timer || timer.paused || timer.off) return undefined;
     const t = setInterval(() => setTimer((x) => TIMER.tick(x)), 1000);
@@ -60,6 +71,7 @@ export default function PracticeTest() {
     setPhase('done');
     const score = all.filter((e) => e.ok).length;
     const secs = Math.round((Date.now() - started.current) / 1000);
+    took.current = secs;
     await recordTest(path.id, { score, total: items.length, secs }).catch(() => {});
     recordActivity('quiz', undefined, undefined, Math.max(1, Math.round(secs / 60)));
     if (timedOut) setSay('Time is up');
@@ -107,7 +119,7 @@ export default function PracticeTest() {
 
   if (phase === 'done') {
     const score = log.filter((e) => e.ok).length;
-    const secs = Math.round((Date.now() - started.current) / 1000);
+    const secs = took.current;
     return (
       <div class="ps">
         <p class="lx-sr" aria-live="assertive">{say}</p>
@@ -122,22 +134,22 @@ export default function PracticeTest() {
   const View = VIEWS[x.type];
   return (
     <div class="ps">
-      <SessionTop done={i} total={items.length} label="Practice test" closeHref={back} />
+      <SessionTop done={i} total={items.length} label="Practice test" closeHref={back} confirm={i > 0} />
       <div class="pt-timer" role="group" aria-label="Timer">
-        {timer.off ? <span>Timer off</span> : <span role="timer" aria-label="Time left"><b class={timer.left <= 60 ? 'low' : ''}>{mmss(timer.left)}</b> left{timer.paused ? ' (paused)' : ''}</span>}
+        {timer.off ? <span>Timer off</span> : <span role="timer"><b class={timer.left <= 60 ? 'low' : ''}>{mmss(timer.left)}</b> left{timer.paused ? ' (paused)' : ''}</span>}
         {!timer.off && <button type="button" class="ps-round" onClick={() => setTimer(TIMER.pause(timer))}>{timer.paused ? 'Resume' : 'Pause'}</button>}
         {!timer.off && <button type="button" class="ps-round" onClick={() => setTimer(TIMER.off(timer))}>Turn off timer</button>}
       </div>
       <p class="lx-sr" aria-live="polite">{say}</p>
-      {timer.paused ? (
+      {timer.paused && (
         <div class="ps-empty"><h1>Paused</h1><p>Take a breath. The question is hidden until you resume.</p><button type="button" class="lx-btn" onClick={() => setTimer(TIMER.pause(timer))}>Resume</button></div>
-      ) : (
-        <>
+      )}
+      {/* Kept mounted while paused, so an answer already chosen is not lost or changed. */}
+      <div class="ps-q" hidden={timer.paused}>
           <span class="ps-tag lx-rise">Question {i + 1} of {items.length}</span>
           {x.passage && <Passage text={x.passage} />}
           <View key={x.key} x={x} seed={x.key} onDone={onDone} help={lessonsOf(path).find((l) => x.key.startsWith(`${l.id}#`))?.cards} onAnswer={(ok, detail) => { picked.current[i] = { ok, detail }; }} />
-        </>
-      )}
+      </div>
     </div>
   );
 }

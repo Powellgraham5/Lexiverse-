@@ -15,7 +15,7 @@
   display: inline-flex; align-items: center; justify-content: center; min-width: 1.75rem; height: 2rem; padding: 0 .25rem; border-radius: .5rem;
   background: var(--lx-surface); font-family: var(--lx-font-display); font-weight: 700;
 }
-.sp-l.wrong, .sp-l.missing { background: var(--lx-error); color: #FFFFFF; }
+.sp-l.wrong, .sp-l.missing { background: var(--lx-error-strong); color: #FFFFFF; }
 .sp-l.missing { outline: 2px dashed var(--lx-ink); outline-offset: -2px; }
 .sp-l.extra { background: transparent; color: var(--lx-error-ink); text-decoration: line-through; }
 .sp-hint { padding: .75rem 1rem; border-radius: 1rem; background: var(--lx-note-bg); color: var(--lx-ink); }

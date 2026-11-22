@@ -2,6 +2,7 @@
 // minutes this week, constellations (milestones) and the word-of-the-day archive.
 import { currentStreak } from './streak.js';
 import { dayKey, wordOfTheDay } from './daily.js';
+import { local } from './store.js';
 
 const lastDays = (n, now) => Array.from({ length: n }, (_, k) => { const d = new Date(now); d.setDate(d.getDate() - (n - 1 - k)); return d; });
 
@@ -34,7 +35,23 @@ export function computeProgress({ reviews, saved, lists, activity, now = Date.no
 
 // Past words of the day for one month: learned (it's in reviews) or missed. Days before the
 // learner started, and future days, are left out.
-export function archiveMonth({ daily, profile, reviews, year, month, now = Date.now() }) {
+// The word of the day the learner was actually shown, per day, so the archive keeps its history
+// even after they change their goal or level in Me.
+const SHOWN = 'lx-shown';
+export function loadShown(storage = local()) {
+  try { return JSON.parse(storage?.getItem(SHOWN) || '{}'); } catch { return {}; }
+}
+export function rememberShown(key, word, storage = local()) {
+  try {
+    const all = loadShown(storage);
+    if (all[key] === word) return;
+    all[key] = word;
+    const keep = Object.keys(all).sort().slice(-400);
+    storage?.setItem(SHOWN, JSON.stringify(Object.fromEntries(keep.map((k) => [k, all[k]]))));
+  } catch { /* storage blocked */ }
+}
+
+export function archiveMonth({ daily, profile, reviews, year, month, now = Date.now(), shown = loadShown() }) {
   const known = new Set(reviews.map((r) => r.id));
   const start = profile?.startedAt ? new Date(profile.startedAt) : new Date(now);
   start.setHours(0, 0, 0, 0);
@@ -45,8 +62,8 @@ export function archiveMonth({ daily, profile, reviews, year, month, now = Date.
     const key = dayKey(date);
     if (date > new Date(now) && key !== dayKey(new Date(now))) { out.push({ day: d, key, state: 'future' }); continue; }
     if (date < start) { out.push({ day: d, key, state: 'before' }); continue; }
-    const w = wordOfTheDay(daily, { level: profile?.level || 2, goal: profile?.goal || 'e', day: key });
-    out.push({ day: d, key, word: w.w, state: known.has(w.w) ? 'learned' : 'missed', today: key === dayKey(new Date(now)) });
+    const w = shown[key] || wordOfTheDay(daily, { level: profile?.level || 2, goal: profile?.goal || 'e', day: key }).w;
+    out.push({ day: d, key, word: w, state: known.has(w) ? 'learned' : 'missed', today: key === dayKey(new Date(now)) });
   }
   return out;
 }

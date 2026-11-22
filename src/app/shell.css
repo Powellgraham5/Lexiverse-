@@ -4,6 +4,9 @@
   display: flex; flex-direction: column; gap: 1rem;
   width: 100%; max-width: 30rem; margin: 0 auto;
   padding: calc(1rem + env(safe-area-inset-top)) var(--lx-gutter) calc(120px + env(safe-area-inset-bottom));
+  /* Keep content clear of the notch when a notched phone is turned sideways. */
+  padding-left: max(var(--lx-gutter), env(safe-area-inset-left));
+  padding-right: max(var(--lx-gutter), env(safe-area-inset-right));
 }
 #main:focus { outline: none; }
 #main h1:focus { outline: none; }
@@ -77,6 +80,16 @@
 /* Phones turned sideways have little height: a slimmer tab bar leaves more room for content. */
 @media (max-height: 500px) and (max-width: 899px) {
   .lx-nav { bottom: calc(8px + env(safe-area-inset-bottom)); padding: 4px; border-radius: 22px; }
-  .lx-nav a { min-height: 44px; padding-block: 2px; }
+  .lx-nav li a { min-height: 44px; padding-block: 2px; }
   #main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 }
+
+/* On phones, hide the tab bar while typing, so it never sits over the line being written. */
+@media (max-width: 899px) {
+  :root:has(:is(input:not([type="range"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable]):focus) .lx-nav { display: none; }
+}
+/* Taps act at once: no double-tap zoom on buttons, links and game tiles. */
+button, a, label, .mt-tile, .fc-face { touch-action: manipulation; }
+.mt-tile, .fc-face { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+/* IPA needs symbols the interface font lacks; a system stack avoids downloading extra font files. */
+[lang="en-fonipa"] { font-family: "Charis SIL", "Doulos SIL", "Segoe UI", system-ui, sans-serif; }

@@ -47,7 +47,7 @@ body {
 h1, h2, h3 { font-family: var(--lx-font-display); line-height: 1.2; margin: 0; letter-spacing: -0.01em; }
 p { margin: 0; }
 /* Long words and IPA (no spaces, and drawn in a fallback font on some devices) may break rather than widen the page. */
-#main { overflow-wrap: anywhere; }
+#main { overflow-wrap: break-word; hyphens: auto; }
 a { color: var(--lx-link); }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -73,12 +73,14 @@ img, svg { display: block; }
 .lx-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   min-height: 3.5rem; padding: .375rem min(1.5rem, 24px); border: 0; border-radius: var(--lx-radius-pill);
-  text-align: center; flex-wrap: wrap; min-width: 0; overflow-wrap: anywhere;
+  text-align: center; flex-wrap: wrap; min-width: 0; overflow-wrap: break-word; hyphens: auto;
   background: var(--lx-cta); color: var(--lx-on-cta); font-weight: 700; font-size: 1.0625rem; text-decoration: none;
   transition: transform var(--lx-fast);
 }
 .lx-btn:active { transform: scale(.97); }
 .lx-btn.secondary { background: var(--lx-surface); color: var(--lx-ink); }
+/* On a card the surface colour vanishes, so secondary buttons get a visible outline there. */
+.lx-card .lx-btn.secondary, .pd-card .lx-btn.secondary { background: var(--lx-raised); box-shadow: inset 0 0 0 2px var(--lx-line-strong); }
 .lx-btn.ghost { background: transparent; color: var(--lx-link); min-height: 3rem; }
 .lx-btn.small { min-height: 3rem; font-size: 1rem; padding: 0 1.25rem; }
 
@@ -133,3 +135,6 @@ html:has(dialog[open]) { overflow: hidden; }
 .lx-sheet, .lx-sheet-body { overscroll-behavior: contain; }
 /* A tall sticky column scrolls with the page instead (see Shell). */
 .lx-sticky.lx-nostick { position: static; }
+.lx-crash-row { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
+.lx-confirm-text { margin: 0 0 1rem; }
+.lx-confirm-row .lx-btn { flex: 1 1 8rem; }

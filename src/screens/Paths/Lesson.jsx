@@ -39,13 +39,15 @@ export default function Lesson() {
   const nextLesson = lessons[lessons.indexOf(lesson) + 1];
 
   async function finish(entries) {
+    // Show the results first, so a second tap on the last Continue cannot finish the lesson twice.
+    setStage({ part: 'done', i: 0 });
     const graded = entries.filter((e) => e.ok !== null);
     const score = graded.filter((e) => e.ok).length;
     await markLessonDone(path.id, lesson.id, { score, total: graded.length }).catch(() => {});
     recordActivity('review', undefined, undefined, Math.max(1, Math.round((Date.now() - started.current) / 60000)));
-    setStage({ part: 'done', i: 0 });
   }
   function exerciseDone(ok, detail = '') {
+    if (stage.part !== 'ex' || log.length > stage.i) return;
     const x = lesson.exercises[stage.i];
     const entries = [...log, { ok: scored(x) ? ok : null, word: x.q.length > 60 ? `${x.q.slice(0, 57)}…` : x.q, detail }];
     setLog(entries);
@@ -74,8 +76,8 @@ export default function Lesson() {
     const last = stage.i + 1 >= lesson.cards.length;
     return (
       <div class="ps">
-        <SessionTop done={at} total={steps} label={lesson.title} closeHref={back} />
-        <span class="ps-tag lx-rise">{lesson.title} · {stage.i + 1} of {lesson.cards.length}</span>
+        <SessionTop done={at} total={steps} label={lesson.title} closeHref={back} confirm={stage.part === 'ex' && stage.i > 0} />
+        <span class="ps-tag lx-rise">{lesson.title} · Card {stage.i + 1} of {lesson.cards.length}, then {lesson.exercises.length} exercises</span>
         <h1 class="lx-rise lx-d1">{card.title}</h1>
         <p class="ls-body lx-rise lx-d2">{card.body}</p>
         {card.examples?.length > 0 && (
@@ -103,7 +105,7 @@ export default function Lesson() {
   const View = VIEWS[x.type];
   return (
     <div class="ps">
-      <SessionTop done={at} total={steps} label={lesson.title} closeHref={back} />
+      <SessionTop done={at} total={steps} label={lesson.title} closeHref={back} confirm={stage.part === 'ex' && stage.i > 0} />
       {x.type !== 'write' && <span class="ps-tag lx-rise">Practice · {stage.i + 1} of {lesson.exercises.length}</span>}
       {x.passage && <Passage text={x.passage} />}
       <View key={`${lesson.id}-${stage.i}`} x={x} seed={`${lesson.id}${stage.i}`} onDone={exerciseDone} help={lesson.cards} />

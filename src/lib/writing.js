@@ -11,7 +11,10 @@ const CLOSING = /\b(yours (faithfully|sincerely|truly)|best regards|kind regards
 // Not "'s" in general: "the school's library" is a possessive, not a contraction.
 const CONTRACTION = /\b(\w+n['’]t|\w+['’](re|ve|ll|d|m)|(it|that|there|he|she|what|who|let)['’]s)\b/i;
 
-export const words = (text) => (text.match(/[A-Za-z][A-Za-z'-]*/g) || []);
+// Letters in any script (Adéọlá, Ọmọ, café count as one word each), with apostrophes and hyphens inside.
+export const words = (text) => (text.match(/\p{L}[\p{L}\p{M}'’-]*/gu) || []);
+// A closing belongs at the end: “Thank you for your letter” in the body is not a sign-off.
+const ending = (text) => text.split('\n').map((l) => l.trim()).filter(Boolean).slice(-4).join('\n');
 export const paragraphs = (text) => text.split(/\n\s*\n/).map((p) => p.trim()).filter((p) => words(p).length >= 3);
 const sentences = (text) => text.split(/(?<=[.!?])\s+|\n+/).map((s) => s.trim()).filter(Boolean);
 
@@ -55,7 +58,7 @@ export function checkWriting(text, { minWords = 0, maxWords = Infinity, kind = '
     out.push(GREETING.test(text)
       ? { ok: true, label: 'Greeting', tip: 'You open with a greeting.' }
       : { ok: false, label: 'Greeting', tip: kind === 'letter-informal' ? 'Start with “Dear …” or “Hi …”.' : 'Start with a greeting such as “Dear Mr Bello,”.' });
-    out.push(CLOSING.test(text)
+    out.push(CLOSING.test(ending(text))
       ? { ok: true, label: 'Closing', tip: 'You close politely.' }
       : { ok: false, label: 'Closing', tip: kind === 'letter-formal' ? 'End with “Yours faithfully,” (or “Yours sincerely,” if you named the person) and your name.' : 'End with a closing such as “Best regards,” and your name.' });
   }

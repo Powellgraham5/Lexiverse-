@@ -1,3 +1,4 @@
+import { local } from './store.js';
 // JAMB practice question banks: one lazily loaded file per subject, drawn at random each session.
 // Progress lives in IndexedDB kv under "bank:jamb:<subject>" as { seen: { id: at }, sessions: [...] }.
 import { get, put } from './db.js';
@@ -51,13 +52,13 @@ export const seenCount = (p) => Object.keys(p.seen || {}).length;
 // The learner's four UTME subjects (English is compulsory), kept on this device.
 const MINE = 'lx-jamb-subjects';
 export const DEFAULT_SUBJECTS = ['english', 'mathematics', 'biology', 'chemistry'];
-export function mySubjects(storage = globalThis.localStorage) {
+export function mySubjects(storage = local()) {
   try {
     const ids = JSON.parse(storage?.getItem(MINE) || 'null');
     return Array.isArray(ids) && ids.length ? ['english', ...ids.filter((id) => id !== 'english' && subjectById(id))].slice(0, 4) : DEFAULT_SUBJECTS;
   } catch { return DEFAULT_SUBJECTS; }
 }
-export function saveMySubjects(ids, storage = globalThis.localStorage) {
+export function saveMySubjects(ids, storage = local()) {
   try { storage?.setItem(MINE, JSON.stringify(ids)); } catch { /* private mode: defaults next time */ }
 }
 

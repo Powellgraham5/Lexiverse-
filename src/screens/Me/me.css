@@ -25,3 +25,5 @@
 
 .me-select { width: 100%; min-height: 3rem; padding: 0 .875rem; border: 2px solid var(--lx-line-strong); border-radius: 1rem; background: var(--lx-surface); color: var(--lx-ink); font-size: 1rem; }
 .me-select:focus { outline: 3px solid var(--lx-focus); outline-offset: 2px; }
+.me-install { display: flex; flex-direction: column; gap: .5rem; align-items: flex-start; padding: 1rem 1.125rem; }
+.me-install h2 { font-size: 1.0625rem; }

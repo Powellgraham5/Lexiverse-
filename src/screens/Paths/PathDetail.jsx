@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { goBack } from '../../app/Shell.jsx';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { BackIcon, CheckIcon, ChevronIcon, SlowIcon, PenIcon, LearnIcon } from '../../app/icons.jsx';
@@ -54,7 +55,7 @@ export default function PathDetail() {
       .catch(() => setState({ error: true }));
   }, [params.id]);
 
-  const top = <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back to learning paths"><BackIcon /></a></div>;
+  const top = <div class="lx-top"><a class="lx-round" href="/learn/paths" aria-label="Back" onClick={goBack}><BackIcon /></a></div>;
   if (!state) return <>{top}<h1 class="lx-sr">{meta?.title || 'Path'}</h1><span class="lx-skeleton pt-sk" aria-busy="true" /></>;
   if (state.error) return <>{top}<ErrorCard title="This path didn't load">Check your connection and try again.</ErrorCard></>;
   if (state.missing) {
@@ -131,7 +132,7 @@ export default function PathDetail() {
           </div>
           {path.units.map((u, ui) => (
             <section key={u.title} class="pd-unit lx-rise lx-d2" aria-labelledby={`pd-u${ui}`}>
-              <h2 id={`pd-u${ui}`}><span class="pd-unit-n">Unit {ui + 1}</span>{u.title}</h2>
+              <h2 id={`pd-u${ui}`}><span class="pd-unit-n">Unit {ui + 1}<span class="lx-sr">: </span></span>{u.title}</h2>
               <ol class="pd-lessons">
                 {u.lessons.map((l) => {
                   const done = progress.done[l.id];

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { primeSpeech } from '../../lib/speech.js';
 import { usePage } from '../../app/usePage.js';
 import { FlameIcon, ChevronIcon, CardsIcon, SpeakerIcon, CheckIcon } from '../../app/icons.jsx';
 import { loadReviews, summary } from '../../lib/srs.js';
@@ -30,7 +31,7 @@ function PathCard() {
       <section class="ln-path lx-card lx-rise lx-d1" aria-labelledby="ln-path-h">
         <div class="ln-path-head"><span><small>Learning paths</small><b id="ln-path-h">Step-by-step lessons</b></span></div>
         <p class="pt-sub">Exams, writing and work English, with lessons and practice.</p>
-        <div class="ln-path-row"><a class="lx-btn" href="/learn/paths">Explore learning paths</a></div>
+        <div class="ln-path-row"><a class="lx-btn secondary" href="/learn/paths">Explore learning paths</a></div>
       </section>
     );
   }
@@ -56,7 +57,7 @@ const GOAL = 10;
 function when(ts, now = Date.now()) {
   if (!ts) return null;
   const mins = Math.round((ts - now) / 60000);
-  if (mins < 60) return `in ${Math.max(1, mins)} minute${mins === 1 ? '' : 's'}`;
+  if (mins < 60) { const m = Math.max(1, mins); return `in ${m} minute${m === 1 ? '' : 's'}`; }
   const hours = Math.round(mins / 60);
   if (hours < 24) return `in ${hours} hour${hours === 1 ? '' : 's'}`;
   const days = Math.round(hours / 24);
@@ -105,13 +106,13 @@ export default function Learn() {
             ) : s.total === 0 ? (
               <>
                 <h2 id="ln-hero-h">Start with a few new words</h2>
-                <a class="lx-btn secondary small" href="/learn/flashcards">Start · 3 min</a>
+                <a class="lx-btn secondary small" href="/learn/flashcards?size=3">Start · 3 min</a>
               </>
             ) : (
               <>
                 <h2 id="ln-hero-h" role="status"><span class="ln-check" aria-hidden="true"><CheckIcon size={18} /></span>All caught up!</h2>
                 <p>{s.nextDue ? `Your next words are due ${when(s.nextDue)}. Your brain needs the gap.` : 'Nothing due right now.'}</p>
-                <a class="lx-btn secondary small" href="/learn/flashcards">Learn 3 new words</a>
+                <a class="lx-btn secondary small" href="/learn/flashcards?size=3">Learn 3 new words</a>
               </>
             )}
           </div>
@@ -126,7 +127,7 @@ export default function Learn() {
       </a>
       <div class="ln-tiles lx-rise lx-d3">
         <a class="ln-tile quiz" href="/learn/quiz"><span class="ln-ico" aria-hidden="true">?</span><b>Quick quiz</b><span>5 Qs · 2 min</span></a>
-        <a class="ln-tile spell" href="/learn/spell"><span class="ln-ico" aria-hidden="true"><SpeakerIcon size={18} /></span><b>Listen &amp; spell</b><span>No reading</span></a>
+        <a class="ln-tile spell" href="/learn/spell" onClick={primeSpeech}><span class="ln-ico" aria-hidden="true"><SpeakerIcon size={18} /></span><b>Listen &amp; spell</b><span>No reading</span></a>
         <a class="ln-tile match" href="/learn/match"><span class="ln-ico" aria-hidden="true"><CardsIcon size={18} /></span><b>Word match</b><span>Pair them up</span></a>
       </div>
       </div>

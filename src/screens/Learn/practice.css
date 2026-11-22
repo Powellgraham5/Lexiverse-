@@ -17,3 +17,6 @@
   .ps h1 { font-size: 2rem; }
   .ps-foot { margin-top: 1rem; }
 }
+/* Wraps the current test question so it stays mounted while the test is paused. */
+.ps-q { display: contents; }
+.ps-q[hidden] { display: none; }

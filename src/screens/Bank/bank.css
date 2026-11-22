@@ -4,3 +4,6 @@
 @media (min-width: 1024px) { .bk-subjects { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 [data-large-text] .bk-subjects { grid-template-columns: 1fr; }
 .bk-size { padding: .75rem 1rem; margin: .75rem 0; }
+/* Subject rows sit on the page background here, so they need a card colour (inside a card they use raised). */
+.bk-subjects .pt-row { background: var(--lx-surface); }
+.lx-card .bk-subjects .pt-row { background: var(--lx-raised); }

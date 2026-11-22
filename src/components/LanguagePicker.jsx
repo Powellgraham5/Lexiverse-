@@ -5,11 +5,12 @@ import { CheckIcon } from '../app/icons.jsx';
 import './language-picker.css';
 
 // "Translate into" picker: Nigerian languages pinned, search by English or native name.
-export function LanguagePicker({ open, value, onPick, onClose, title = 'Translate into' }) {
+export function LanguagePicker({ open, value, onPick, onClose, title = 'Translate into', english = false }) {
   const [q, setQ] = useState('');
-  const list = searchLanguages(q);
-  const pinned = list.filter((l) => l.pinned);
-  const rest = list.filter((l) => !l.pinned);
+  // English is offered only where it makes sense, such as translating from or back into it.
+  const list = searchLanguages(q, english ? LANGUAGES : undefined);
+  const pinned = list.filter((l) => l.pinned || l.code === 'en');
+  const rest = list.filter((l) => !l.pinned && l.code !== 'en');
   const Row = (l) => (
     <li key={l.code}>
       <button type="button" class="lp-row" aria-pressed={value === l.code} onClick={() => { onPick(l.code); setQ(''); }}>

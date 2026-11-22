@@ -30,11 +30,13 @@
 .ln-cards span:nth-child(3) { left: 1.5rem; top: -.125rem; display: flex; align-items: center; justify-content: center; background: var(--lx-primary); color: #FFFFFF; font-family: var(--lx-font-display); font-weight: 700; transform: rotate(8deg); }
 .ln-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
 :root[data-large-text] .ln-tiles { grid-template-columns: 1fr; }
-.ln-tile { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: .125rem; min-height: 7.5rem; padding: .875rem; border-radius: 1.25rem; color: #14123A; text-decoration: none; overflow: clip; }
-.ln-tile::after { content: ''; position: absolute; right: -1.5rem; top: -1.5rem; width: 4rem; height: 4rem; border-radius: 50%; border: 2px dashed rgba(20, 18, 58, .25); }
+@media (max-width: 360px) { .ln-tiles { grid-template-columns: 1fr; } }
+.ln-tile { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: .125rem; min-height: 7.5rem; padding: .875rem; border-radius: 1.25rem; color: var(--lx-ink); text-decoration: none; overflow: clip; }
+.ln-tile::after { content: ''; position: absolute; right: -1.5rem; top: -1.5rem; width: 4rem; height: 4rem; border-radius: 50%; border: 2px dashed var(--lx-line-strong); }
 .ln-tile b { margin-top: auto; }
-.ln-tile span:last-child { font-size: .8125rem; color: #3B3866; }
-.ln-tile.quiz { background: #D7F5E6; } .ln-tile.spell { background: #CFE8FF; } .ln-tile.match { background: #FFF3B8; }
+.ln-tile span:last-child { font-size: .8125rem; color: var(--lx-muted); }
+/* Tint tokens, so the tiles follow dark mode instead of glaring. */
+.ln-tile.quiz { background: var(--lx-family-bg); } .ln-tile.spell { background: var(--lx-info-bg); } .ln-tile.match { background: var(--lx-note-bg); }
 :root[data-contrast="high"] .ln-tile { background: var(--lx-bg); color: var(--lx-ink); outline: 2px solid var(--lx-ink); }
 .ln-ico { display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(255, 255, 255, .7); font-weight: 700; }
 .ln-setup { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .875rem 1rem; color: inherit; text-decoration: none; border-radius: 1.25rem; }

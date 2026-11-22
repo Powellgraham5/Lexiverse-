@@ -6,7 +6,7 @@ import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
 import { useSession, minutesSince } from './session.js';
 import { SessionTop } from './SessionTop.jsx';
-import { SpellingFeedback } from './Quiz.jsx';
+import { SpellingFeedback, focusSoon, nearMiss } from './Quiz.jsx';
 import { getReview, fresh, record, comesBack, gradeFor, isKnown } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
 import { playAudioOr } from '../../lib/speech.js';
@@ -62,7 +62,7 @@ export default function Spell() {
 
   return (
     <div class="ps">
-      <SessionTop done={i} total={cards.length} label="Listen and spell" />
+      <SessionTop done={i} total={cards.length} label="Listen and spell" confirm={i > 0} />
       <span class="ps-tag">Listen &amp; spell</span>
       <h1>Type the word you hear</h1>
       <div class="sp-hear">
@@ -86,11 +86,11 @@ export default function Spell() {
       {checked !== null && (
         <div class="ps-foot">
           <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
-            <b>{right ? (hint ? 'Got it, with a hint!' : 'Spot on!') : 'Almost! Here is how it is spelled'}</b>
+            <b>{right ? (hint ? 'Got it, with a hint!' : 'Spot on!') : (nearMiss(c.w, checked) ? 'Almost! Here is how it is spelled' : 'Not quite. Here is how it is spelled')}</b>
             {!right && <SpellingFeedback word={c.w} typed={checked} />}
             <span>{c.syl ? c.syl.join(' · ') : c.w}: {c.def}</span>
           </div>
-          <button type="button" class="lx-btn" onClick={next}>{i + 1 >= cards.length ? 'See results' : 'Next word'}</button>
+          <button type="button" class="lx-btn" onClick={next} ref={focusSoon}>{i + 1 >= cards.length ? 'See results' : 'Next word'}</button>
         </div>
       )}
     </div>

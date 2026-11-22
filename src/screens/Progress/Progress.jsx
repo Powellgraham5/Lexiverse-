@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { canGoBack } from '../../app/Shell.jsx';
 import { usePage } from '../../app/usePage.js';
 import { BackIcon, ChevronIcon, FlameIcon, CheckIcon, StarIcon } from '../../app/icons.jsx';
 import { Segmented } from '../../components/controls.jsx';
@@ -123,7 +124,7 @@ export default function Progress() {
       .then(([reviews, saved, lists, daily]) => setData({ reviews, saved, lists, daily, activity: loadActivity(), profile: loadProfile() }));
   }, []);
 
-  const back = (ev) => { if (history.length > 1) { ev.preventDefault(); history.back(); } };
+  const back = (ev) => { if (canGoBack()) { ev.preventDefault(); history.back(); } };
   const top = <div class="lx-top pg-top"><a class="lx-round" href="/learn" aria-label="Back" onClick={back}><BackIcon /></a></div>;
   if (!data) return <>{top}<h1 class="lx-page-title">Your universe</h1><span class="lx-skeleton pg-sk" aria-busy="true" /></>;
 

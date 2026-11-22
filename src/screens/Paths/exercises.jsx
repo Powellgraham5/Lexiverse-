@@ -74,7 +74,7 @@ function Choice({ x, onDone, onAnswer, help }) {
           const st = answered && k === x.answer ? 'right' : answered && k === picked ? 'wrong' : answered ? 'dim' : '';
           return (
             <button key={o} type="button" class={`lx-opt ${st}`} aria-disabled={answered} onClick={() => { if (answered) return; setPicked(k); onAnswer?.(k === x.answer, k === x.answer ? '' : `You chose “${x.options[k]}”. ${x.why}`); }}>
-              <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[d]}</span></> : KEYS[d]}</span>
+              <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[d]}</span></> : st === 'wrong' ? <><CloseIcon size={16} /><span class="lx-sr">{KEYS[d]}</span></> : KEYS[d]}</span>
               <span>{o}</span>
               {st === 'right' && <span class="lx-sr">, correct answer</span>}
               {st === 'wrong' && <span class="lx-sr">, your answer, not correct</span>}

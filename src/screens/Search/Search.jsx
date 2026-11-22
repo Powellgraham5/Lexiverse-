@@ -102,10 +102,15 @@ export default function Search() {
     if (mode === 'word' && /^[a-z-]+$/.test(w)) { pick(w); route(`/word/${w}`); }
   }
 
+  // Tap the mic to start, tap again to stop; listening also stops when you leave Search.
+  const rec = useRef(null);
+  useEffect(() => () => rec.current?.stop(), []);
   async function voice() {
+    if (rec.current) { rec.current.stop(); return; }
     setListening(true);
-    const { result } = listenOnce({ lang: settings.accent === 'UK' ? 'en-GB' : 'en-US', onInterim: setText });
-    const heard = await result;
+    rec.current = listenOnce({ lang: settings.accent === 'UK' ? 'en-GB' : 'en-US', onInterim: setText });
+    const heard = await rec.current.result;
+    rec.current = null;
     setListening(false);
     if (heard) setText(mode === 'word' ? heard.split(' ')[0].toLowerCase() : heard);
     input.current?.focus();
@@ -121,7 +126,7 @@ export default function Search() {
           enterkeyhint="search" onInput={(e) => setText(e.currentTarget.value)} />
         {text && <button type="button" class="sr-clear" aria-label="Clear search" onClick={() => { setText(''); input.current?.focus(); }}><CloseIcon size={18} /></button>}
         {canListen() && (
-          <button type="button" class={`sr-mic ${listening ? 'on' : ''}`} aria-label={listening ? 'Listening' : 'Search by voice'} aria-pressed={listening} onClick={voice}>
+          <button type="button" class={`sr-mic ${listening ? 'on' : ''}`} aria-label={listening ? 'Stop listening' : 'Search by voice'} aria-pressed={listening} onClick={voice}>
             <MicIcon />
           </button>
         )}

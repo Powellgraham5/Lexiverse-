@@ -65,7 +65,7 @@ export default function Match() {
 
   return (
     <div class="ps">
-      <SessionTop done={matched.length} total={game.words.length} label="Word match" />
+      <SessionTop done={matched.length} total={game.words.length} label="Word match" confirm={matched.length > 0} />
       <span class="ps-tag mt-tag">Word match</span>
       <h1>Tap a word, then its meaning</h1>
       <div class="mt-grid">

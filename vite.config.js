@@ -14,6 +14,8 @@ export default defineConfig({
         // Only Latin font subsets are precached; other scripts load on demand.
         globPatterns: ['**/*.{js,css,html,svg,webmanifest}', 'icons/*.png', 'assets/*latin*.woff2', 'data/*.json', 'data/*.txt'],
         navigateFallback: '/index.html',
+        // Control the very first visit too, so fonts and chunks fetched then are cached for offline use.
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/assets/') && url.pathname.endsWith('.woff2'),

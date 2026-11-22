@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { PlusIcon, SearchIcon, PenIcon } from '../../app/icons.jsx';
 import { toast } from '../../components/toast.jsx';
@@ -13,9 +13,13 @@ export function Notebook() {
   const [q, setQ] = useState('');
   useEffect(() => { allNotes().then(setNotes).catch(() => setNotes([])); }, []);
 
+  const creating = useRef(false);
   async function create() {
+    if (creating.current) return;
+    creating.current = true;
     try { const n = await addNote({ title: '', body: '' }); route(`/words/note/${n.id}`); }
     catch { toast({ text: "Couldn't create a note", kind: 'error' }); }
+    finally { creating.current = false; }
   }
 
   if (!notes) return <span class="lx-skeleton lx-sk" aria-busy="true" />;

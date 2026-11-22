@@ -6,6 +6,8 @@ import { OfflineBanner } from '../components/OfflineBanner.jsx';
 import { Toasts, toast } from '../components/toast.jsx';
 import { onDeviceVoice, isIOS } from '../lib/speech.js';
 import { requestHeadingFocus } from './usePage.js';
+import { homeFor } from '../lib/home.js';
+import { loadProfile } from '../lib/profile.js';
 import './shell.css';
 
 const TABS = [
@@ -16,7 +18,12 @@ const TABS = [
   { href: '/me', label: 'Me', Icon: MeIcon }
 ];
 
-const isActive = (href, path) => (href === '/' ? path === '/' || path === '/today' : path === href || path.startsWith(href + '/'));
+// The word of the day (/today) is Home for Everyday English learners; for everyone else it lives under Learn.
+const todayIsHome = () => homeFor(loadProfile()).kind === 'today';
+const isActive = (href, path) => {
+  if (path === '/today') return todayIsHome() ? href === '/' : href === '/learn';
+  return href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+};
 
 // Focused flows (and path lessons) fill the screen without the tab bar.
 const FULLSCREEN = ['/welcome', '/challenge', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup'];
@@ -33,10 +40,21 @@ onDeviceVoice(() => {
 const scrollPositions = new Map();
 let cameBack = false;
 let backY = 0;
+// How many screens the learner has moved through in this tab, so Back buttons never leave the app.
+let moves = 0;
+export const canGoBack = () => moves > 0;
+// For Back links: go back within the app when there is somewhere to go back to, else follow the link.
+export const goBack = (e) => { if (moves > 0) { e.preventDefault(); history.back(); } };
+let shown = typeof location !== 'undefined' ? location.pathname + location.search : '';
 if (typeof window !== 'undefined') {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   // Read the saved position at once: while the page swaps, scroll events would overwrite it.
-  addEventListener('popstate', () => { cameBack = true; backY = scrollPositions.get(location.pathname + location.search) || 0; });
+  addEventListener('popstate', () => {
+    // A same-page jump (the skip link's #main) also fires popstate; it is not a Back to another screen.
+    if (location.pathname + location.search === shown) return;
+    cameBack = true;
+    backY = scrollPositions.get(location.pathname + location.search) || 0;
+  });
   let pending = false;
   addEventListener('scroll', () => {
     if (pending) return;
@@ -62,7 +80,9 @@ export function Shell({ children }) {
   // Forward navigation starts the new screen at the top and focuses its heading (see usePage).
   // Back and Forward return to where the learner was on that screen, without moving focus.
   useEffect(() => {
+    shown = location.pathname + location.search;
     if (first.current) { first.current = false; return; }
+    moves++;
     if (cameBack) {
       cameBack = false;
       restoreScroll(backY);

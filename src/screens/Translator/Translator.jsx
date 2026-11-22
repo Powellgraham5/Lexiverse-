@@ -45,7 +45,9 @@ export default function Translator() {
   const fromMeta = byCode(from);
 
   function pick(code) {
-    if (picker === 'to') { setTo(code); setSettings({ translateTo: code }); } else setFrom(code);
+    // Picking the language already on the other side swaps the two, so they never match.
+    if (picker === 'to') { if (code === from) setFrom(to); setTo(code); setSettings({ translateTo: code }); }
+    else { if (code === to) setTo(from); setFrom(code); }
     setPicker(null);
   }
   function swap() {
@@ -96,7 +98,7 @@ export default function Translator() {
         <textarea id="tr-text" rows="3" maxLength={MAX_CHARS} value={text} lang={from} dir={fromMeta.dir || 'ltr'}
           placeholder="Type a word or phrase" onInput={(e) => setText(e.currentTarget.value)} />
         <div class="tr-input-row">
-          <span class="tr-count" aria-live="polite">{text.length} / {MAX_CHARS}</span>
+          <span class="tr-count" aria-live={MAX_CHARS - text.length <= 50 ? 'polite' : 'off'}>{text.length} / {MAX_CHARS}</span>
           {text && <button type="button" class="tr-icon" aria-label="Clear text" onClick={() => { setText(''); setDebounced(''); }}><CloseIcon size={18} /></button>}
           {canListen() && <button type="button" class="tr-icon mic" aria-label={`Speak in ${fromMeta.name}`} onClick={voice}><MicIcon size={20} /></button>}
           <button type="submit" class="lx-btn small">Translate</button>
@@ -134,7 +136,7 @@ export default function Translator() {
       {from === 'en' && phrases.length > 0 && (
         <section class="tr-phrases" aria-labelledby="tr-qp">
           <h2 id="tr-qp">Quick phrases</h2>
-          <p class="tr-sub">Work offline</p>
+          <p class="tr-sub">Available offline</p>
           <ul>
             {phrases.map((p) => (
               <li key={p.id}><button type="button" class="lx-chip" onClick={() => { setText(p.en); setDebounced(p.en); }}>{p.en}</button></li>
@@ -143,7 +145,7 @@ export default function Translator() {
         </section>
       )}
 
-      <LanguagePicker open={picker !== null} value={picker === 'from' ? from : to} title={picker === 'from' ? 'Translate from' : 'Translate into'}
+      <LanguagePicker open={picker !== null} value={picker === 'from' ? from : to} title={picker === 'from' ? 'Translate from' : 'Translate into'} english={picker === 'from' || from !== 'en'}
         onClose={() => setPicker(null)} onPick={pick} />
     </>
   );

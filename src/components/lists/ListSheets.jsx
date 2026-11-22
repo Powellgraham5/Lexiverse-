@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { Sheet } from '../Sheet.jsx';
 import { ListPlanet, ICON_LABEL } from './ListPlanet.jsx';
 import { COLOURS, ICONS, MAX_NAME } from '../../lib/lists.js';
@@ -14,9 +14,18 @@ export function ListFormSheet({ open, list, onClose, onSave, title }) {
   const [icon, setIcon] = useState(ICONS[0]);
   useEffect(() => { if (open) { setName(list?.name || ''); setColour(list?.colour || COLOURS[0]); setIcon(list?.icon || ICONS[0]); } }, [open]);
   const ok = name.trim().length > 0;
+  // One save at a time: pressing Enter twice must not create two lists.
+  const busy = useRef(false);
+  useEffect(() => { if (open) busy.current = false; }, [open]);
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!ok || busy.current) return;
+    busy.current = true;
+    try { await onSave({ name, colour, icon }); } finally { busy.current = false; }
+  };
   return (
     <Sheet open={open} title={title || (list ? 'Change look' : 'New list')} onClose={onClose}>
-      <form class="lf-form" onSubmit={(e) => { e.preventDefault(); if (ok) onSave({ name, colour, icon }); }}>
+      <form class="lf-form" onSubmit={submit}>
         <div class="lf-preview" aria-hidden="true"><ListPlanet list={{ name: name || '?', colour, icon }} size={48} /><b>{name.trim() || 'Your new list'}</b></div>
         <div class="lf-field">
           <label for="lf-name">Name</label>
@@ -66,12 +75,15 @@ export function RenameSheet({ open, list, onClose, onSave }) {
 
 // Delete: says exactly what goes and what stays.
 export function DeleteSheet({ open, list, count, onClose, onDelete }) {
+  const busy = useRef(false);
+  useEffect(() => { if (open) busy.current = false; }, [open]);
+  const del = async () => { if (busy.current) return; busy.current = true; try { await onDelete(); } finally { busy.current = false; } };
   return (
     <Sheet open={open} title={`Delete “${list?.name}”?`} onClose={onClose}>
       <p class="lf-text">The list goes, but its {count} word{count === 1 ? '' : 's'} stay in My Words, with their notes and other lists. You can undo for a few seconds.</p>
       <div class="lf-row">
         <button type="button" class="lx-btn secondary" onClick={onClose}>Keep it</button>
-        <button type="button" class="lx-btn lf-danger" onClick={onDelete}>Delete list</button>
+        <button type="button" class="lx-btn lf-danger" onClick={del}>Delete list</button>
       </div>
     </Sheet>
   );

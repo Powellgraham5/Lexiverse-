@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useSettings } from '../../app/settings-context.jsx';
-import { SpeakerIcon, CheckIcon } from '../../app/icons.jsx';
+import { SpeakerIcon, CheckIcon, CloseIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { Results } from '../../components/Results.jsx';
 import { useSession, loadPrefs, minutesSince } from './session.js';
@@ -10,6 +10,9 @@ import { SessionTop } from './SessionTop.jsx';
 import { buildQuiz, diffSpelling } from '../../lib/practice.js';
 import { getReview, fresh, record, comesBack, gradeFor, isKnown } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
+
+// Moves focus to a button as it appears (autofocus is ignored on buttons added after page load).
+export const focusSoon = (el) => { if (el) setTimeout(() => el.isConnected && el.focus(), 50); };
 import { playAudioOr } from '../../lib/speech.js';
 import '../../components/options.css';
 import './practice.css';
@@ -17,10 +20,14 @@ import './spell.css';
 
 const KEYS = 'ABCD';
 
+// “Almost” only when the spelling was close (two letters or fewer off); otherwise “Not quite”.
+export const nearMiss = (word, typed) => diffSpelling(word, typed || '').filter((p) => p.status !== 'ok').length <= 2;
+
 export function SpellingFeedback({ word, typed }) {
   const parts = diffSpelling(word, typed);
   return (
-    <span class="sp-letters" aria-label={`The spelling is ${word.split('').join(' ')}`}>
+    <span class="sp-letters">
+      <span class="lx-sr">The spelling is {word.split('').join(' ')}.</span>
       {parts.map((p, i) => (
         <span key={i} class={`sp-l ${p.status}`} aria-hidden="true">{p.ch}</span>
       ))}
@@ -84,7 +91,7 @@ export default function Quiz() {
 
   return (
     <div class="ps">
-      <SessionTop done={i} total={questions.length} label={label} />
+      <SessionTop done={i} total={questions.length} label={label} confirm={i > 0} />
       <span class="ps-tag lx-rise">{q.type}</span>
       <h1 class="lx-rise lx-d1">{q.text}</h1>
       {q.listen && (
@@ -100,7 +107,7 @@ export default function Quiz() {
             const st = answered && k === q.answer ? 'right' : answered && k === picked ? 'wrong' : answered ? 'dim' : '';
             return (
               <button key={o} type="button" class={`lx-opt lx-rise lx-d${Math.min(k + 2, 4)} ${st}`} aria-disabled={answered} onClick={() => answer(k)}>
-                <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[k]}</span></> : KEYS[k]}</span>
+                <span class="lx-opt-key">{st === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[k]}</span></> : st === 'wrong' ? <><CloseIcon size={16} /><span class="lx-sr">{KEYS[k]}</span></> : KEYS[k]}</span>
                 <span>{o}</span>
                 {st === 'right' && <span class="lx-sr">, correct answer</span>}
                 {st === 'wrong' && <span class="lx-sr">, your answer, not correct</span>}
@@ -122,11 +129,11 @@ export default function Quiz() {
       {answered && (
         <div class="ps-foot">
           <div class={`lx-feedback lx-rise ${right ? 'right' : 'wrong'}`} role="status">
-            <b>{right ? 'Brilliant!' : q.kind === 'typed' ? 'Almost! Here is how it is spelled' : `Not quite. The answer is “${q.options[q.answer]}”`}</b>
+            <b>{right ? 'Brilliant!' : q.kind === 'typed' ? (nearMiss(q.word, picked) ? 'Almost! Here is how it is spelled' : 'Not quite. Here is how it is spelled') : `Not quite. The answer is “${q.options[q.answer]}”`}</b>
             {q.kind === 'typed' && !right && <SpellingFeedback word={q.word} typed={picked} />}
             <span>{q.why}</span>
           </div>
-          <button type="button" class="lx-btn" onClick={next} autofocus>{i + 1 >= questions.length ? 'See results' : 'Continue'}</button>
+          <button type="button" class="lx-btn" onClick={next} ref={focusSoon}>{i + 1 >= questions.length ? 'See results' : 'Continue'}</button>
         </div>
       )}
     </div>

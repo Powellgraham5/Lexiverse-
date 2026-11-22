@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { canGoBack } from '../../app/Shell.jsx';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useRequest } from '../../app/useRequest.js';
@@ -23,6 +24,9 @@ import { addRecent } from '../../lib/recent.js';
 import { speak, playAudioOr, canSpeak, stopSpeaking } from '../../lib/speech.js';
 import { planetFont } from '../../lib/fit.js';
 import './word.css';
+
+// The router has usually decoded the word already; decoding again must not crash on a literal %.
+const safeDecode = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
 
 const QUICK_LANGS = ['yo', 'ha', 'ig', 'fr'];
 
@@ -98,7 +102,7 @@ function NotFound({ word }) {
 
 export default function Word() {
   const { params } = useRoute();
-  const word = decodeURIComponent(params.word || '').toLowerCase().trim();
+  const word = safeDecode(params.word || '').toLowerCase().trim();
   usePage(word);
   const [settings] = useSettings();
   const [req, retry] = useEntry(word);
@@ -206,7 +210,7 @@ export default function Word() {
     try { await navigator.clipboard.writeText(text); toast({ text: 'Copied', kind: 'success' }); } catch { toast({ text: "Couldn't copy", kind: 'error' }); }
   }
 
-  const back = (ev) => { if (history.length > 1) { ev.preventDefault(); history.back(); } };
+  const back = (ev) => { if (canGoBack()) { ev.preventDefault(); history.back(); } };
   const top = (
     <div class="wd-top">
       <a class="wd-round light" href="/search" aria-label="Back" onClick={back}><BackIcon /></a>

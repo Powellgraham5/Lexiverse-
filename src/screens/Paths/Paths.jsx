@@ -19,7 +19,8 @@ export default function Paths() {
   const mine = profile?.goal || 'e';
   const [progress, setProgress] = useState({});
   useEffect(() => {
-    Promise.all(PATHS.filter(isOpen).map(async (p) => [p.id, pathProgress(await loadPath(p.id), await loadProgress(p.id))]))
+    // One path failing to load (offline, not cached yet) must not hide the others' progress.
+    Promise.all(PATHS.filter(isOpen).map(async (p) => { try { return [p.id, pathProgress(await loadPath(p.id), await loadProgress(p.id))]; } catch { return [p.id, null]; } }))
       .then((rows) => setProgress(Object.fromEntries(rows))).catch(() => {});
   }, []);
   // The learning section has three categories; Everyday English lives on Today and Learn.

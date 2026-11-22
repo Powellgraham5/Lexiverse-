@@ -1,3 +1,4 @@
+import { local } from './store.js';
 // Display and listening preferences. Stored in localStorage so index.html can apply
 // them before first paint (no theme flash), and mirrored onto <html> as data attributes
 // that design/tokens.css and src/styles/base.css read.
@@ -38,12 +39,21 @@ export function applySettings(root, s) {
   root.style.setProperty('--lx-text-scale', String(s.textScale));
   // Large text: playful absolute layouts (orbits) switch to simple flowing lists.
   if (s.textScale >= 1.4) root.dataset.largeText = ''; else delete root.dataset.largeText;
+  // The phone's status bar follows the app's own theme choice, not only the system setting.
+  const doc = root.ownerDocument;
+  if (doc?.querySelectorAll) {
+    for (const m of doc.querySelectorAll('meta[name="theme-color"]')) {
+      if (!m.dataset.media) m.dataset.media = m.getAttribute('media') || '';
+      if (s.theme === 'auto') m.setAttribute('media', m.dataset.media);
+      else m.setAttribute('media', m.dataset.media.includes(s.theme) ? 'all' : 'not all');
+    }
+  }
 }
 
-export function loadSettings(storage = globalThis.localStorage) {
+export function loadSettings(storage = local()) {
   try { return normalize(JSON.parse(storage?.getItem(KEY) || '{}')); } catch { return normalize(); }
 }
 
-export function saveSettings(s, storage = globalThis.localStorage) {
+export function saveSettings(s, storage = local()) {
   try { storage?.setItem(KEY, JSON.stringify(s)); } catch { /* private mode or full: settings still apply for this visit */ }
 }

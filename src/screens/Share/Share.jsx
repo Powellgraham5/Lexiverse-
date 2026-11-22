@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { goBack } from '../../app/Shell.jsx';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { useRequest } from '../../app/useRequest.js';
-import { BackIcon, DownloadIcon, LinkIcon, ShareIcon } from '../../app/icons.jsx';
+import { BackIcon, DownloadIcon, LinkIcon } from '../../app/icons.jsx';
 import { toast } from '../../components/toast.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
 import { lookup } from '../../lib/dictionary.js';
@@ -10,12 +11,15 @@ import { loadDaily } from '../../lib/daily.js';
 import { drawCard, shareImage, saveImage, wordLink } from '../../lib/share.js';
 import './share.css';
 
+// The router has usually decoded the word already; decoding again must not crash on a literal %.
+const safeDecode = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
+
 const isDark = () => document.documentElement.dataset.theme === 'dark'
   || (document.documentElement.dataset.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
 
 export default function Share() {
   const { params } = useRoute();
-  const word = decodeURIComponent(params.word || '').toLowerCase();
+  const word = safeDecode(params.word || '').toLowerCase();
   usePage(`Share ${word}`);
   const canvas = useRef(null);
   const [img, setImg] = useState(null);
@@ -43,7 +47,7 @@ export default function Share() {
   return (
     <>
       <div class="sh-top">
-        <a class="wd-round light" href={`/word/${word}`} aria-label="Back to the word"><BackIcon /></a>
+        <a class="lx-round" href={`/word/${word}`} aria-label="Back to the word" onClick={goBack}><BackIcon /></a>
         <h1>Share a word</h1>
       </div>
       {req.state === 'error' && <ErrorCard title="Couldn't make the card" code={req.code || 'DICT-503'} onRetry={retry}>Check your connection and try again.</ErrorCard>}
@@ -58,7 +62,6 @@ export default function Share() {
           <div class="sh-actions lx-rise lx-d1">
             <button type="button" class="sh-act" onClick={() => saveImage(canvas.current, word)} disabled={!img}><DownloadIcon />Save image</button>
             <button type="button" class="sh-act" onClick={copyLink}><LinkIcon />Copy link</button>
-            <button type="button" class="sh-act" onClick={share} disabled={!img}><ShareIcon />More apps</button>
           </div>
           <button type="button" class="lx-btn lx-rise lx-d2" onClick={share} disabled={!img}>Share</button>
           </div>

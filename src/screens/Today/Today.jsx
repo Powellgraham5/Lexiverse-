@@ -5,7 +5,8 @@ import { useRequest } from '../../app/useRequest.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { SpeakerIcon, FlameIcon, ChevronIcon, CardsIcon } from '../../app/icons.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
-import { loadDaily, wordOfTheDay } from '../../lib/daily.js';
+import { loadDaily, wordOfTheDay, dayKey } from '../../lib/daily.js';
+import { rememberShown } from '../../lib/progress.js';
 import { loadProfile } from '../../lib/profile.js';
 import { focusLabel, LEVEL_NAMES } from '../../lib/goals.js';
 import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js';
@@ -33,7 +34,7 @@ export default function Today() {
   const word = req.data && wordOfTheDay(req.data, { level: profile?.level || 2, goal: profile?.goal || 'e' });
   const [due, setDue] = useState(0);
   // Seeing the word of the day adds it to the learner's reviews.
-  useEffect(() => { if (word) recordMet(word.w).catch(() => {}); }, [word?.w]);
+  useEffect(() => { if (word) { recordMet(word.w).catch(() => {}); rememberShown(dayKey(), word.w); } }, [word?.w]);
 
   // Tap to hear, tap again to stop. Speech stops when you leave Today.
   const [playing, setPlaying] = useState(false);
@@ -108,7 +109,13 @@ export default function Today() {
               <span class="lx-done-flame" aria-hidden="true"><FlameIcon size={30} /></span>
               <h2 id="done-title" role="status">You're done for today!</h2>
               <p>You learned <b>{word.w}</b>{streak > 1 ? ` and kept a ${streak} day streak` : ''}. A new word lands tomorrow.</p>
-              <a class="lx-btn secondary small" href="/learn">Practise more</a>
+              <div class="lx-today-actions">
+                <button type="button" class={`lx-listen ${playing ? 'on' : ''}`} aria-pressed={playing}
+                  aria-label={playing ? `Stop ${word.w}` : `Listen to ${word.w}`} onClick={listen}>
+                  {playing ? <span class="lx-bars" aria-hidden="true"><span /><span /><span /></span> : <SpeakerIcon size={24} />}
+                </button>
+                <a class="lx-btn secondary small" href="/learn">Practise more</a>
+              </div>
             </section>
           ) : (
             <div class="lx-today-actions lx-rise lx-d3">

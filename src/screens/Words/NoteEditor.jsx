@@ -46,6 +46,7 @@ export default function NoteEditor() {
     clearTimeout(timer.current);
     timer.current = null;
     const gone = await deleteNote(note.id).catch(() => null);
+    if (!gone) { toast({ text: "Couldn't delete the note", kind: 'error' }); return; }
     route('/words?tab=notebook');
     toast({ text: 'Note deleted', kind: 'success', action: 'Undo', onAction: () => restoreNote(gone).then(() => route(`/words/note/${gone.id}`)) });
   }

@@ -36,7 +36,7 @@
 .pd-lesson.next { box-shadow: inset 0 0 0 2.5px var(--lx-primary); }
 .pd-lesson > svg { flex: none; color: var(--lx-muted); }
 .pd-dot { display: flex; align-items: center; justify-content: center; flex: none; width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 2px dashed var(--lx-orbit); }
-.pd-lesson.done .pd-dot { border: 0; background: var(--lx-success); color: #FFFFFF; }
+.pd-lesson.done .pd-dot { border: 0; background: var(--lx-success-strong); color: #FFFFFF; }
 .pd-lesson-text { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .pd-lesson-text span { font-size: .8125rem; color: var(--lx-muted); }
 

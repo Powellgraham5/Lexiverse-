@@ -1,6 +1,6 @@
 // Writing formats: layouts and rules for each kind of writing. Exam formats carry a reminder to
 // check the official guide, because papers change. Practice links point at path lessons.
-const CHECK = 'Formats can change. Always follow the instructions on your paper and check the official guide for your exam year.';
+export const CHECK = 'Formats can change. Always follow the instructions on your paper and check the official guide for your exam year.';
 
 export const FORMAT_GROUPS = [
   {

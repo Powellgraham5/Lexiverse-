@@ -25,17 +25,25 @@ export default function Flashcards() {
   const [results, setResults] = useState([]);
   const card = cards?.[i];
 
-  useEffect(() => { if (card) getReview(card.w).then((r) => setState(r || fresh(card.w))).catch(() => setState(fresh(card.w))); }, [card?.w]);
+  useEffect(() => {
+    setState(null);
+    if (card) getReview(card.w).then((r) => setState(r || fresh(card.w))).catch(() => setState(fresh(card.w)));
+  }, [card?.w]);
 
+  // One grade per card: a double tap or a held key must not record the word twice.
+  const grading = useRef(false);
   async function grade(g) {
+    if (grading.current || !card) return;
+    grading.current = true;
     // Works even if the word's review history hasn't loaded yet (a fast key press).
-    const before = state || fresh(card.w);
+    const before = (state?.id === card.w && state) || fresh(card.w);
     const after = await record(card.w, g).catch(() => null);
     const res = [...results, { word: card.w, grade: g, back: comesBack(before, g), known: !isKnown(before) && after && isKnown(after) }];
     setResults(res);
     setFlipped(false);
     if (i + 1 >= cards.length) recordActivity('review', undefined, undefined, minutesSince(startedAt));
     setI(i + 1);
+    grading.current = false;
   }
 
   // Keys 1, 2, 3 grade a flipped card. One listener reads the latest state through a ref, so a key
@@ -72,7 +80,7 @@ export default function Flashcards() {
 
   return (
     <div class="ps">
-      <SessionTop done={i} total={cards.length} label="Flashcards" />
+      <SessionTop done={i} total={cards.length} label="Flashcards" confirm={i > 0} />
       <h1 class="lx-sr">Flashcards</h1>
       {/* Only the face you can see is readable, so the button's name always matches what is shown. */}
       <button type="button" class={`fc-card ${flipped ? 'flipped' : ''}`} aria-expanded={flipped} onClick={() => setFlipped(!flipped)}>

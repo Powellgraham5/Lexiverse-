@@ -53,7 +53,7 @@ export default function Challenge() {
               return (
                 <button key={o.text} type="button" class={`lx-opt lx-rise lx-d${i + 2} ${state}`} aria-disabled={answered}
                   onClick={() => !answered && setPicked(i)}>
-                  <span class="lx-opt-key">{state === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[i]}</span></> : KEYS[i]}</span>
+                  <span class="lx-opt-key">{state === 'right' ? <><CheckIcon size={16} /><span class="lx-sr">{KEYS[i]}</span></> : state === 'wrong' ? <><CloseIcon size={16} /><span class="lx-sr">{KEYS[i]}</span></> : KEYS[i]}</span>
                   <span>{o.text}</span>
                   {state === 'right' && <span class="lx-sr">, correct answer</span>}
                   {state === 'wrong' && <span class="lx-sr">, your answer, not correct</span>}

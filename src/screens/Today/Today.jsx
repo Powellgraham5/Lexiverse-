@@ -10,6 +10,8 @@ import { rememberShown } from '../../lib/progress.js';
 import { loadProfile } from '../../lib/profile.js';
 import { focusLabel, LEVEL_NAMES } from '../../lib/goals.js';
 import { loadActivity, currentStreak, challengeDone } from '../../lib/streak.js';
+import { ticksToday } from '../../lib/plan.js';
+import { DailyPlan } from '../../components/DailyPlan.jsx';
 import { playAudioOr, stopSpeaking } from '../../lib/speech.js';
 import { orbitChips, KIND_LABEL } from '../../lib/related.js';
 import { planetFont } from '../../lib/fit.js';
@@ -134,6 +136,11 @@ export default function Today() {
               : <span><b>Practise your words</b><span>Flashcards, quizzes and games</span></span>}
             <ChevronIcon size={20} />
           </a>
+          <div class="lx-rise lx-d4"><DailyPlan id="today-plan" tasks={[
+            { id: 'challenge', label: 'Daily challenge', detail: `Today’s word: ${word.w}`, href: '/challenge', done },
+            { id: 'review', label: 'Review your words', detail: due ? `${due} ready · flashcards` : 'Flashcards, spelling or word match', href: due ? '/learn/flashcards' : '/learn', done: Boolean(ticksToday().review) },
+            { id: 'quiz', label: 'Quick quiz', detail: '5 questions on your words', href: '/learn/quiz', done: Boolean(ticksToday().quiz) }
+          ]} /></div>
           <div class="lx-desktop-only"><WeekStrip id="today-week" /></div>
           </div>
           </div>

@@ -1,0 +1,21 @@
+.sc { margin: 0; display: flex; flex-direction: column; gap: .5rem; }
+.sc figcaption { display: flex; flex-direction: column; gap: .125rem; }
+.sc figcaption b { font-size: 1.0625rem; }
+.sc figcaption span { color: var(--lx-muted); font-size: .9375rem; }
+.sc-svg { width: 100%; max-width: 30rem; height: auto; overflow: visible; }
+.sc-grid { stroke: var(--lx-orbit); stroke-width: 1; opacity: .6; }
+.sc-mid { stroke: var(--lx-orbit); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.sc-axis { fill: var(--lx-muted); font-size: 11px; font-family: var(--lx-font-body); }
+.sc-bar { fill: var(--lx-orbit); }
+.sc-bar.latest { fill: var(--lx-primary); }
+.sc-label { fill: var(--lx-ink); font-size: 12px; font-weight: 700; font-family: var(--lx-font-body); }
+:root[data-contrast="high"] .sc-bar { fill: var(--lx-muted); }
+:root[data-contrast="high"] .sc-bar.latest { fill: var(--lx-ink); }
+
+.sc-weak { display: flex; flex-direction: column; gap: .5rem; padding: 1rem 1.125rem; border-radius: 1.25rem; border-left: 4px solid var(--lx-coral); }
+.sc-weak h2 { margin: 0; font-size: 1.125rem; }
+.sc-weak-sub { margin: 0; color: var(--lx-muted); font-size: .9375rem; }
+.sc-weak ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.sc-weak li { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+.sc-weak-text { display: flex; flex-direction: column; min-width: 0; }
+.sc-weak-text span { color: var(--lx-muted); font-size: .9375rem; }

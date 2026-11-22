@@ -6,7 +6,7 @@ import { loadProfile, saveProfile } from '../../lib/profile.js';
 import { GOAL_FLOW, LEVEL_NAMES } from '../../lib/goals.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { Segmented, Switch, Range } from '../../components/controls.jsx';
-import { ChevronIcon, StarIcon, WordsIcon, PenIcon } from '../../app/icons.jsx';
+import { ChatIcon, ChevronIcon, StarIcon, WordsIcon, PenIcon } from '../../app/icons.jsx';
 import './me.css';
 
 export default function Me() {
@@ -33,6 +33,7 @@ export default function Me() {
         <a href="/progress"><StarIcon /><span><b>Your universe</b><span>Streak, recall and the word archive</span></span><ChevronIcon /></a>
         <a href="/words"><WordsIcon /><span><b>My Words</b><span>Saved words, lists and your notebook</span></span><ChevronIcon /></a>
         <a href="/words?tab=notebook"><PenIcon /><span><b>Notebook</b><span>Your notes from lessons and formats</span></span><ChevronIcon /></a>
+        <a href="/help"><ChatIcon /><span><b>Help and FAQs</b><span>Reminders, challenges, certificates and your data</span></span><ChevronIcon /></a>
       </nav>
 
       <h2 class="lx-me-h2 lx-rise lx-d1" id="learning">Your learning</h2>

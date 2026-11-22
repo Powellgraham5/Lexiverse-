@@ -11,6 +11,7 @@ import { SessionTop } from './SessionTop.jsx';
 import { buildQuiz, diffSpelling } from '../../lib/practice.js';
 import { getReview, fresh, record, comesBack, gradeFor, isKnown } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
+import { tick } from '../../lib/plan.js';
 
 // Moves focus to a button as it appears (autofocus is ignored on buttons added after page load).
 export const focusSoon = (el) => { if (el) setTimeout(() => el.isConnected && el.focus(), 50); };
@@ -71,7 +72,7 @@ export default function Quiz() {
   }
   function next() {
     setPicked(null); setTyped('');
-    if (i + 1 >= questions.length) recordActivity('quiz', undefined, undefined, minutesSince(startedAt));
+    if (i + 1 >= questions.length) { recordActivity('quiz', undefined, undefined, minutesSince(startedAt)); tick('quiz'); }
     setI(i + 1);
   }
 

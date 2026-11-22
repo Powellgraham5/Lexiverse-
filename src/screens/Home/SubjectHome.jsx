@@ -6,8 +6,11 @@ import { FlameIcon } from '../../app/icons.jsx';
 import { loadActivity, currentStreak } from '../../lib/streak.js';
 import { loadProfile } from '../../lib/profile.js';
 import { loadPath, loadProgress, pathProgress, bestTest, lessonsOf } from '../../lib/paths.js';
-import { JAMB_SUBJECTS, mySubjects, saveMySubjects, loadBank, loadBankProgress, bestSession, seenCount, BANK_NOTE } from '../../lib/bank.js';
-import { FORMAT_GROUP, Performance } from '../Paths/PathDetail.jsx';
+import { JAMB_SUBJECTS, mySubjects, saveMySubjects, loadBank, loadBankProgress, bestSession, seenCount, weakTopics, scoreHistory, BANK_NOTE } from '../../lib/bank.js';
+import { ticksToday } from '../../lib/plan.js';
+import { DailyPlan } from '../../components/DailyPlan.jsx';
+import { ScoreChart, WeakTopics } from '../../components/ScoreChart.jsx';
+import { FORMAT_GROUP, Performance, weakLessons } from '../Paths/PathDetail.jsx';
 import { CATEGORIES } from '../Paths/Paths.jsx';
 import Today from '../Today/Today.jsx';
 import '../Paths/paths.css';
@@ -43,11 +46,16 @@ function JambHome() {
       try {
         const [bank, prog] = await Promise.all([loadBank(s.id), loadBankProgress(s.id)]);
         const last = (prog.sessions || []).at(-1);
-        return [s.id, { count: bank.questions.length, seen: seenCount(prog), best: bestSession(prog), last }];
+        return [s.id, { count: bank.questions.length, seen: seenCount(prog), best: bestSession(prog), last, weak: weakTopics(prog).map((w) => ({ ...w, subject: s.id })), history: scoreHistory(prog) }];
       } catch { return [s.id, { failed: true }]; }
     })).then((rows) => live && setInfo((x) => ({ ...x, ...Object.fromEntries(rows) }))).catch(() => {});
     return () => { live = false; };
   }, [mine.join()]);
+  const ticks = ticksToday();
+  const weak = mine.flatMap((id) => info[id]?.weak || []).sort((a, b) => a.rate - b.rate);
+  const leastSeen = [...mine].filter((id) => info[id] && !info[id].failed).sort((a, b) => info[a].seen / info[a].count - info[b].seen / info[b].count)[0];
+  const topicHref = (w) => `/learn/bank/jamb/${w.subject}?topic=${encodeURIComponent(w.topic)}`;
+  const history = mine.map((id) => [id, info[id]?.history || []]).filter(([, h]) => h.length > 1);
   const lastId = Object.entries(info).filter(([, i]) => i.last).sort((a, b) => b[1].last.at - a[1].last.at)[0]?.[0];
   const title = (id) => JAMB_SUBJECTS.find((s) => s.id === id)?.title;
   const toggle = (id) => {
@@ -60,14 +68,15 @@ function JambHome() {
     <div class="hm">
       <HomeHead cat={CATEGORIES.find((c) => c.goal === 'x')} eyebrow="JAMB (UTME)" title="Your JAMB practice" sub={mine.map(title).join(' · ')} />
 
-      <section class="hm-hero lx-card lx-rise lx-d1" style={{ background: 'var(--lx-family-bg)' }} aria-labelledby="hm-daily">
-        <h2 id="hm-daily">Today’s mixed set</h2>
-        <p>10 questions across your four subjects, with every answer explained.</p>
-        <div class="hm-row">
-          <a class="lx-btn" href="/learn/bank/jamb/mix">Start today’s set</a>
-          {lastId && <a class="lx-btn secondary" href={`/learn/bank/jamb/${lastId}`}>Continue {title(lastId)}</a>}
-        </div>
-      </section>
+      <div class="lx-rise lx-d1"><DailyPlan id="hm-plan" tasks={[
+        { id: 'mix', label: 'Start today’s set', detail: '10 mixed questions across your subjects', href: '/learn/bank/jamb/mix', done: Boolean(ticks.mix) },
+        weak[0]
+          ? { id: 'topic', label: `Work on ${weak[0].topic}`, detail: `${title(weak[0].subject)} · ${weak[0].right} of ${weak[0].total} right so far`, href: topicHref(weak[0]), done: Boolean(ticks.topic) }
+          : { id: 'bank', label: `A set in ${title(leastSeen || mine[1] || 'english')}`, detail: 'The subject you have practised least', href: `/learn/bank/jamb/${leastSeen || mine[1] || 'english'}`, done: Boolean(ticks.bank) },
+        { id: 'lesson', label: 'One Use of English lesson', detail: 'Grammar, comprehension or oral forms', href: '/learn/path/jamb', done: Boolean(ticks.lesson) }
+      ]} /></div>
+
+      <WeakTopics id="hm-weak" topics={weak} hrefFor={topicHref} />
 
       <section class="pd-card lx-card lx-rise lx-d2" aria-labelledby="hm-mine">
         <div class="hm-between">
@@ -99,7 +108,15 @@ function JambHome() {
         </ul>
       </section>
 
+      {history.length > 0 && (
+        <section class="pd-card lx-card lx-rise lx-d2" aria-labelledby="hm-scores">
+          <h2 id="hm-scores">Your scores</h2>
+          {history.map(([id, h]) => <ScoreChart key={id} id={`hm-sc-${id}`} title={title(id)} points={h} />)}
+        </section>
+      )}
+
       <div class="pd-tools lx-rise lx-d2">
+        {lastId && <a class="pd-test" href={`/learn/bank/jamb/${lastId}`}><SlowIcon /><span><b>Continue {title(lastId)}</b><span>Pick up the subject you practised last</span></span><ChevronIcon /></a>}
         <a class="pd-test" href="/learn/bank/jamb"><LearnIcon /><span><b>All ten subjects</b><span>Practise any subject, timed or untimed</span></span><ChevronIcon /></a>
         <a class="pd-test" href="/learn/path/jamb"><PenIcon /><span><b>Use of English lessons</b><span>Comprehension, grammar, oral forms and the set text</span></span><ChevronIcon /></a>
       </div>
@@ -124,6 +141,17 @@ function CourseHome({ id }) {
   const upcoming = lessonsOf(path).filter((l) => !progress.done[l.id]).slice(0, 3);
   const writing = lessonsOf(path).find((l) => !progress.done[l.id] && l.exercises.some((x) => x.type === 'write' || x.type === 'speak'));
   const speaking = writing?.exercises.some((x) => x.type === 'speak') && !writing.exercises.some((x) => x.type === 'write');
+  const ticks = ticksToday();
+  const weakLesson = weakLessons(path, progress)[0];
+  const plan = [
+    p.next
+      ? { id: 'lesson', label: `Lesson: ${p.next.title}`, detail: `${p.next.minutes} min`, href: `/learn/path/${path.id}/${p.next.id}`, done: Boolean(ticks.lesson) }
+      : { id: 'lesson', label: 'Revisit any lesson', detail: 'Keep the course fresh', href: `/learn/path/${path.id}`, done: Boolean(ticks.lesson) },
+    { id: 'test', label: 'Practice test', detail: best ? `Best so far: ${best.score}/${best.total}` : 'Timed or untimed', href: `/learn/path/${path.id}/test`, done: Boolean(ticks.test) },
+    weakLesson
+      ? { id: 'redo', label: `Redo: ${weakLesson.title}`, detail: `You scored ${weakLesson.score}/${weakLesson.total} last time`, href: `/learn/path/${path.id}/${weakLesson.id}`, done: (ticks.lesson || 0) >= 2 }
+      : { id: 'review', label: 'Review your words', detail: 'Flashcards keep new words in memory', href: '/learn/flashcards', done: Boolean(ticks.review) }
+  ];
   return (
     <div class="hm">
       <HomeHead cat={cat} eyebrow={cat.name} title={`Your ${path.title} course`} sub={path.sub} />
@@ -136,10 +164,12 @@ function CourseHome({ id }) {
         </div>
         <div class="hm-row">
           {p.next ? <a class="lx-btn" href={`/learn/path/${path.id}/${p.next.id}`}>{p.done ? 'Continue' : 'Start'}: {p.next.title}</a>
-            : <a class="lx-btn" href={`/learn/path/${path.id}`}>Review the course</a>}
+            : <a class="lx-btn" href={`/certificate/${path.id}`}>Get your certificate</a>}
           <a class="lx-btn secondary" href={`/learn/path/${path.id}`}>All lessons</a>
         </div>
       </section>
+
+      <div class="lx-rise lx-d1"><DailyPlan id="hm-plan" tasks={plan} /></div>
 
       {upcoming.length > 1 && (
         <section class="pd-card lx-card lx-rise lx-d2" aria-labelledby="hm-up">

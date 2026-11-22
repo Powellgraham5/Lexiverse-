@@ -37,11 +37,18 @@ export function drawSet(questions, n, seen = {}, rand = Math.random) {
   return ranked.slice(0, Math.min(n, questions.length)).map((x) => ({ q: x.q, r: rand() })).sort((a, b) => a.r - b.r).map((x) => x.q);
 }
 
-export async function recordBankSession(id, { score, total, secs, ids = [] }, now = Date.now()) {
+// results: [{ topic, ok }] for each question, so weak topics can be spotted across sessions.
+export async function recordBankSession(id, { score, total, secs, ids = [], results = [] }, now = Date.now()) {
   const p = await loadBankProgress(id);
   const seen = { ...p.seen };
   for (const q of ids) seen[q] = now;
-  const next = { seen, sessions: [...(p.sessions || []), { score, total, secs, at: now }].slice(-30) };
+  const topics = { ...(p.topics || {}) };
+  for (const r of results) {
+    if (!r.topic) continue;
+    const t = topics[r.topic] || { right: 0, total: 0 };
+    topics[r.topic] = { right: t.right + (r.ok ? 1 : 0), total: t.total + 1 };
+  }
+  const next = { seen, topics, sessions: [...(p.sessions || []), { score, total, secs, at: now }].slice(-30) };
   await put('kv', next, key(id));
   return next;
 }
@@ -78,3 +85,14 @@ export function drawMix(bank, n, seenBySubject = {}, rand = Math.random) {
   const picked = ids.flatMap((id) => drawSet(bank.questions.filter((q) => q.subject === id), per, seenBySubject[id] || {}, rand));
   return drawSet(picked, n, {}, rand);
 }
+
+// Topics answered at least 4 times with under 60% right, worst first.
+export function weakTopics(p, min = 4, below = 0.6) {
+  return Object.entries(p?.topics || {})
+    .filter(([, t]) => t.total >= min && t.right / t.total < below)
+    .map(([topic, t]) => ({ topic, right: t.right, total: t.total, rate: t.right / t.total }))
+    .sort((a, b) => a.rate - b.rate || b.total - a.total);
+}
+
+// Session scores as percentages, oldest first, for the score history chart.
+export const scoreHistory = (p, n = 10) => (p?.sessions || []).slice(-n).map((s) => ({ at: s.at, score: s.score, total: s.total, pct: s.total ? Math.round((100 * s.score) / s.total) : 0 }));

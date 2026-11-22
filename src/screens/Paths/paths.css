@@ -164,3 +164,8 @@
 .pd-tests li { display: flex; justify-content: space-between; gap: .5rem; font-size: .875rem; font-variant-numeric: tabular-nums; }
 .pd-tests li span { color: var(--lx-muted); }
 .ls-improve { text-align: left; }
+.pd-weak h3 { margin: .5rem 0 .25rem; font-size: 1rem; }
+.pd-weak ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .375rem; }
+.pd-weak-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: var(--lx-tap); padding: .5rem .75rem; border-radius: 1rem; background: var(--lx-bg); color: var(--lx-ink); text-decoration: none; border-left: 4px solid var(--lx-coral); }
+.pd-weak-row > span { display: flex; flex-direction: column; min-width: 0; }
+.pd-weak-row > span span { color: var(--lx-muted); font-size: .9375rem; }

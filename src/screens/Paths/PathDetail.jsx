@@ -3,8 +3,9 @@ import { goBack } from '../../app/Shell.jsx';
 import { useRoute } from 'preact-iso';
 import { usePage } from '../../app/usePage.js';
 import { BackIcon, CheckIcon, ChevronIcon, SlowIcon, PenIcon, LearnIcon } from '../../app/icons.jsx';
+import { ScoreChart } from '../../components/ScoreChart.jsx';
 import { ErrorCard } from '../../components/ErrorCard.jsx';
-import { loadPath, loadProgress, pathProgress, pathById, bestTest, buildTest } from '../../lib/paths.js';
+import { loadPath, loadProgress, pathProgress, pathById, bestTest, buildTest, lessonsOf } from '../../lib/paths.js';
 import { CATEGORIES } from './Paths.jsx';
 import './paths.css';
 
@@ -21,6 +22,14 @@ function setGuideClosed(id, closed) {
 }
 
 // How the learner is doing: lessons finished, their average lesson score, and recent tests.
+// Lessons scored under 60%, worst first, so the learner knows what to redo.
+export function weakLessons(path, progress) {
+  return lessonsOf(path)
+    .map((l) => ({ ...l, ...(progress.done?.[l.id] || {}) }))
+    .filter((l) => l.total && l.score / l.total < 0.6)
+    .sort((a, b) => a.score / a.total - b.score / b.total);
+}
+
 export function Performance({ path, progress }) {
   const done = Object.values(progress.done || {});
   const graded = done.filter((d) => d.total);
@@ -35,6 +44,19 @@ export function Performance({ path, progress }) {
         <li><b>{avg === null ? '–' : `${avg}%`}</b><span>lesson score</span></li>
         <li><b>{(progress.tests || []).length}</b><span>tests taken</span></li>
       </ul>
+      {(progress.tests || []).length > 1 && (
+        <ScoreChart id={`pd-sc-${path.id}`} title="Practice test scores" points={(progress.tests || []).slice(-10).map((t) => ({ at: t.at, score: t.score, total: t.total, pct: Math.round((100 * t.score) / t.total) }))} />
+      )}
+      {weakLessons(path, progress).length > 0 && (
+        <div class="pd-weak">
+          <h3>Lessons to redo</h3>
+          <ul>
+            {weakLessons(path, progress).slice(0, 3).map((l) => (
+              <li key={l.id}><a class="pd-weak-row" href={`/learn/path/${path.id}/${l.id}`}><span><b>{l.title}</b><span>{l.score} of {l.total} right</span></span><ChevronIcon /></a></li>
+            ))}
+          </ul>
+        </div>
+      )}
       {tests.length > 0 && (
         <ol class="pd-tests" aria-label="Recent tests">
           {tests.map((t) => <li key={t.at}><span>{new Date(t.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span><b>{t.score}/{t.total}</b><span>{Math.round(t.secs / 60) || 1} min</span></li>)}
@@ -91,7 +113,7 @@ export default function PathDetail() {
             </div>
             {p.next
               ? <a class="lx-btn" href={`/learn/path/${path.id}/${p.next.id}`}>{p.done ? 'Continue' : 'Start'}: {p.next.title}</a>
-              : <p class="pd-done" role="status"><CheckIcon size={18} /> Path complete. Revisit any lesson to practise again.</p>}
+              : <><p class="pd-done" role="status"><CheckIcon size={18} /> Path complete. Revisit any lesson to practise again.</p><a class="lx-btn" href={`/certificate/${path.id}`}>Get your certificate</a></>}
           </header>
           <Performance path={path} progress={progress} />
           {path.improve && (

@@ -1,0 +1,20 @@
+.dp { display: flex; flex-direction: column; gap: .75rem; padding: 1rem 1.125rem; border-radius: 1.25rem; }
+.dp-head { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+.dp-head h2 { margin: 0; font-size: 1.25rem; }
+.dp-count { font-weight: 700; font-size: .9375rem; color: var(--lx-muted); }
+.dp-count.all { color: var(--lx-success-strong); }
+.dp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .375rem; }
+.dp-task { display: flex; align-items: center; gap: .75rem; min-height: var(--lx-tap); padding: .625rem .75rem; border-radius: 1rem; background: var(--lx-bg); color: var(--lx-ink); text-decoration: none; }
+.dp-task:hover { box-shadow: inset 0 0 0 2px var(--lx-orbit); }
+.dp-check { display: flex; align-items: center; justify-content: center; flex: none; width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 2px solid var(--lx-orbit); color: #FFFFFF; }
+.dp-task.done .dp-check { background: var(--lx-success-strong); border-color: var(--lx-success-strong); }
+.dp-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.dp-text span { color: var(--lx-muted); font-size: .9375rem; }
+.dp-task.done .dp-text b { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--lx-muted); }
+.dp-well { margin: 0; font-weight: 600; color: var(--lx-success-strong); }
+.dp-remind { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; padding-top: .5rem; border-top: 1px solid var(--lx-orbit); color: var(--lx-muted); }
+.dp-sheet-text, .dp-sheet-note { margin: 0 0 1rem; line-height: 1.55; }
+.dp-sheet-note { margin: 1rem 0 0; color: var(--lx-muted); font-size: .9375rem; }
+.dp-time { display: flex; flex-direction: column; gap: .375rem; margin-bottom: 1rem; font-weight: 700; }
+.dp-time input { min-height: 3.25rem; padding: 0 1rem; border: 2px solid var(--lx-orbit); border-radius: 1rem; background: var(--lx-surface); color: var(--lx-ink); font: inherit; font-size: 1.125rem; }
+.dp-time input:focus-visible { outline: 3px solid var(--lx-primary); outline-offset: 2px; }

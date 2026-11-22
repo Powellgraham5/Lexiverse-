@@ -7,3 +7,14 @@
 /* Subject rows sit on the page background here, so they need a card colour (inside a card they use raised). */
 .bk-subjects .pt-row { background: var(--lx-surface); }
 .lx-card .bk-subjects .pt-row { background: var(--lx-raised); }
+.bk-challenge { padding: 1rem 1.125rem; display: flex; flex-direction: column; gap: .25rem; border-left: 4px solid var(--lx-primary); }
+.bk-challenge span { color: var(--lx-muted); }
+.bk-chart { padding: 1rem; }
+.bk-chbox { padding: 1rem 1.125rem; display: flex; flex-direction: column; gap: .75rem; text-align: left; margin-top: 1rem; }
+.bk-chbox h2 { margin: 0; font-size: 1.25rem; }
+.bk-chbox p { margin: 0; color: var(--lx-muted); }
+.bk-name { display: flex; flex-direction: column; gap: .375rem; font-weight: 700; }
+.bk-name input { min-height: 3.25rem; padding: 0 1rem; border: 2px solid var(--lx-orbit); border-radius: 1rem; background: var(--lx-surface); color: var(--lx-ink); font: inherit; }
+.bk-name input:focus-visible { outline: 3px solid var(--lx-primary); outline-offset: 2px; }
+.bk-chrow { display: flex; flex-wrap: wrap; gap: .5rem; }
+.bk-chrow .lx-btn { flex: 1 1 12rem; gap: .5rem; }

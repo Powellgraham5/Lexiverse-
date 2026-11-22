@@ -37,6 +37,8 @@ const Challenge = lazy(() => import('./screens/Challenge/Challenge.jsx'));
 const Word = lazy(() => import('./screens/Word/Word.jsx'));
 const Translator = lazy(() => import('./screens/Translator/Translator.jsx'));
 const Share = lazy(() => import('./screens/Share/Share.jsx'));
+const Certificate = lazy(() => import('./screens/Certificate/Certificate.jsx'));
+const Help = lazy(() => import('./screens/Help/Help.jsx'));
 const NotFound = lazy(() => import('./screens/NotFound/NotFound.jsx'));
 
 // A screen that shows one item (a word, a lesson, a subject) starts fresh when the item changes,
@@ -48,6 +50,7 @@ const LessonRoute = keyed(Lesson, 'id', 'lesson');
 const PathRoute = keyed(PathDetail, 'id');
 const BankRoute = keyed(BankSession, 'subject');
 const ListRoute = keyed(ListDetail, 'id');
+const CertRoute = keyed(Certificate, 'id');
 
 function App() {
   return (
@@ -78,6 +81,8 @@ function App() {
               <Route path="/learn/formats" component={Formats} />
               <Route path="/words/note/:id" component={Note} />
               <Route path="/me" component={Me} />
+              <Route path="/help" component={Help} />
+              <Route path="/certificate/:id" component={CertRoute} />
               <Route path="/welcome" component={Onboarding} />
               <Route path="/challenge" component={Challenge} />
               <Route path="/word/:word" component={WordRoute} />

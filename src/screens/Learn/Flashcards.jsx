@@ -8,6 +8,7 @@ import { useSession, minutesSince } from './session.js';
 import { SessionTop } from './SessionTop.jsx';
 import { getReview, fresh, record, comesBack, isKnown } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
+import { tick } from '../../lib/plan.js';
 import { playAudioOr } from '../../lib/speech.js';
 import './practice.css';
 import './flashcards.css';
@@ -41,7 +42,7 @@ export default function Flashcards() {
     const res = [...results, { word: card.w, grade: g, back: comesBack(before, g), known: !isKnown(before) && after && isKnown(after) }];
     setResults(res);
     setFlipped(false);
-    if (i + 1 >= cards.length) recordActivity('review', undefined, undefined, minutesSince(startedAt));
+    if (i + 1 >= cards.length) { recordActivity('review', undefined, undefined, minutesSince(startedAt)); tick('review'); }
     setI(i + 1);
     grading.current = false;
   }

@@ -29,7 +29,7 @@ const ROUTES = [
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
-  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/today', 'today-word'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'],
+  ['/learn/paths', 'paths'], ['/learn/path/waec', 'path-waec'], ['/learn/path/emails/email-start', 'lesson'], ['/learn/path/other-exams', 'path-soon'], ['/learn/path/letters', 'path-letters'], ['/learn/path/jamb', 'path-jamb'], ['/learn/bank/jamb', 'bank'], ['/today', 'today-word'], ['/learn/bank/jamb/english', 'bank-setup'], ['/learn/path/toefl', 'path-toefl'], ['/learn/path/ielts', 'path-ielts'], ['/learn/path/sat/test', 'test-intro'], ['/learn/formats', 'formats'], ['/words?tab=notebook', 'notebook'], ['/help', 'help'], ['/certificate/emails', 'certificate-locked'],
   ['/learn/flashcards', 'flashcards'], ['/learn/quiz', 'quiz'], ['/learn/spell', 'spell'], ['/learn/match', 'match'], ['/learn/setup', 'practice-setup']
 ];
 
@@ -288,13 +288,14 @@ await check('home: each subject has its own home; Everyday English keeps the wor
   await p.click('.hm-chip:has-text("Government")');
   await p.click('button:text("Done")');
   await p.waitForSelector('a.pt-row:has-text("Government")');
-  await p.click('a:text("Start today’s set")');
+  await p.click('a.dp-task:has-text("Start today’s set")');
   await p.waitForSelector('h1:text("Mixed practice")');
   await p.click('button:text("Untimed: take your time")');
   for (let i = 0; i < 10; i++) { await p.locator('.lx-opt').first().click(); await p.click('button:text("Continue")'); }
   await p.waitForSelector('h1:text("Session complete!")');
   await p.click('a:text("Back home")');
   await p.waitForSelector('a:has-text("Continue")');
+  await p.waitForSelector('.dp-task.done:has-text("Start today’s set")');
   await c.close();
 
   ({ c, p } = await visit({ goal: 'k', focus: 'emails', level: 2, done: true }));
@@ -1527,6 +1528,116 @@ await check('learning: the path page shows performance and how to improve after 
   await p.goto(BASE + '/learn/path/interviews');
   await p.waitForSelector('.pd-stats:has-text("lessons done")');
   await p.waitForSelector('#pd-improve');
+  await c.close();
+});
+
+// Launch features: daily plan, reminders, score history, weak topics, challenges, certificates and help.
+const seedKv = (p, key, val) => p.evaluate(([k, v]) => new Promise((res, rej) => {
+  const r = indexedDB.open('lexiverse', 1);
+  r.onsuccess = () => { const tx = r.result.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => { r.result.close(); res(); }; tx.onerror = rej; };
+  r.onerror = rej;
+}), [key, val]);
+
+await check('launch: score history, weak topics and topic practice', async () => {
+  const c = await newContext();
+  await c.addInitScript(() => localStorage.setItem('lx-profile', JSON.stringify({ goal: 'x', focus: 'jamb', level: 2, done: true })));
+  const p = await c.newPage();
+  await p.goto(BASE + '/');
+  await p.waitForSelector('#hm-plan');
+  const now = Date.now();
+  await seedKv(p, 'bank:jamb:biology', { seen: {}, topics: { 'Cell biology': { right: 2, total: 8 }, Nutrition: { right: 7, total: 8 } }, sessions: [40, 55, 70].map((pct, i) => ({ score: pct / 5, total: 20, secs: 600, at: now - (3 - i) * 86400000 })) });
+  await p.reload();
+  await p.waitForSelector('.dp-task:has-text("Work on Cell biology")');
+  await p.waitForSelector('.sc-weak:has-text("2 of 8 right")');
+  await p.waitForSelector('#hm-scores');
+  assert.match(await p.textContent('.sc figcaption'), /latest 70%, up from 40%/);
+  assert.equal(await p.locator('.sc table tbody tr').count(), 3, 'chart has a table for screen readers');
+  await settle(p);
+  assert.deepEqual(await overflow(p), [], 'home overflow');
+  assert.deepEqual(await axe(p), [], 'home axe');
+  await p.goto(BASE + '/learn/bank/jamb/biology');
+  await p.waitForSelector('.sc figcaption');
+  await settle(p);
+  assert.deepEqual(await axe(p), [], 'setup axe');
+  await p.click('.sc-weak a');
+  await p.waitForSelector('h1:has-text("Biology: Cell biology")');
+  await p.click('button:text("Untimed: take your time")');
+  await p.waitForSelector('.ps-tag:has-text("Cell biology")');
+  await c.close();
+});
+
+await check('launch: challenge a friend with the same questions', async () => {
+  const c = await newContext();
+  await c.addInitScript(() => localStorage.setItem('lx-profile', JSON.stringify({ goal: 'x', focus: 'jamb', level: 2, done: true })));
+  const p = await c.newPage();
+  await p.goto(BASE + '/learn/bank/jamb/biology?ch=bi1.bi2.bi3&s=2-3&n=Ada');
+  await p.waitForSelector('.bk-challenge:has-text("Ada challenged you")');
+  assert.ok(!(await p.isVisible('.bk-size')), 'a challenge has a fixed set');
+  await p.click('button:text("Untimed: take your time")');
+  const asked = [];
+  for (let i = 0; i < 3; i++) {
+    await p.waitForSelector('.ps-q:not([hidden]) .lx-opt');
+    asked.push(await p.textContent('.ps-q h1'));
+    await p.locator('.ps-q .lx-opt').first().click();
+    await p.click('button:text("Continue")');
+  }
+  await p.waitForSelector('#bk-ch');
+  assert.match(await p.textContent('#rs-title'), /You win!|draw|Ada wins/);
+  await p.fill('.bk-name input', 'Tunde');
+  const href = await p.getAttribute('.bk-chrow a', 'href');
+  assert.match(href, /^https:\/\/wa\.me\/\?text=/);
+  const link = decodeURIComponent(href).match(/https?:\/\/[^\s]*\/learn\/bank\/jamb\/\S+/)[0];
+  assert.match(link, /ch=bi1\.bi2\.bi3/);
+  assert.match(link, /n=Tunde/);
+  await settle(p);
+  assert.deepEqual(await axe(p), [], 'results axe');
+  await p.goto(BASE + '/learn/bank/jamb/biology?ch=zz9999');
+  await p.waitForSelector('text=This challenge link doesn\'t work');
+  await c.close();
+});
+
+await check('launch: daily plan reminder, certificate and help', async () => {
+  const c = await newContext({ acceptDownloads: true });
+  await c.addInitScript(() => localStorage.setItem('lx-profile', JSON.stringify({ goal: 'k', focus: 'emails', level: 2, done: true })));
+  const p = await c.newPage();
+  await p.goto(BASE + '/certificate/emails');
+  await p.waitForSelector('text=Finish every lesson to unlock it');
+  const ids = ["email-intro","email-start","email-end","email-tone","email-polite","email-etiquette","email-followup","email-apology","email-badnews","email-senior","email-application","email-internal","email-advanced","email-final"];
+  const now = Date.now();
+  await seedKv(p, 'path:emails', { done: Object.fromEntries(ids.map((id, i) => [id, { score: i % 4 === 0 ? 2 : 5, total: 5, at: now - i * 1000 }])), tests: [{ score: 5, total: 10, secs: 300, at: now - 3e8 }, { score: 8, total: 10, secs: 300, at: now - 1e8 }] });
+  await p.goto(BASE + '/');
+  await p.waitForSelector('#hm-plan');
+  await p.waitForSelector('.pd-weak a');
+  await p.waitForSelector('.dp-task:has-text("Redo:")');
+  await p.click('.dp-remind button');
+  await p.waitForSelector('dialog[open] input[type="time"]');
+  await p.fill('dialog[open] input[type="time"]', '19:15');
+  const dl = p.waitForEvent('download');
+  await p.click('dialog[open] button:text("Add to my calendar")');
+  const file = await dl;
+  assert.equal(file.suggestedFilename(), 'lexiverse-reminder.ics');
+  const ics = (await import('node:fs')).readFileSync(await file.path(), 'utf8');
+  assert.match(ics, /RRULE:FREQ=DAILY/);
+  assert.match(ics, /T191500/);
+  await p.waitForSelector('.dp-remind:has-text("7:15 pm")');
+  await p.click('a:text("Get your certificate")');
+  await p.waitForSelector('.ct-name input');
+  assert.ok(await p.isDisabled('button:has-text("Save image")'), 'nothing to save before a name');
+  await p.fill('.ct-name input', 'Ada Okafor');
+  await p.waitForSelector('.ct-preview img[alt*="Ada Okafor has completed the Lexiverse Emails course"]');
+  const cert = p.waitForEvent('download');
+  await p.click('button:has-text("Save image")');
+  assert.match((await cert).suggestedFilename(), /lexiverse-certificate-emails\.png/);
+  await settle(p);
+  assert.deepEqual(await overflow(p), [], 'certificate overflow');
+  assert.deepEqual(await axe(p), [], 'certificate axe');
+  await p.goto(BASE + '/me');
+  await p.click('a:has-text("Help and FAQs")');
+  await p.waitForSelector('h1:text("Help and FAQs")');
+  await p.click('summary:text("How do I challenge a friend?")');
+  await p.waitForSelector('details[open] p:has-text("WhatsApp")');
+  await settle(p);
+  assert.deepEqual(await axe(p), [], 'help axe');
   await c.close();
 });
 

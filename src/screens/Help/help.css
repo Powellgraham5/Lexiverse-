@@ -1,0 +1,12 @@
+.hp-head { display: flex; flex-direction: column; gap: .375rem; margin-bottom: 1.25rem; }
+.hp-group { margin-bottom: 1.5rem; max-width: 46rem; }
+.hp-group h2 { font-size: 1.125rem; margin: 0 0 .5rem; }
+.hp-list { padding: 0; overflow: hidden; }
+.hp-item + .hp-item { border-top: 1px solid var(--lx-orbit); }
+.hp-item summary { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 3.25rem; padding: .75rem 1rem; font-weight: 700; cursor: pointer; list-style: none; }
+.hp-item summary::-webkit-details-marker { display: none; }
+.hp-item summary::after { content: ''; flex: none; width: .625rem; height: .625rem; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; rotate: 45deg; translate: 0 -.15rem; transition: rotate var(--lx-fast) var(--lx-ease-out); }
+.hp-item[open] summary::after { rotate: 225deg; translate: 0 .15rem; }
+.hp-item summary:focus-visible { outline: 3px solid var(--lx-primary); outline-offset: -3px; }
+.hp-item p { margin: 0; padding: 0 1rem 1rem; line-height: 1.6; max-width: 65ch; }
+@media (prefers-reduced-motion: reduce) { .hp-item summary::after { transition: none; } }

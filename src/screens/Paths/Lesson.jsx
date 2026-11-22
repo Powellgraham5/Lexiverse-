@@ -9,6 +9,7 @@ import { Results } from '../../components/Results.jsx';
 import { SessionTop } from '../Learn/SessionTop.jsx';
 import { loadPath, lessonsOf, markLessonDone } from '../../lib/paths.js';
 import { recordActivity } from '../../lib/streak.js';
+import { tick } from '../../lib/plan.js';
 import { VIEWS, Passage, scored } from './exercises.jsx';
 import '../../components/options.css';
 import '../Learn/practice.css';
@@ -45,6 +46,7 @@ export default function Lesson() {
     const score = graded.filter((e) => e.ok).length;
     await markLessonDone(path.id, lesson.id, { score, total: graded.length }).catch(() => {});
     recordActivity('review', undefined, undefined, Math.max(1, Math.round((Date.now() - started.current) / 60000)));
+    tick('lesson');
   }
   function exerciseDone(ok, detail = '') {
     if (stage.part !== 'ex' || log.length > stage.i) return;

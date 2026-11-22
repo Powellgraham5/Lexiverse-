@@ -1,0 +1,12 @@
+.ct-head { display: flex; flex-direction: column; gap: .375rem; margin-bottom: 1rem; }
+.ct-name { display: flex; flex-direction: column; gap: .375rem; font-weight: 700; margin-bottom: 1rem; }
+.ct-name input { min-height: 3.25rem; padding: 0 1rem; border: 2px solid var(--lx-orbit); border-radius: 1rem; background: var(--lx-surface); color: var(--lx-ink); font: inherit; font-size: 1.125rem; }
+.ct-name input:focus-visible { outline: 3px solid var(--lx-primary); outline-offset: 2px; }
+.ct-hint { font-weight: 500; color: var(--lx-muted); font-size: .9375rem; }
+.ct-preview { padding: .5rem; margin-bottom: 1rem; aspect-ratio: 1600 / 1131; display: flex; align-items: center; justify-content: center; }
+.ct-preview img { display: block; width: 100%; height: auto; border-radius: .75rem; }
+.ct-empty { color: var(--lx-muted); margin: 0; }
+.ct-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.ct-actions .lx-btn { flex: 1 1 12rem; gap: .5rem; }
+.ct-actions .lx-btn:disabled { opacity: .45; cursor: not-allowed; }
+:root[data-large-text] .ct-preview { aspect-ratio: auto; }

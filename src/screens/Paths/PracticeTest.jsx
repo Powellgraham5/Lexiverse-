@@ -6,6 +6,7 @@ import { Results } from '../../components/Results.jsx';
 import { SessionTop } from '../Learn/SessionTop.jsx';
 import { loadPath, loadProgress, buildTest, TIMER, recordTest, bestTest, lessonsOf } from '../../lib/paths.js';
 import { recordActivity } from '../../lib/streak.js';
+import { tick } from '../../lib/plan.js';
 import { VIEWS, Passage } from './exercises.jsx';
 import '../../components/options.css';
 import '../Learn/practice.css';
@@ -74,6 +75,7 @@ export default function PracticeTest() {
     took.current = secs;
     await recordTest(path.id, { score, total: items.length, secs }).catch(() => {});
     recordActivity('quiz', undefined, undefined, Math.max(1, Math.round(secs / 60)));
+    tick('test');
     if (timedOut) setSay('Time is up');
   }
   function onDone(ok, detail = '') {

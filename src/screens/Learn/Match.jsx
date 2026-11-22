@@ -8,6 +8,7 @@ import { SessionTop } from './SessionTop.jsx';
 import { buildMatch } from '../../lib/practice.js';
 import { getReview, fresh, record, comesBack, gradeFor } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
+import { tick } from '../../lib/plan.js';
 import './practice.css';
 import './match.css';
 
@@ -26,6 +27,7 @@ export default function Match() {
 
   async function finish(allMissed) {
     recordActivity('review', undefined, undefined, minutesSince(startedAt));
+    tick('review');
     const out = [];
     for (const w of game.words) {
       const helped = allMissed.includes(w);

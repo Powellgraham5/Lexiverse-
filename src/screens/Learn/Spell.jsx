@@ -10,6 +10,7 @@ import { SessionTop } from './SessionTop.jsx';
 import { SpellingFeedback, focusSoon, nearMiss } from './Quiz.jsx';
 import { getReview, fresh, record, comesBack, gradeFor, isKnown } from '../../lib/srs.js';
 import { recordActivity } from '../../lib/streak.js';
+import { tick } from '../../lib/plan.js';
 import { playAudioOr } from '../../lib/speech.js';
 import '../../components/options.css';
 import './practice.css';
@@ -45,7 +46,7 @@ export default function Spell() {
   }
   function next() {
     setTyped(''); setChecked(null); setHint(false);
-    if (i + 1 >= cards.length) recordActivity('review', undefined, undefined, minutesSince(startedAt));
+    if (i + 1 >= cards.length) { recordActivity('review', undefined, undefined, minutesSince(startedAt)); tick('review'); }
     setI(i + 1);
   }
 

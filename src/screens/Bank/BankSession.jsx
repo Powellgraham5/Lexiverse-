@@ -6,7 +6,12 @@ import { Results } from '../../components/Results.jsx';
 import { Segmented } from '../../components/controls.jsx';
 import { SessionTop } from '../Learn/SessionTop.jsx';
 import { TIMER } from '../../lib/paths.js';
-import { BANK_NOTE, loadBank, loadBankProgress, drawSet, drawMix, loadMix, mySubjects, recordBankSession, bestSession, seenCount } from '../../lib/bank.js';
+import { BANK_NOTE, loadBank, loadBankProgress, drawSet, drawMix, loadMix, mySubjects, recordBankSession, bestSession, seenCount, weakTopics, scoreHistory } from '../../lib/bank.js';
+import { readChallenge, challengeUrl, challengeText, whatsappUrl, loadName, saveName } from '../../lib/challenge.js';
+import { tick } from '../../lib/plan.js';
+import { ScoreChart, WeakTopics } from '../../components/ScoreChart.jsx';
+import { toast } from '../../components/toast.jsx';
+import { CopyIcon, ShareIcon } from '../../app/icons.jsx';
 import { recordActivity } from '../../lib/streak.js';
 import { VIEWS } from '../Paths/exercises.jsx';
 import '../../components/options.css';
@@ -22,14 +27,16 @@ const short = (q) => (q.length > 70 ? `${q.slice(0, 67)}…` : q);
 
 // One subject's question bank: choose how many and whether to time it, answer, then review every answer.
 export default function BankSession() {
-  const { params } = useRoute();
+  const { params, query } = useRoute();
+  const challenge = readChallenge(query);
+  const topic = query.topic ? String(query.topic) : '';
   const [bank, setBank] = useState(undefined);
   const [prog, setProg] = useState(null);
   const mix = params.subject === 'mix';
   const [seenBy, setSeenBy] = useState({});
   useEffect(() => {
     if (mix) {
-      const ids = mySubjects();
+      const ids = challenge?.subs.length ? challenge.subs : mySubjects();
       Promise.all([loadMix(ids), ...ids.map(loadBankProgress)])
         .then(([b, ...ps]) => {
           const by = Object.fromEntries(ids.map((id, k) => [id, ps[k].seen || {}]));
@@ -88,7 +95,14 @@ export default function BankSession() {
     setTimer(timed ? t : TIMER.off(t));
     setPhase('run');
   }
-  const fresh = (timed) => begin(mix ? drawMix(bank, Number(size), seenBy) : drawSet(bank.questions, size === 'all' ? bank.questions.length : Number(size), prog.seen), timed);
+  // A challenge replays the sender's exact questions; a topic session draws from one topic only.
+  const challengeSet = () => challenge.ids.map((id) => bank.questions.find((q) => q.id === id)).filter(Boolean);
+  const pool = !bank ? [] : topic ? bank.questions.filter((q) => q.topic === topic) : bank.questions;
+  const fresh = (timed) => begin(
+    challenge && phase === 'setup' ? challengeSet()
+      : mix ? drawMix(bank, Number(size), seenBy)
+      : drawSet(pool, size === 'all' ? pool.length : Math.min(Number(size), pool.length), prog.seen),
+    timed);
 
   async function finish(entries, timedOut = false) {
     const all = [...entries, ...items.slice(entries.length).map((x, k) => {
@@ -103,14 +117,16 @@ export default function BankSession() {
       // Save each subject's share of the set to that subject's progress.
       for (const id of [...new Set(items.map((x) => x.subject))]) {
         const mine = items.map((x, k) => [x, all[k]]).filter(([x]) => x.subject === id);
-        const saved = await recordBankSession(id, { score: mine.filter(([, e]) => e.ok).length, total: mine.length, secs: Math.round((secs * mine.length) / items.length), ids: mine.map(([x]) => x.id) }).catch(() => null);
+        const saved = await recordBankSession(id, { score: mine.filter(([, e]) => e.ok).length, total: mine.length, secs: Math.round((secs * mine.length) / items.length), ids: mine.map(([x]) => x.id), results: mine.map(([x, e]) => ({ topic: x.topic, ok: e.ok })) }).catch(() => null);
         if (saved) setSeenBy((m) => ({ ...m, [id]: saved.seen }));
       }
     } else {
-      const next = await recordBankSession(bank.id, { score: all.filter((e) => e.ok).length, total: items.length, secs, ids: items.map((x) => x.id) }).catch(() => null);
+      const next = await recordBankSession(bank.id, { score: all.filter((e) => e.ok).length, total: items.length, secs, ids: items.map((x) => x.id), results: items.map((x, k) => ({ topic: x.topic, ok: all[k].ok })) }).catch(() => null);
       if (next) setProg(next);
     }
     recordActivity('quiz', undefined, undefined, Math.max(1, Math.round(secs / 60)));
+    tick(mix ? 'mix' : 'bank');
+    if (topic) tick('topic');
     if (timedOut) setSay('Time is up');
   }
   function onDone(ok, detail = '') {
@@ -124,6 +140,9 @@ export default function BankSession() {
   if (bank === undefined) return <div class="ps" aria-busy="true"><SessionTop done={0} total={0} label="JAMB practice" closeHref={back} /><h1 class="lx-sr">JAMB practice</h1></div>;
   if (!bank) return <div class="ps"><SessionTop done={0} total={0} label="JAMB practice" closeHref={back} /><ErrorCard title="This subject isn't ready yet">Pick another subject.</ErrorCard><a class="lx-btn" href={back}>All subjects</a></div>;
 
+  if (phase === 'setup' && challenge && !challengeSet().length) {
+    return <div class="ps"><SessionTop done={0} total={0} label="JAMB practice" closeHref={back} /><ErrorCard title="This challenge link doesn't work">It may have been cut short when it was shared. You can still practise this subject.</ErrorCard><a class="lx-btn" href={`/learn/bank/jamb/${params.subject}`}>Practise {bank.title}</a></div>;
+  }
   if (phase === 'setup') {
     const best = bestSession(prog);
     const n = size === 'all' ? bank.questions.length : Math.min(Number(size), bank.questions.length);
@@ -131,19 +150,29 @@ export default function BankSession() {
       <div class="ps">
         <SessionTop done={0} total={0} label="JAMB practice" closeHref={back} />
         <span class="ps-tag lx-rise">JAMB · {mix ? bank.topics.join(', ') : `${bank.questions.length} questions`}</span>
-        <h1 class="lx-rise lx-d1">{bank.title}</h1>
+        <h1 class="lx-rise lx-d1">{bank.title}{topic && !challenge ? `: ${topic}` : ''}</h1>
+        {challenge && (
+          <div class="bk-challenge lx-card lx-rise lx-d1" role="note">
+            <b>{challenge.name || 'A friend'} challenged you</b>
+            <span>{challenge.score !== null ? `They scored ${challenge.score}/${challenge.total}. ` : ''}Answer the same {challengeSet().length} questions to see who wins.</span>
+          </div>
+        )}
         <ul class="ls-checklist lx-rise lx-d2">
           <li>A new random set each time, starting with questions you have not seen</li>
           <li>The answer and an explanation after every question, and a full review at the end</li>
           <li>{mix ? 'Questions from each of your subjects, mixed together' : `Topics: ${bank.topics.join(', ')}`}</li>
         </ul>
         {!mix && <p class="pt-sub">{seenCount(prog)} of {bank.questions.length} seen{best ? ` · Best: ${best.score}/${best.total}` : ''}</p>}
-        <div class="bk-size lx-card lx-rise lx-d3">
-          <Segmented label="How many questions?" value={size} onChange={setSize} options={mix ? MIX_SIZES : SIZES} />
-        </div>
+        {!challenge && (
+          <div class="bk-size lx-card lx-rise lx-d3">
+            <Segmented label="How many questions?" value={size} onChange={setSize} options={mix ? MIX_SIZES : SIZES} />
+          </div>
+        )}
+        {!mix && !challenge && !topic && <WeakTopics id="bk-weak" topics={weakTopics(prog)} hrefFor={(t) => `/learn/bank/jamb/${bank.id}?topic=${encodeURIComponent(t.topic)}`} />}
+        {!mix && !challenge && scoreHistory(prog).length > 1 && <div class="lx-card bk-chart"><ScoreChart id="bk-chart" title="Your scores" points={scoreHistory(prog)} /></div>}
         <p class="pd-note">{BANK_NOTE}</p>
         <div class="ps-foot">
-          <button type="button" class="lx-btn" onClick={() => fresh(true)}>Timed: {Math.ceil((n * SECS_PER_QUESTION) / 60)} minutes</button>
+          <button type="button" class="lx-btn" onClick={() => fresh(true)}>Timed: {Math.ceil(((challenge ? challengeSet().length : topic ? Math.min(n, pool.length) : n) * SECS_PER_QUESTION) / 60)} minutes</button>
           <button type="button" class="lx-btn secondary" onClick={() => fresh(false)}>Untimed: take your time</button>
         </div>
       </div>
@@ -155,13 +184,17 @@ export default function BankSession() {
     const secs = took.current;
     const missed = log.filter((e) => !e.ok);
     const timed = !timer?.off;
+    const vs = challenge && challenge.score !== null
+      ? (score > challenge.score ? 'You win!' : score === challenge.score ? "It's a draw!" : `${challenge.name || 'Your friend'} wins this time`)
+      : null;
     return (
       <div class="ps">
         <p class="lx-sr" aria-live="assertive">{say}</p>
-        <Results title={say === 'Time is up' ? 'Time is up!' : 'Session complete!'} score={score} total={items.length} unit="correct"
+        <Results title={say === 'Time is up' ? 'Time is up!' : vs || 'Session complete!'} score={score} total={items.length} unit="correct"
           missed={missed} onRetry={() => fresh(timed)} retryLabel="New set of questions" doneHref={back} doneLabel={mix ? "Back home" : "All subjects"}
           extra={<>
-            <p class="rs-sub">Time taken: {mmss(secs)}</p>
+            <p class="rs-sub">Time taken: {mmss(secs)}{vs ? ` · ${challenge.name || 'Your friend'} scored ${challenge.score}/${challenge.total}` : ''}</p>
+            <ChallengeBox bank={bank} items={items} score={score} subs={mix ? [...new Set(items.map((x) => x.subject))] : []} />
             {missed.length > 0 && <button type="button" class="lx-btn secondary" onClick={() => begin(items.filter((x) => missed.some((m) => m.id === x.id)), timed)}>Retry the {missed.length} you missed</button>}
           </>} />
       </div>
@@ -188,5 +221,31 @@ export default function BankSession() {
           <View key={x.key} x={x} onDone={onDone} onAnswer={(ok, detail) => { picked.current[i] = { ok, detail }; }} />
       </div>
     </div>
+  );
+}
+
+// After a set: send the same questions to a friend on WhatsApp (or any app, or copy the link).
+function ChallengeBox({ bank, items, score, subs }) {
+  const [name, setName] = useState(loadName);
+  const url = challengeUrl(location.origin, { subject: bank.id, ids: items.map((x) => x.id), score, total: items.length, name, subs });
+  const text = challengeText(bank.title, score, items.length, url);
+  const keep = () => saveName(name);
+  const copy = async () => {
+    keep();
+    try { await navigator.clipboard.writeText(text); toast({ text: 'Challenge link copied', kind: 'success' }); }
+    catch { toast({ text: "Couldn't copy the link", kind: 'error' }); }
+  };
+  const more = async () => { keep(); try { await navigator.share({ title: 'Lexiverse challenge', text }); } catch { /* cancelled */ } };
+  return (
+    <section class="bk-chbox lx-card" aria-labelledby="bk-ch">
+      <h2 id="bk-ch">Challenge a friend</h2>
+      <p>Send these same {items.length} questions. Your friend sees your score when they finish.</p>
+      <label class="bk-name"><span>Your first name (optional)</span><input type="text" autocomplete="given-name" maxLength={20} value={name} onInput={(e) => setName(e.currentTarget.value)} /></label>
+      <div class="bk-chrow">
+        <a class="lx-btn" href={whatsappUrl(text)} target="_blank" rel="noopener" onClick={keep}><ShareIcon />Send on WhatsApp</a>
+        <button type="button" class="lx-btn secondary" onClick={copy}><CopyIcon />Copy link</button>
+        {typeof navigator !== 'undefined' && navigator.share && <button type="button" class="lx-btn secondary" onClick={more}>More apps</button>}
+      </div>
+    </section>
   );
 }

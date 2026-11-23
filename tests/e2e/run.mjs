@@ -106,7 +106,7 @@ for (const [w, h] of WIDTHS) {
       // Search results arrive after the 250 ms debounce.
       if (route.includes('q=')) await page.waitForSelector('.sr-rows:not([aria-busy]), .sr-state, .lx-error-card, .sr-section h2', { timeout: 5000 }).catch(() => {});
       if (route.startsWith('/word/')) await page.waitForSelector('.wd-meaning, .wd-state', { timeout: 8000 }).catch(() => {});
-      if (route.startsWith('/word/serendipity')) await page.waitForSelector('.wd-lang-result p', { timeout: 5000 }).catch(() => {});
+      if (route.startsWith('/word/serendipity')) await page.waitForSelector('.wd-meaning', { timeout: 5000 }).catch(() => {});
       if (route.startsWith('/share/')) await page.waitForSelector('.sh-card img', { timeout: 8000 }).catch(() => {});
       if (route.startsWith('/learn')) await page.waitForSelector('.fc-card, .lx-opt, .sp-input, .mt-tile, .su-group, .ln-hero, .pt-cat, .pd-lesson, .ps-tag, .fm-card', { timeout: 8000 }).catch(() => {});
       await settle(page);
@@ -516,12 +516,64 @@ await check('word page: meanings, level, origin, family, translation and accessi
   assert.equal(await p.textContent('.wd-example b'), 'serendipity');
   assert.match(await p.textContent('.wd-journey'), /Horace Walpole/);
   assert.ok(await p.isVisible('.wd-family a:text("serendipitous")'));
-  await p.waitForSelector('.wd-lang-result p');
-  assert.equal(await p.textContent('.wd-lang-result p'), '[yo] serendipity');
+  assert.equal(await p.locator('.wd-lang-tabs button[aria-pressed="true"]').textContent(), 'English', 'the page starts in English');
+  assert.equal(await p.locator('.wd-tr-word').count(), 0);
+  await c.close();
+});
+
+await check('word page: Yorùbá turns the whole entry into Yoruba, with an on-device voice', async () => {
+  const c = await newContext({ viewport: { width: 390, height: 844 } });
+  await c.addInitScript(SPEECH_STUB);
+  await c.addInitScript(() => {
+    window.__starts = 0;
+    const o = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function (...a) { window.__starts++; return o.apply(this, a); };
+  });
+  const p = await c.newPage();
+  await p.goto(BASE + '/word/serendipity');
+  await p.waitForSelector('.wd-meaning');
+  await p.click('.wd-lang-tabs button:text("Yorùbá")');
+  await p.waitForSelector('.wd-tr-word');
+  assert.equal((await p.textContent('.wd-tr-word')).replace('In Yoruba: ', ''), '[yo] serendipity', 'the word itself is translated');
+  assert.equal(await p.getAttribute('.wd-tr-word', 'lang'), 'yo');
+  assert.match(await p.textContent('#wd-m'), /Ìtumọ̀ · Meanings/);
+  assert.match(await p.textContent('.wd-meaning .wd-pos'), /Orúkọ · noun/, 'part of speech in Yoruba');
+  assert.match(await p.textContent('.wd-meaning .wd-def'), /^\[yo\] Luck in finding/, 'the meaning is in Yoruba');
+  assert.match(await p.textContent('.wd-meaning .wd-def-en'), /Luck in finding/, 'the English stays underneath');
   assert.match(await p.textContent('.wd-lang'), /to be checked by a native speaker/);
-  await p.click('.wd-lang-tabs button:text("French")');
-  await p.waitForSelector('.wd-lang-result p:text("[fr] serendipity")');
-  assert.ok(await p.isVisible('.wd-lang-result button[aria-label="Listen in French"]'), 'French has a voice in the stub');
+  assert.equal(await p.locator('.wd-lang-play').count(), 0, 'no Yoruba voice buttons before the download');
+  await p.click('button:text("Download Yoruba voice (38 MB)")');
+  await p.waitForSelector('.wd-lang-play', { timeout: 15000 });
+  await p.click('.wd-lang-play button:has-text("Hear it")');
+  await p.waitForFunction(() => window.__starts > 0, null, { timeout: 10000 });
+  assert.ok(await p.isVisible('.wd-meaning button:has-text("Listen in Yorùbá")'));
+  const v = await axe(p);
+  assert.deepEqual(v, [], 'no serious axe issues in Yoruba');
+  await p.reload();
+  await p.waitForSelector('.wd-tr-word');
+  assert.ok(await p.isVisible('.wd-lang-play'), 'the language and the voice are remembered');
+  await p.click('.wd-lang-tabs button:text("Igbo")');
+  await p.waitForSelector('.wd-tr-word:text("[ig] serendipity")');
+  assert.match(await p.textContent('.wd-lang'), /no free Igbo voice yet/);
+  assert.match(await p.textContent('.wd-meaning .wd-pos'), /Aha · noun/);
+  await p.click('.wd-lang-tabs button:text("Hausa")');
+  await p.waitForSelector('.wd-tr-word:text("[ha] serendipity")');
+  await p.click('button:text("Download Hausa voice (38 MB)")');
+  await p.waitForSelector('.wd-lang-play', { timeout: 15000 });
+  assert.match(await p.textContent('.wd-meaning .wd-pos'), /Suna · noun/);
+  await p.click('.wd-lang-tabs button:text("Pidgin")');
+  await p.waitForSelector('.wd-lang-missing');
+  assert.match(await p.textContent('.wd-lang'), /no free translator yet/);
+  await p.click('button:text("Download Pidgin voice (38 MB)")');
+  await p.waitForSelector('.wd-lang-play', { timeout: 15000 });
+  const before = await p.evaluate(() => window.__starts);
+  await p.click('.wd-meaning button:has-text("Listen in Pidgin")');
+  await p.waitForFunction((n) => window.__starts > n, before, { timeout: 10000 });
+  await p.click('.wd-lang-tabs button:text("More")');
+  await p.fill('dialog[open] input', 'french');
+  await p.click('dialog[open] button:has-text("French")');
+  await p.waitForSelector('.wd-tr-word:text("[fr] serendipity")');
+  assert.ok(await p.isVisible('.wd-lang-play'), 'French uses the device voice');
   await c.close();
 });
 

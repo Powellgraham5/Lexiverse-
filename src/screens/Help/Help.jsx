@@ -9,7 +9,7 @@ const GROUPS = [
   { title: 'Getting started', items: [
     ['How do I install Lexiverse on my phone?', 'On Android, open Lexiverse in Chrome and tap Install when it appears, or open the browser menu and choose “Install app” or “Add to Home screen”. On iPhone, open it in Safari, tap the Share button, then “Add to Home Screen”. You can also install from Me.'],
     ['Does it cost anything?', 'No. Lexiverse is free, with no adverts and no subscription.'],
-    ['Can I change my subject or level?', 'Yes. Go to Me, then “Your learning”, and pick a different goal, focus or level. Your home screen changes to match.']
+    ['Can I change my subject or level?', 'Yes. Go to Me, open Settings, then “Your learning”, and pick a different goal, focus or level. Your home screen changes to match.']
   ] },
   { title: 'Practice and progress', items: [
     ['What is today’s plan?', 'Three small tasks picked for you each day, such as a mixed question set, a weak topic and a lesson. Each one ticks itself off when you finish it. A new plan starts every day.'],
@@ -31,8 +31,13 @@ const GROUPS = [
     ['Does it work without the internet?', 'Most of it does once you have opened it online: lessons, practice, your words and the phrasebook. Looking up new words and translating new sentences need a connection.'],
     ['Why did translation stop working?', 'Translation uses a free service with a daily limit. If it is reached, try again tomorrow. Quick phrases in the phrasebook always work offline.']
   ] },
+  { title: 'Languages and voices', items: [
+    ['How do I read a word in Yoruba, Hausa or Igbo?', 'Open any word in the Dictionary and choose a language under “Read this word in”. The word, its first meanings, the examples and the word types change to that language, with the English kept underneath. Translations are made by a free machine translator and still need checking by a native speaker.'],
+    ['Why do I download a voice?', 'Most phones have no Yoruba, Hausa or Pidgin voice, so Lexiverse can download one (about 38 MB, once) that runs on your phone. After that it works offline. Igbo has no free voice yet, so Igbo is text only. Nigerian Pidgin has no free translator, so the words stay in English and the Pidgin voice reads them.'],
+    ['Where do the voices come from?', 'They are Meta’s Massively Multilingual Speech voices (MMS), shared under the CC BY-NC 4.0 licence, converted to run in your browser.']
+  ] },
   { title: 'Accessibility', items: [
-    ['Can I make the text bigger or easier to read?', 'Yes. In Me, under “Seeing and reading”, you can choose larger text, a reading font, dark mode, high contrast and less motion.'],
+    ['Can I make the text bigger or easier to read?', 'Yes. In Me, open Settings. Under “Seeing and reading” you can choose larger text, a reading font, high contrast and less motion.'],
     ['Does it work with a screen reader?', 'Yes. Lexiverse is built and tested for screen readers and keyboard-only use, including answers, timers and feedback.']
   ] }
 ];

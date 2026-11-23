@@ -23,6 +23,12 @@ export default defineConfig({
             options: { cacheName: 'lx-fonts', expiration: { maxEntries: 40 } }
           },
           {
+            // The on-device voice engine (Yoruba): kept after the first download so it works offline.
+            urlPattern: ({ url }) => url.host === 'cdn.jsdelivr.net' && url.pathname.startsWith('/npm/@huggingface/transformers@'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'lx-voice-engine', expiration: { maxEntries: 8 }, cacheableResponse: { statuses: [200] } }
+          },
+          {
             urlPattern: ({ url }) => url.pathname.startsWith('/splash/'),
             handler: 'CacheFirst',
             options: { cacheName: 'lx-splash', expiration: { maxEntries: 4 } }
@@ -31,5 +37,6 @@ export default defineConfig({
       }
     })
   ],
+  worker: { format: 'es' },
   build: { target: 'es2020' }
 });

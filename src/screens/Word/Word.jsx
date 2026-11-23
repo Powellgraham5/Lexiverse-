@@ -15,6 +15,8 @@ import { loadWordList, levelOf } from '../../lib/words.js';
 import { didYouMean } from '../../lib/datamuse.js';
 import { translate, loadPhrasebook } from '../../lib/translate.js';
 import { byCode, hasVoice } from '../../lib/languages.js';
+import { PAGE_LANGS, MAX_TRANSLATED, posLabel, uiLabel, textsToTranslate } from '../../lib/wordI18n.js';
+import { LOCAL_VOICES, COMING_VOICES, hasLocalVoice, localVoiceReady, loadLocalVoice, speakLocal, stopLocal } from '../../lib/localVoice.js';
 import { orbitChips, KIND_LABEL, familyLabel } from '../../lib/related.js';
 import { getRecord, setWordLists, unsaveWord, setNote, savedWords } from '../../lib/saved.js';
 import { allLists, createList } from '../../lib/lists.js';
@@ -28,7 +30,75 @@ import './word.css';
 // The router has usually decoded the word already; decoding again must not crash on a literal %.
 const safeDecode = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
 
-const QUICK_LANGS = ['yo', 'ha', 'ig', 'fr'];
+// Languages the whole page can be read in; "More" opens every other language.
+const PAGE_TABS = PAGE_LANGS;
+const TAB_NAME = { en: 'English', yo: 'Yorùbá', ha: 'Hausa', ig: 'Igbo', pcm: 'Pidgin' };
+const LANG_KEY = 'lx-word-lang';
+const readLang = () => { try { return localStorage.getItem(LANG_KEY) || 'en'; } catch { return 'en'; } };
+
+// How this language can be heard: an on-device voice, the phone's own voice, or not yet.
+function voiceKind(lang) {
+  if (lang === 'en') return 'device';
+  if (hasLocalVoice(lang)) return 'local';
+  if (hasVoice(lang)) return 'device';
+  return COMING_VOICES.includes(lang) ? 'coming' : 'none';
+}
+
+// Translates the word, then the first meanings and examples (each cached, so a second visit is free).
+function usePageTranslation(word, e, lang) {
+  return useRequest(lang === 'en' || !e ? null : async (signal) => {
+    const book = await loadPhrasebook().catch(() => null);
+    let head = null;
+    try { head = await translate(word, 'en', lang, { signal, book }); } catch (err) { if (err?.name === 'AbortError' || err?.code === 'TR-429') throw err; }
+    const map = {};
+    let quota = false;
+    if (!byCode(lang)?.phrasebookOnly) {
+      const texts = textsToTranslate(e.meanings);
+      const results = await Promise.allSettled(texts.map((t) => translate(t, 'en', lang, { signal, book })));
+      if (signal.aborted) throw signal.reason;
+      results.forEach((r, i) => {
+        if (r.status === 'fulfilled' && r.value?.text) map[texts[i]] = r.value.text;
+        else if (r.reason?.code === 'TR-429') quota = true;
+      });
+    }
+    return { head, map, quota };
+  }, [word, lang, e?.word], { isOnline: () => true, timeout: 25000 });
+}
+
+function VoiceSetup({ lang, onReady }) {
+  const meta = byCode(lang);
+  const kind = voiceKind(lang);
+  const [ready, setReady] = useState(() => localVoiceReady(lang));
+  const [progress, setProgress] = useState(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => { setReady(localVoiceReady(lang)); setProgress(null); setFailed(false); }, [lang]);
+  if (kind === 'coming') return <p class="wd-lang-missing">A {meta.name} voice is coming soon. For now {meta.name} is text only.</p>;
+  if (kind === 'none') return <p class="wd-lang-missing">There is no free {meta.name} voice yet, so {meta.name} is text only.</p>;
+  if (kind !== 'local' || ready) return null;
+  const v = LOCAL_VOICES[lang];
+  async function download() {
+    setFailed(false); setProgress(0);
+    try {
+      await loadLocalVoice(lang, setProgress);
+      setReady(true); setProgress(null); onReady?.();
+      toast({ text: `${v.name} voice ready. It works offline now.`, kind: 'success' });
+    } catch { setProgress(null); setFailed(true); }
+  }
+  return (
+    <div class="wd-voice">
+      <p><b>Hear {TAB_NAME[lang] || meta.name} on this phone.</b> Download the {v.name} voice once ({v.size}). It then works offline.</p>
+      {progress === null
+        ? <button type="button" class="lx-btn small" onClick={download}>Download {v.name} voice ({v.size})</button>
+        : (
+          <div class="wd-voice-prog">
+            <span class="lx-bar" role="progressbar" aria-label={`Downloading the ${v.name} voice`} aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(progress * 100)}><span style={{ width: `${Math.round(progress * 100)}%` }} /></span>
+            <span aria-hidden="true">{Math.round(progress * 100)}%</span>
+          </div>
+        )}
+      {failed && <p class="wd-lang-missing" role="alert">The voice didn't download. Check your connection and try again.</p>}
+    </div>
+  );
+}
 
 // The example sentence with the word itself highlighted.
 function Example({ text, word }) {
@@ -44,36 +114,49 @@ function useEntry(word) {
   }, [word], { isOnline: () => true });
 }
 
-function Translation({ word, settings }) {
-  const [lang, setLang] = useState(QUICK_LANGS.includes(settings.translateTo) ? settings.translateTo : 'yo');
+function LangPanel({ lang, setLang, tr, playing, play, voiceReady, onReady }) {
   const [picker, setPicker] = useState(false);
-  const [req] = useRequest(async (signal) => translate(word, 'en', lang, { signal, book: await loadPhrasebook().catch(() => null) }), [word, lang], { isOnline: () => true });
   const meta = byCode(lang);
-  const tabs = QUICK_LANGS.includes(lang) ? QUICK_LANGS : [...QUICK_LANGS, lang];
+  const tabs = PAGE_TABS.includes(lang) ? PAGE_TABS : [...PAGE_TABS, lang];
+  const head = tr.state === 'success' ? tr.data?.head : null;
+  const kind = voiceKind(lang);
+  // Pidgin has no free translator, but its voice reads the English words well.
+  const readsEnglish = lang === 'pcm' && tr.state === 'success';
+  const canHear = (head || readsEnglish) && (kind === 'device' || (kind === 'local' && voiceReady));
   return (
-    <section class="wd-lang lx-rise lx-d4" aria-labelledby="wd-lang-h">
-      <h2 id="wd-lang-h">In your language</h2>
-      <div role="group" aria-label="Choose language" class="wd-lang-tabs">
-        {tabs.map((c) => <button key={c} type="button" aria-pressed={lang === c} onClick={() => setLang(c)}>{byCode(c).name}</button>)}
+    <section class="wd-lang lx-rise lx-d1" aria-labelledby="wd-lang-h">
+      <h2 id="wd-lang-h">Read this word in</h2>
+      <div role="group" aria-label="Page language" class="wd-lang-tabs">
+        {tabs.map((c) => <button key={c} type="button" lang={c === 'en' ? 'en' : c} aria-pressed={lang === c} onClick={() => setLang(c)}>{TAB_NAME[c] || byCode(c).name}</button>)}
         <button type="button" aria-haspopup="dialog" onClick={() => setPicker(true)}>More</button>
       </div>
-      <div class="wd-lang-result" aria-live="polite" aria-busy={req.state === 'loading'}>
-        {req.state === 'loading' && <span class="wd-sk" />}
-        {req.state === 'success' && (
-          <>
-            <p lang={lang} dir={meta.dir || 'ltr'}>{req.data.text}</p>
-            {hasVoice(lang) && (
-              <button type="button" class="wd-round" aria-label={`Listen in ${meta.name}`} onClick={() => speak(req.data.text, { lang: meta.speech || lang, rate: settings.speechRate })}>
-                <SpeakerIcon />
-              </button>
+      {lang !== 'en' && (
+        <>
+          <div class="wd-lang-result" aria-live="polite" aria-busy={tr.state === 'loading'}>
+            {tr.state === 'loading' && <span class="wd-sk" />}
+            {head && <p lang={lang} dir={meta.dir || 'ltr'}>{head.text}</p>}
+            {tr.state === 'success' && !head && (
+              <p class="wd-lang-missing">{meta.phrasebookOnly ? `${meta.name} has no free translator yet, so the words stay in English. You can still hear them in a ${meta.name} voice, and the translator's phrasebook has everyday ${meta.name} phrases.` : `No ${meta.name} translation yet.`}</p>
             )}
-          </>
-        )}
-        {(req.state === 'error' || req.state === 'not-found') && (
-          <p class="wd-lang-missing">{req.code === 'TR-429' ? "Today's free translations are used up. Try again tomorrow." : `No ${meta.name} translation yet.`}</p>
-        )}
-      </div>
-      {req.state === 'success' && !req.data.reviewed && <p class="wd-lang-note">Sample translation · to be checked by a native speaker</p>}
+            {(tr.state === 'error' || tr.state === 'not-found') && (
+              <p class="wd-lang-missing">{tr.code === 'TR-429' ? "Today's free translations are used up, so this page stays in English. Try again tomorrow." : `${meta.name} couldn't load right now, so this page stays in English.`}</p>
+            )}
+          </div>
+          {canHear && (
+            <div class="wd-lang-play" role="group" aria-label={`Hear it in ${meta.name}`}>
+              {[['tr-word', 'Hear it', SpeakerIcon], ['tr-slow', 'Slow', SlowIcon], ['tr-all', 'Read all', ReadAllIcon]].map(([k, label, I]) => (
+                <button key={k} type="button" class={playing === k ? 'on' : ''} aria-pressed={playing === k} onClick={() => play(k)}>
+                  {playing === k ? <span class="wd-bars" aria-hidden="true"><span /><span /><span /></span> : <I size={20} />}
+                  {playing === k ? 'Stop' : label}
+                </button>
+              ))}
+            </div>
+          )}
+          {(head || readsEnglish) && <VoiceSetup lang={lang} onReady={onReady} />}
+          {tr.state === 'success' && tr.data?.quota && <p class="wd-lang-missing">Today's free translations ran out part way, so some meanings stay in English.</p>}
+          {head && !head.reviewed && <p class="wd-lang-note">Machine translation · to be checked by a native speaker</p>}
+        </>
+      )}
       <LanguagePicker open={picker} value={lang} onClose={() => setPicker(false)} onPick={(c) => { setLang(c); setPicker(false); }} />
     </section>
   );
@@ -116,10 +199,19 @@ export default function Word() {
   const [noteSaved, setNoteSaved] = useState('');
   const [playing, setPlaying] = useState(null);
   const run = useRef(0);
-  useEffect(() => () => { run.current++; stopSpeaking(); }, [word]);
+  const stopAll = () => { stopSpeaking(); stopLocal(); };
+  useEffect(() => () => { run.current++; stopAll(); }, [word]);
   const [using, setUsing] = useState(null);
   const noteTimer = useRef(null);
   const e = req.data;
+  const [lang, setLangState] = useState(readLang);
+  const [, bump] = useState(0);
+  const setLang = (c) => { setLangState(c); try { localStorage.setItem(LANG_KEY, c); } catch { /* private mode */ } };
+  const [tr] = usePageTranslation(word, e, lang);
+  const trData = lang !== 'en' && tr.state === 'success' ? tr.data : null;
+  const inLang = (text) => trData?.map[text] || null;
+  const voiceReady = voiceKind(lang) !== 'local' || localVoiceReady(lang);
+  const canHearLang = lang !== 'en' && (voiceKind(lang) === 'device' || (voiceKind(lang) === 'local' && voiceReady));
 
   useEffect(() => {
     addRecent(word);
@@ -132,12 +224,31 @@ export default function Word() {
 
   // A second tap on the playing button stops it; any other button stops it and starts its own.
   async function play(kind) {
-    if (playing === kind) { run.current++; stopSpeaking(); setPlaying(null); return; }
+    if (playing === kind) { run.current++; stopAll(); setPlaying(null); return; }
     const id = ++run.current;
-    stopSpeaking();
+    stopAll();
     setPlaying(kind);
     const live = () => run.current === id;
     const opts = { accent: kind === 'UK' || kind === 'US' ? kind : settings.accent, rate: kind === 'slow' ? 0.6 : settings.speechRate };
+    if (kind.startsWith('tr-')) {
+      const say = (text, rate = settings.speechRate) => (voiceKind(lang) === 'local'
+        ? speakLocal(text, lang, { rate })
+        : speak(text, { lang: byCode(lang)?.speech || lang, rate }));
+      const head = trData?.head?.text || word;
+      try {
+        if (kind === 'tr-word') await say(head);
+        else if (kind === 'tr-slow') await say(head, 0.7);
+        else if (kind === 'tr-all') {
+          const own = (t) => inLang(t) || (lang === 'pcm' ? t : null);
+          const lines = [head, ...e.meanings.slice(0, MAX_TRANSLATED).flatMap((m) => [own(m.def), m.example ? own(m.example) : null]).filter(Boolean)];
+          for (const line of lines) { if (!live()) return; await say(line); }
+        } else {
+          await say(kind.slice(3));
+        }
+      } catch { if (live()) toast({ text: `Couldn't play the ${byCode(lang)?.name} voice`, kind: 'error' }); }
+      if (live()) setPlaying(null);
+      return;
+    }
     if (kind === 'all') {
       const lines = [word, ...e.meanings.flatMap((m) => [`${m.pos}. ${m.def}`, ...(m.example ? [m.example] : [])])];
       for (const line of lines) {
@@ -270,6 +381,7 @@ export default function Word() {
       <section class="wd-card" aria-label={word}>
         {level && <span class="wd-level">{level.cefr} · {level.label}</span>}
         <h1 class="wd-word">{word}</h1>
+        {trData?.head && <p class="wd-tr-word" lang={lang} dir={byCode(lang)?.dir || 'ltr'}><span class="lx-sr">In {byCode(lang)?.name}: </span>{trData.head.text}</p>}
         <div class="wd-say">
           {e.ipa && <p class="wd-ipa">{e.ipa}</p>}
           {e.syllables && <p class="wd-syl" aria-label={`Syllables: ${e.syllables.join(', ')}`}>{e.syllables.join(' · ')}</p>}
@@ -295,24 +407,31 @@ export default function Word() {
           </ul>
         </section>
       )}
+      <LangPanel lang={lang} setLang={setLang} tr={tr} playing={playing} play={play} voiceReady={voiceReady} onReady={() => bump((n) => n + 1)} />
       {noRecording && <p class="wd-device-voice">No recording yet, so your device's voice reads it.</p>}
       {e.stale && <p class="wd-device-voice">Showing the copy saved on this device.</p>}
       </div>
 
       <div class="lx-col wd-body">
       <section class="wd-meanings lx-rise lx-d3" aria-labelledby="wd-m">
-        <h2 id="wd-m">Meanings</h2>
-        {e.meanings.map((m, i) => (
+        <h2 id="wd-m">{trData && uiLabel('meanings', lang) ? <><span lang={lang}>{uiLabel('meanings', lang)}</span> · Meanings</> : 'Meanings'}</h2>
+        {e.meanings.map((m, i) => { const tDef = inLang(m.def); const tEx = m.example ? inLang(m.example) : null; const tPos = trData ? posLabel(m.pos, lang) : null; return (
           <article key={i} class="wd-meaning" aria-label={`Meaning ${i + 1}, ${m.pos}${i === 0 ? ', most common' : ''}`}>
             <div class="wd-meaning-head">
               <span class={`wd-num n${i % 4}`} aria-hidden="true">{i + 1}</span>
-              <span class="wd-pos">{m.pos}</span>
+              <span class="wd-pos">{tPos ? <><span lang={lang}>{tPos}</span> · {m.pos}</> : m.pos}</span>
               {i === 0 && <span class="wd-common">Most common</span>}
             </div>
-            <p class="wd-def">{m.def}</p>
+            {tDef ? (
+              <>
+                <p class="wd-def" lang={lang} dir={byCode(lang)?.dir || 'ltr'}>{tDef}</p>
+                <p class="wd-def-en"><span class="lx-sr">In English: </span>{m.def}</p>
+              </>
+            ) : <p class="wd-def">{m.def}</p>}
             {m.example && (
               <div class="wd-example">
                 {m.register && <span class="wd-register">{m.register}</span>}
+                {tEx && <span class="wd-ex-tr" lang={lang} dir={byCode(lang)?.dir || 'ltr'}>“{tEx}”</span>}
                 <Example text={m.example} word={word} />
               </div>
             )}
@@ -325,14 +444,18 @@ export default function Word() {
             )}
             <div class="wd-meaning-actions">
               <button type="button" class="wd-round soft" aria-label={`Listen to meaning ${i + 1}`} onClick={() => speak(m.def, { accent: settings.accent, rate: settings.speechRate })}><SpeakerIcon size={20} /></button>
+              {(tDef || (lang === 'pcm' && i < MAX_TRANSLATED)) && canHearLang && (() => { const k = `tr-${tDef || m.def}`; return (
+                <button type="button" class={`wd-use-btn ${playing === k ? 'on' : ''}`} aria-pressed={playing === k} onClick={() => play(k)}>
+                  <SpeakerIcon size={18} />{playing === k ? 'Stop' : <>Listen in <span lang={lang}>{TAB_NAME[lang] || byCode(lang)?.name}</span></>}
+                </button>
+              ); })()}
               <button type="button" class="wd-round soft" aria-label={`Copy meaning ${i + 1}`} onClick={() => copy(m.def)}><CopyIcon size={20} /></button>
               <button type="button" class="wd-use-btn" aria-expanded={using === i} onClick={() => setUsing(using === i ? null : i)}><PenIcon size={18} />Use it</button>
             </div>
           </article>
-        ))}
+        ); })}
+        {trData && Object.keys(trData.map).length > 0 && e.meanings.length > MAX_TRANSLATED && <p class="wd-lang-rest">Meanings {MAX_TRANSLATED + 1} and on stay in English, to keep within today's free translations.</p>}
       </section>
-
-      <Translation word={word} settings={settings} />
 
       {e.origin && (
         <section class="wd-journey" aria-labelledby="wd-j">

@@ -31,6 +31,7 @@ test('machine translation is fetched once, then cached', async () => {
   assert.deepEqual(b, a);
   assert.equal(f.calls.length, 1);
   assert.match(f.calls[0], /langpair=en\|yo/);
+  assert.match(f.calls[0], /de=ehigiatorpowell1%40gmail\.com/, 'the contact email raises the daily limit');
 });
 
 test('quota and failures become translator errors', async () => {

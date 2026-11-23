@@ -6,6 +6,8 @@ import { get, put } from './db.js';
 
 export const MAX_CHARS = 500;
 const API = 'https://api.mymemory.translated.net/get';
+// MyMemory gives 50,000 free characters a day (instead of 5,000) when requests carry a contact email.
+const CONTACT = 'ehigiatorpowell1@gmail.com';
 
 const norm = (s) => s.toLowerCase().replace(/[.,!?¿¡…"“”'’]/g, '').replace(/\s+/g, ' ').trim();
 
@@ -40,7 +42,7 @@ export async function translate(text, from, to, { signal, fetchImpl = globalThis
   try { const c = await get('cache', key); if (c) return c.data; } catch { /* no storage */ }
 
   let res;
-  try { res = await fetchImpl(`${API}?q=${encodeURIComponent(clean)}&langpair=${from}|${to}`, { signal }); } catch (e) {
+  try { res = await fetchImpl(`${API}?q=${encodeURIComponent(clean)}&langpair=${from}|${to}&de=${encodeURIComponent(CONTACT)}`, { signal }); } catch (e) {
     if (e?.name === 'AbortError') throw e;
     throw new RequestError('network', 'Translator could not connect', 'TR-503');
   }

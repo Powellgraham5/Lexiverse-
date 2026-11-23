@@ -48,6 +48,17 @@ export async function mockApis(context) {
     if (DICT[word]) return route.fulfill({ json: DICT[word] });
     return route.fulfill({ status: 404, json: { title: 'No Definitions Found' } });
   });
+  // A stand-in for the on-device voice engine: reports progress, then returns a short silence.
+  await context.route('https://cdn.jsdelivr.net/npm/@huggingface/transformers@*/dist/transformers.min.js', (route) => route.fulfill({
+    contentType: 'text/javascript',
+    headers: { 'access-control-allow-origin': '*' },
+    body: `export const env = {};
+export async function pipeline(task, model, o) {
+  o?.progress_callback?.({ status: 'progress', file: 'onnx/model_quantized.onnx', loaded: 19, total: 38 });
+  o?.progress_callback?.({ status: 'progress', file: 'onnx/model_quantized.onnx', loaded: 38, total: 38 });
+  return async () => ({ audio: new Float32Array(1600), sampling_rate: 16000 });
+}`
+  }));
   await context.route('https://api.mymemory.translated.net/**', (route) => {
     const r = myMemory(route.request().url());
     return route.fulfill({ status: r.status, json: r.json });

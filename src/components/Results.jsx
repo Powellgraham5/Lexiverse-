@@ -7,6 +7,11 @@ export function Results({ title, score, total, unit = 'correct', known = 0, miss
   const verdict = ratio === 1 ? 'Perfect!' : ratio >= 0.7 ? 'Nice work!' : ratio >= 0.4 ? 'Good effort!' : 'Keep going!';
   return (
     <section class="rs" aria-labelledby="rs-title">
+      {ratio >= 0.7 && (
+        <div class="rs-confetti" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => <i key={i} class={`c${i % 5}`} style={{ left: `${6 + i * 9.5}%`, animationDelay: `${(i % 4) * 0.15}s` }} />)}
+        </div>
+      )}
       <div class="rs-planet lx-rise" aria-hidden="true">
         <b>{score}/{total}</b>
         <span>{unit}</span>

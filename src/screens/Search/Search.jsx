@@ -119,6 +119,11 @@ export default function Search() {
   return (
     <>
       <h1 class="lx-rise lx-page-title sr-title">Dictionary</h1>
+      <nav class="sr-tabs lx-rise lx-d1" aria-label="Dictionary sections">
+        <a href="/dictionary" aria-current="page">Search</a>
+        <a href="/words">Saved</a>
+        <a href="/words?tab=notebook">Notebook</a>
+      </nav>
       <form role="search" class="sr-box lx-rise lx-d1" onSubmit={submit}>
         <SearchIcon />
         <label for="q" class="lx-sr">{label}</label>
@@ -162,9 +167,11 @@ export default function Search() {
           <section class="sr-section" aria-labelledby="explore">
             <h2 id="explore">Explore</h2>
             {todayWord && (
-              <a class="sr-row" href={`/word/${todayWord.w}`}>
-                <span class="sr-dot" style={{ background: DOTS[0] }} aria-hidden="true" />
-                <span class="sr-text"><span class="sr-kicker">Word of the day</span><b>{todayWord.w}</b></span>
+              <a class="sr-wotd" href={`/word/${todayWord.w}`}>
+                <span class="sr-kicker">Word of the day</span>
+                <b>{todayWord.w}</b>
+                {(todayWord.ipa || todayWord.pos) && <span class="sr-wotd-ipa">{todayWord.ipa && <span lang="en-fonipa">{todayWord.ipa}</span>}{todayWord.ipa && todayWord.pos && ' · '}{todayWord.pos}</span>}
+                {todayWord.def && <span class="sr-wotd-def">{todayWord.def}</span>}
               </a>
             )}
             <a class="sr-row" href="/words">

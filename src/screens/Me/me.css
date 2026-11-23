@@ -25,3 +25,22 @@
 .me-select:focus { outline: 3px solid var(--lx-focus); outline-offset: 2px; }
 .me-install { display: flex; flex-direction: column; gap: .5rem; align-items: flex-start; padding: 1rem 1.125rem; }
 .me-install h2 { font-size: 1.0625rem; }
+
+/* Profile card and number stickers, as in the design */
+.me-profile { position: relative; overflow: clip; isolation: isolate; display: flex; align-items: center; gap: .875rem; padding: 1rem; border-radius: 22px; border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick); background: #1F5BFF; color: #FFFFFF; }
+.me-profile::before { content: ''; position: absolute; z-index: -1; width: 6rem; height: 6rem; right: -1.75rem; top: -2rem; border-radius: 50%; background: var(--lx-lime); border: 2px solid #0D0B1F; animation: hm-float 6s ease-in-out infinite; }
+.me-profile > div { display: flex; flex-direction: column; min-width: 0; gap: .125rem; }
+.me-profile b { font-family: var(--lx-font-display); font-size: 1.375rem; letter-spacing: -.02em; }
+.me-profile span { font-size: .9375rem; font-weight: 600; }
+.me-profile .me-local { font-size: .8125rem; font-weight: 500; opacity: .92; }
+.me-avatar { display: flex; align-items: center; justify-content: center; flex: none; width: 4rem; height: 4rem; border-radius: 20px; background: var(--lx-sun); border: 2px solid #0D0B1F; color: #0D0B1F; font: 700 1.625rem var(--lx-font-display); animation: lx-spinin .8s var(--lx-pop) .15s both; }
+.me-stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .625rem; }
+.me-stats li { display: flex; flex-direction: column; padding: .75rem; border: 2px solid var(--lx-edge); border-radius: 18px; box-shadow: var(--lx-stick-sm); color: #0D0B1F; animation: lx-pop .55s var(--lx-pop) both; }
+.me-stats li:nth-child(2) { animation-delay: .1s; } .me-stats li:nth-child(3) { animation-delay: .2s; }
+.me-stats li.sun { background: var(--lx-sun); } .me-stats li.sky { background: var(--lx-sky); } .me-stats li.pink { background: var(--lx-pink); }
+.me-stats b { font-family: var(--lx-font-display); font-size: 1.625rem; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.me-stats span { font-size: .8125rem; font-weight: 700; }
+:root[data-large-text] .me-stats { grid-template-columns: 1fr; }
+@keyframes hm-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(8deg); } }
+/* Link rows become sticker rows */
+:root .me-links a { border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick-sm); border-radius: 18px; }

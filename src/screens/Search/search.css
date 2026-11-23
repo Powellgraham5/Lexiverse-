@@ -77,3 +77,15 @@
   .sr-translator { max-width: 46rem; }
 }
 :root[data-large-text] .sr-rows, :root[data-large-text] .sr-idle { display: flex; flex-direction: column; }
+
+/* Dictionary sections and the word-of-the-day card, as in the design */
+.sr-tabs { display: flex; gap: 4px; padding: 4px; border: 2px solid var(--lx-edge); border-radius: 16px; background: var(--lx-surface); }
+.sr-tabs a { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 2.75rem; border-radius: 11px; font-weight: 800; color: var(--lx-muted); text-decoration: none; }
+.sr-tabs a[aria-current="page"] { background: var(--lx-ink); color: var(--lx-bg); }
+.sr-wotd { display: flex; flex-direction: column; gap: .25rem; padding: 1.125rem; margin-bottom: .75rem; border-radius: 22px; border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick); background: var(--lx-pink); color: #0D0B1F; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; animation: lx-pop .55s var(--lx-pop) .1s both; }
+.sr-wotd:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--lx-edge); }
+.sr-wotd .sr-kicker { color: #0D0B1F; }
+.sr-wotd b { font-family: var(--lx-font-display); font-size: 2rem; line-height: 1.05; letter-spacing: -.03em; }
+.sr-wotd-ipa { font-weight: 600; }
+.sr-wotd-def { font-size: 1.0625rem; font-weight: 600; }
+:root .sr-row { border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick-sm); }

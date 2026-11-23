@@ -267,13 +267,25 @@ export default function Word() {
       {top}
       <div class="lx-split wd-split">
       <div class="lx-col lx-sticky wd-head">
-      <section class="wd-orbit" aria-label={`${word} and nearby words`}>
-        <span class="wd-ring" aria-hidden="true" />
-        <div class="wd-planet">
-          {level && <span class="wd-level">{level.cefr} · {level.label}</span>}
-          <h1 style={{ fontSize: planetFont(word, 108) }}>{word}</h1>
+      <section class="wd-card" aria-label={word}>
+        {level && <span class="wd-level">{level.cefr} · {level.label}</span>}
+        <h1 class="wd-word">{word}</h1>
+        <div class="wd-say">
+          {e.ipa && <p class="wd-ipa">{e.ipa}</p>}
+          {e.syllables && <p class="wd-syl" aria-label={`Syllables: ${e.syllables.join(', ')}`}>{e.syllables.join(' · ')}</p>}
         </div>
-        {chips.length > 0 && (
+        <div class="wd-play" role="group" aria-label="Pronunciation">
+          {[['US', 'US', SpeakerIcon], ['UK', 'UK', SpeakerIcon], ['slow', 'Slow', SlowIcon], ['all', 'Read all', ReadAllIcon]].map(([k, label, I]) => (
+            <button key={k} type="button" class={playing === k ? 'on' : ''} aria-pressed={playing === k} onClick={() => play(k)} disabled={!canSpeak() && (k === 'slow' || k === 'all')}>
+              {playing === k ? <span class="wd-bars" aria-hidden="true"><span /><span /><span /></span> : <I size={22} />}
+              {playing === k ? 'Stop' : label}
+            </button>
+          ))}
+        </div>
+      </section>
+      {chips.length > 0 && (
+        <section class="wd-related lx-rise lx-d1" aria-label="Related words">
+          <p class="wd-related-h" aria-hidden="true">Related</p>
           <ul class="wd-moons">
             {chips.map((c, i) => (
               <li key={c.word} class={`p${i}`}>
@@ -281,22 +293,8 @@ export default function Word() {
               </li>
             ))}
           </ul>
-        )}
-      </section>
-
-      <div class="wd-say lx-rise lx-d1">
-        {e.ipa && <p class="wd-ipa">{e.ipa}</p>}
-        {e.syllables && <p class="wd-syl" aria-label={`Syllables: ${e.syllables.join(', ')}`}>{e.syllables.join(' · ')}</p>}
-      </div>
-
-      <div class="wd-play lx-rise lx-d2" role="group" aria-label="Pronunciation">
-        {[['US', 'US', SpeakerIcon], ['UK', 'UK', SpeakerIcon], ['slow', 'Slow', SlowIcon], ['all', 'Read all', ReadAllIcon]].map(([k, label, I]) => (
-          <button key={k} type="button" class={playing === k ? 'on' : ''} aria-pressed={playing === k} onClick={() => play(k)} disabled={!canSpeak() && (k === 'slow' || k === 'all')}>
-            {playing === k ? <span class="wd-bars" aria-hidden="true"><span /><span /><span /></span> : <I size={22} />}
-            {playing === k ? 'Stop' : label}
-          </button>
-        ))}
-      </div>
+        </section>
+      )}
       {noRecording && <p class="wd-device-voice">No recording yet, so your device's voice reads it.</p>}
       {e.stale && <p class="wd-device-voice">Showing the copy saved on this device.</p>}
       </div>

@@ -276,7 +276,7 @@ await check('home: each subject has its own home; Everyday English keeps the wor
     return { c, p };
   };
   let { c, p } = await visit({ goal: 'x', focus: 'jamb', level: 2, done: true });
-  await p.waitForSelector('h1:text("Your JAMB practice")');
+  await p.waitForSelector('h1:text("Ready for JAMB?")');
   await p.waitForSelector('a.pt-row:has-text("seen")');
   await settle(p);
   assert.deepEqual(await overflow(p), [], 'JAMB home overflow');
@@ -299,7 +299,7 @@ await check('home: each subject has its own home; Everyday English keeps the wor
   await c.close();
 
   ({ c, p } = await visit({ goal: 'k', focus: 'emails', level: 2, done: true }));
-  await p.waitForSelector('h1:text("Your Emails course")');
+  await p.waitForSelector('.hm-eyebrow:has-text("Emails")');
   await settle(p);
   assert.deepEqual(await overflow(p), [], 'course home overflow');
   assert.deepEqual(await axe(p), [], 'course home axe');
@@ -324,7 +324,7 @@ await check('me: changing the goal changes Today\'s word and chip', async () => 
   await p.selectOption('#me-goal', 'x');
   await p.selectOption('#me-focus', 'ielts');
   await p.goto(BASE + '/');
-  await p.waitForSelector('h1:text("Your IELTS course")');
+  await p.waitForSelector('.hm-eyebrow:has-text("IELTS")');
   await p.goto(BASE + '/today');
   await p.waitForSelector('.lx-goal-chip:has-text("IELTS")');
   const after = (await p.textContent('.lx-orbit-planet b')).trim();
@@ -508,7 +508,7 @@ await check('word page: meanings, level, origin, family, translation and accessi
   const p = await c.newPage();
   await p.goto(BASE + '/word/serendipity');
   await p.waitForSelector('.wd-meaning');
-  assert.equal((await p.textContent('.wd-planet h1')).trim(), 'serendipity');
+  assert.equal((await p.textContent('.wd-word')).trim(), 'serendipity');
   assert.match(await p.textContent('.wd-level'), /C2|C1|B2/);
   const first = await p.textContent('.wd-meaning .wd-def');
   assert.match(first, /Luck in finding good things by chance/, 'our learner meaning comes first');
@@ -628,7 +628,7 @@ await check('word page reopens offline from the device (service worker + cached 
   await c.setOffline(true);
   await p.reload();
   await p.waitForSelector('.wd-meaning', { timeout: 10000 });
-  assert.match(await p.textContent('.wd-planet h1'), /serendipity/);
+  assert.match(await p.textContent('.wd-word'), /serendipity/);
   await c.close();
 });
 
@@ -1709,6 +1709,25 @@ await check('closing a practice set asks first (Keep going stays, Leave goes)', 
   await p.click('dialog[open] button:text("Leave")');
   await p.waitForURL(BASE + '/learn/bank/jamb');
   await c.close();
+});
+
+await check('choice buttons never cut off or overlap their words (Level, Reading font)', async () => {
+  for (const [w, scale] of [[360, 1], [412, 1.15], [412, 1.3]]) {
+    const c = await newContext({ viewport: { width: w, height: 900 } });
+    await c.addInitScript((sc) => localStorage.setItem('lx-settings', JSON.stringify({ textScale: sc })), scale);
+    const p = await c.newPage();
+    await p.goto(BASE + '/me');
+    await p.waitForSelector('.lx-seg.stretch button');
+    await settle(p);
+    const bad = await p.$$eval('.lx-seg button', (bs) => bs.filter((b) => b.scrollWidth > b.clientWidth + 1).map((b) => b.textContent));
+    assert.deepEqual(bad, [], `${w}px at ${scale * 100}% text`);
+    const overlap = await p.$$eval('.lx-seg.stretch', (segs) => segs.some((seg) => {
+      const r = [...seg.children].map((b) => b.getBoundingClientRect());
+      return r.some((a, i) => r.slice(i + 1).some((b) => a.top === b.top && a.right > b.left + 1 && b.right > a.left + 1));
+    }));
+    assert.ok(!overlap, 'options do not overlap');
+    await c.close();
+  }
 });
 
 await check('manifest is valid and installable', async () => {

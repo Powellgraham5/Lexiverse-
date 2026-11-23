@@ -70,3 +70,13 @@
 .pg-legend .k.missed { border: 2px dashed var(--lx-orbit); margin-left: .5rem; }
 @media (prefers-reduced-motion: reduce) { .pg-orbit { animation: none; } }
 :root[data-motion="reduce"] .pg-orbit { animation: none; }
+.pg-jamb ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .75rem; }
+.pg-jamb-row { display: flex; justify-content: space-between; gap: .75rem; margin-bottom: .25rem; }
+.pg-jamb-row b { font-variant-numeric: tabular-nums; }
+.pg-jamb .lx-bar { display: block; }
+:root .pg-tile { border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick-sm); color: #0D0B1F; }
+:root .pg-tile:nth-child(1) { background: var(--lx-sun); }
+:root .pg-tile:nth-child(2) { background: var(--lx-sky); }
+:root .pg-tile:nth-child(3) { background: var(--lx-pink); }
+:root .pg-tile svg { color: #0D0B1F; }
+:root .pg-tile span { color: #0D0B1F; }

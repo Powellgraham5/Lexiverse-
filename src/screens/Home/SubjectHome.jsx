@@ -20,17 +20,16 @@ import './home.css';
 
 
 
-// The top of every subject home: the category's planet, the title and the streak.
-function HomeHead({ cat, eyebrow, title, sub }) {
+// The top of every home: a greeting, the big title and the streak chip, as in the design.
+export const greeting = (h = new Date().getHours()) => (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening');
+function HomeHead({ eyebrow, title }) {
   const streak = currentStreak(loadActivity().days || []);
   return (
     <header class="hm-head lx-rise">
       <div class="hm-title">
-        <span class="pt-planet" style={{ background: cat.tint }} aria-hidden="true"><cat.Icon size={24} /></span>
-        <span class="hm-title-text"><span class="pd-cat">{eyebrow}</span><h1 class="lx-page-title">{title}</h1></span>
+        <span class="hm-title-text"><span class="hm-eyebrow">{greeting()} · {eyebrow}</span><h1 class="lx-page-title">{title}</h1></span>
         <a class="lx-streak-chip" href="/progress"><FlameIcon />{streak ? `${streak} day${streak === 1 ? '' : 's'}` : 'Start a streak'}<span class="lx-sr">{streak ? ' streak.' : '.'} See your progress</span></a>
       </div>
-      <p class="pt-sub">{sub}</p>
     </header>
   );
 }
@@ -59,6 +58,8 @@ function JambHome() {
   const leastSeen = [...mine].filter((id) => info[id] && !info[id].failed).sort((a, b) => info[a].seen / info[a].count - info[b].seen / info[b].count)[0];
   const topicHref = (w) => `/learn/bank/jamb/${w.subject}?topic=${encodeURIComponent(w.topic)}`;
   const history = mine.map((id) => [id, info[id]?.history || []]).filter(([, h]) => h.length > 1);
+  const allPoints = mine.flatMap((id) => info[id]?.history || []);
+  const avgPct = allPoints.length ? Math.round(allPoints.reduce((n, x) => n + x.pct, 0) / allPoints.length) : null;
   const lastId = Object.entries(info).filter(([, i]) => i.last).sort((a, b) => b[1].last.at - a[1].last.at)[0]?.[0];
   const title = (id) => JAMB_SUBJECTS.find((s) => s.id === id)?.title;
   const toggle = (id) => {
@@ -69,7 +70,7 @@ function JambHome() {
 
   return (
     <div class="hm">
-      <HomeHead cat={CATEGORIES.find((c) => c.goal === 'x')} eyebrow="JAMB (UTME)" title="Your JAMB practice" sub={mine.map(title).join(' · ')} />
+      <HomeHead eyebrow="JAMB UTME" title="Ready for JAMB?" />
 
       <section class="hm-mock lx-rise lx-d1" aria-labelledby="hm-mock-h">
         <p class="hm-mock-eyebrow" id="hm-mock-h">JAMB mock exam</p>
@@ -87,6 +88,12 @@ function JambHome() {
           : { id: 'bank', label: `A set in ${title(leastSeen || mine[1] || 'english')}`, detail: 'The subject you have practised least', href: `/learn/bank/jamb/${leastSeen || mine[1] || 'english'}`, done: Boolean(ticks.bank) },
         { id: 'lesson', label: 'One Use of English lesson', detail: 'Grammar, comprehension or oral forms', href: '/learn/path/jamb', done: Boolean(ticks.lesson) }
       ]} /></div>
+
+      <ul class="hm-stats lx-rise lx-d2" aria-label="Your numbers">
+        <li class="sky"><b>{mine.reduce((n, id) => n + (info[id]?.seen || 0), 0)}</b><span>questions seen</span></li>
+        <li class="pink"><b>{avgPct === null ? '–' : `${avgPct}%`}</b><span>average score</span></li>
+        <li class="sun"><b>{best ? best.total : '–'}</b><span>best mock</span></li>
+      </ul>
 
       <WeakTopics id="hm-weak" topics={weak} hrefFor={topicHref} />
 
@@ -166,9 +173,9 @@ function CourseHome({ id }) {
   ];
   return (
     <div class="hm">
-      <HomeHead cat={cat} eyebrow={cat.name} title={`Your ${path.title} course`} sub={path.sub} />
+      <HomeHead eyebrow={path.title} title="Your study plan" />
 
-      <section class="hm-hero lx-card lx-rise lx-d1" style={{ background: cat.tint }} aria-labelledby="hm-next">
+      <section class="hm-hero hm-blue lx-card lx-rise lx-d1" aria-labelledby="hm-next">
         <h2 id="hm-next">{p.next ? (p.done ? 'Pick up where you left off' : 'Start your course') : 'Course complete'}</h2>
         <div class="pd-prog">
           <span class="lx-bar" aria-hidden="true"><span style={{ width: `${p.percent}%` }} /></span>

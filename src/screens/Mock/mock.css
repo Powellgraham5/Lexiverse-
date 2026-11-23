@@ -60,3 +60,13 @@
 .mk-mq { font-weight: 700; }
 .mk-wrong { color: var(--lx-error-strong); font-weight: 600; }
 .mk-why { color: var(--lx-muted); }
+
+/* Mock paper header, as in the design: a dark band with the clock */
+:root .mk-bar { padding: .75rem .875rem; border-radius: 20px; border: 2px solid var(--lx-edge); background: #0D0B1F; color: #FFFFFF; box-shadow: var(--lx-stick-sm); }
+:root .mk-clock b { font-family: var(--lx-font-display); font-size: 1.5rem; color: var(--lx-lime); }
+:root .mk-clock b.low { color: #FF8A73; animation: lx-pulse-red 1s ease-in-out infinite; }
+:root .mk-bar .ps-round { background: #1A2A5C; color: #FFFFFF; border: 2px solid #FFFFFF; }
+:root .mk-bar .mk-submit { background: var(--lx-lime); color: #0D0B1F; border-color: #FFFFFF; }
+@keyframes lx-pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+:root .mk-num.answered { background: #1F5BFF; border-color: var(--lx-edge); }
+:root .mk-num[aria-current="true"] { background: var(--lx-lime); color: #0D0B1F; outline: none; box-shadow: 3px 3px 0 var(--lx-edge); }

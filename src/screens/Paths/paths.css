@@ -169,3 +169,36 @@
 .pd-weak-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: var(--lx-tap); padding: .5rem .75rem; border-radius: 1rem; background: var(--lx-bg); color: var(--lx-ink); text-decoration: none; border-left: 4px solid var(--lx-coral); }
 .pd-weak-row > span { display: flex; flex-direction: column; min-width: 0; }
 .pd-weak-row > span span { color: var(--lx-muted); font-size: .9375rem; }
+
+/* Courses page, as in the design: continue card, filters and course tiles */
+.pt-head { display: flex; flex-direction: column; gap: .25rem; }
+.pt-eyebrow { font-size: .8125rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--lx-muted); }
+.pt-continue { position: relative; overflow: clip; isolation: isolate; display: flex; flex-direction: column; gap: .5rem; padding: 1.125rem; border-radius: 22px; border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick); background: #1F5BFF; color: #FFFFFF; }
+.pt-continue::before { content: ''; position: absolute; z-index: -1; width: 7rem; height: 7rem; right: -2rem; top: -2.25rem; border-radius: 50%; background: var(--lx-lime); border: 2px solid #0D0B1F; animation: pt-float 6s ease-in-out infinite; }
+.pt-continue h2 { font-size: 1.5rem; }
+.pt-continue p { font-size: .9375rem; }
+.pt-cont-tag { align-self: flex-start; font-size: .75rem; font-weight: 800; padding: .2rem .65rem; border-radius: 999px; border: 2px solid #0D0B1F; background: var(--lx-lime); color: #0D0B1F; }
+.pt-continue .lx-bar { background: rgba(255, 255, 255, .25); }
+.pt-continue .lx-bar > span { background-color: var(--lx-lime); }
+.pt-cont-btn { align-self: flex-start; display: inline-flex; align-items: center; min-height: 3rem; padding: 0 1.25rem; border-radius: 16px; border: 2px solid #0D0B1F; box-shadow: 3px 3px 0 #0D0B1F; background: var(--lx-lime); color: #0D0B1F; font-weight: 800; text-decoration: none; position: relative; overflow: clip; }
+.pt-cont-btn::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .6), transparent); transform: skewX(-20deg); animation: lx-shine 3.4s ease-in-out 1.2s infinite; }
+.pt-filter { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; }
+.pt-filter button { flex: 1 1 auto; min-height: 2.75rem; padding: 0 .75rem; border: 0; border-radius: 11px; background: transparent; color: var(--lx-muted); font-weight: 800; }
+.pt-filter button[aria-pressed="true"] { background: var(--lx-ink); color: var(--lx-bg); }
+@keyframes pt-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(8deg); } }
+/* Course rows become coloured tiles in a grid */
+:root .pt-cat .pt-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+:root .pt-cat .pt-row { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: .375rem; min-height: 8rem; padding: .875rem; color: #0D0B1F; animation: pt-deal .7s var(--lx-pop) both; }
+:root .pt-cat .pt-row > svg { display: none; }
+:root .pt-cat .pt-row b { font-family: var(--lx-font-display); font-size: 1.125rem; letter-spacing: -.02em; }
+:root .pt-cat .pt-row span span { color: #0D0B1F; }
+:root .pt-cat li:nth-child(4n+1) .pt-row { background: var(--lx-sky); --r: -3deg; }
+:root .pt-cat li:nth-child(4n+2) .pt-row { background: var(--lx-pink); --r: 3deg; animation-delay: .08s; }
+:root .pt-cat li:nth-child(4n+3) .pt-row { background: var(--lx-lime); --r: 2deg; animation-delay: .16s; }
+:root .pt-cat li:nth-child(4n+4) .pt-row { background: var(--lx-sun); --r: -2deg; animation-delay: .24s; }
+:root .pt-cat li .pt-row.soon { background: var(--lx-surface); border-style: dashed; box-shadow: none; animation: none; }
+:root .pt-cat .pt-row.soon span span { color: var(--lx-muted); }
+:root .pt-cat .pt-prog { font-weight: 800; color: #0D0B1F !important; }
+@keyframes pt-deal { 0% { opacity: 0; transform: translateY(-30px) rotate(var(--r, 0deg)) scale(.9); } 70% { opacity: 1; transform: translateY(4px) rotate(calc(var(--r, 0deg) * -.5)); } 100% { transform: none; } }
+:root[data-large-text] .pt-cat .pt-list { grid-template-columns: 1fr; }
+@media (max-width: 340px) { :root .pt-cat .pt-list { grid-template-columns: 1fr; } }

@@ -98,3 +98,14 @@
 @keyframes lx-bar { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
 
 .lx-goal-chip { align-self: flex-start; display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 .875rem; border-radius: var(--lx-radius-pill); background: var(--lx-primary-soft); color: var(--lx-link); font-size: .875rem; font-weight: 700; text-decoration: none; }
+
+/* Word of the day as a sticker card, as in the design (same elements as before, laid out flat) */
+:root .lx-orbit { aspect-ratio: auto; max-width: none; display: flex; flex-direction: column; align-items: stretch; gap: .875rem; padding: 1.25rem; border-radius: 24px; border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick); background: var(--lx-pink); }
+:root .lx-orbit-ring { display: none; }
+:root .lx-orbit-planet { position: static; translate: none; transform: none; width: auto; height: auto; padding: 0; border-radius: 0; background: none; box-shadow: none; align-items: flex-start; text-align: left; color: #0D0B1F; animation: lx-pop .55s var(--lx-pop) both; }
+:root .lx-orbit-planet span { color: #0D0B1F; font-size: .75rem; letter-spacing: .06em; }
+:root .lx-orbit-planet b { font-size: clamp(2.25rem, 11vw, 3rem) !important; line-height: 1.05; letter-spacing: -.04em; white-space: normal; overflow-wrap: anywhere; color: #0D0B1F; }
+:root .lx-orbit-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+:root .lx-orbit-chips li { position: static; transform: none; }
+:root .lx-orbit .lx-chip { background: #FFFFFF; }
+:root .today-world .lx-orbit { max-width: none; }

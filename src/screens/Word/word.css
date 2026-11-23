@@ -142,3 +142,17 @@
   .wd-planet h1 { font-size: min(1.25rem, 22px) !important; }
   .wd-body { gap: 1.25rem; }
 }
+
+/* Word page header, as in the design: a pink card with the word, sounds and buttons */
+.wd-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.25rem; border-radius: 24px; border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick); background: var(--lx-pink); color: #0D0B1F; animation: lx-pop .55s var(--lx-pop) both; }
+.wd-card .wd-level { align-self: flex-start; position: static; translate: none; font-size: .75rem; font-weight: 800; padding: .2rem .65rem; border-radius: 999px; border: 2px solid #0D0B1F; background: #FFFFFF; color: #0D0B1F; }
+.wd-card .wd-word { font-family: var(--lx-font-display); font-size: clamp(2.25rem, 11vw, 3rem); line-height: 1; letter-spacing: -.04em; overflow-wrap: anywhere; color: #0D0B1F; }
+.wd-card .wd-say { margin: 0; text-align: left; align-items: flex-start; }
+.wd-card .wd-ipa, .wd-card .wd-syl { color: #0D0B1F; font-weight: 600; }
+.wd-card .wd-play { margin-top: .25rem; }
+:root .wd-card .wd-play button { background: #FFFFFF; color: #0D0B1F; border: 2px solid #0D0B1F; box-shadow: 3px 3px 0 #0D0B1F; }
+:root .wd-card .wd-play button.on { background: var(--lx-lime); }
+.wd-related { display: flex; flex-direction: column; gap: .5rem; }
+.wd-related-h { font-size: .8125rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--lx-muted); }
+.wd-related .wd-moons { display: flex; flex-wrap: wrap; gap: .5rem; }
+.wd-related .wd-moons li { position: static; translate: none; animation: none; }

@@ -19,3 +19,13 @@
 .rs-back { padding: .125rem .5rem; border-radius: var(--lx-radius-pill); background: var(--lx-opposite-bg); color: var(--lx-opposite-ink); font-size: .75rem; font-weight: 700; }
 .rs-actions { display: flex; gap: .625rem; width: 100%; margin-top: .5rem; flex-wrap: wrap; }
 .rs-actions .lx-btn { flex: 1 1 10rem; }
+
+/* Sticker style: a lime score badge, and confetti for a good score */
+.rs { position: relative; }
+:root .rs-planet { background: var(--lx-lime); color: #0D0B1F; box-shadow: 5px 5px 0 var(--lx-edge); border: 3px solid var(--lx-edge); }
+:root .rs-planet span { color: #0D0B1F; }
+.rs-confetti { position: absolute; inset: 0 0 auto 0; height: 16rem; overflow: clip; pointer-events: none; }
+.rs-confetti i { position: absolute; top: -1.25rem; width: .625rem; height: 1rem; border: 2px solid var(--lx-edge); border-radius: 3px; animation: rs-drop 2.6s cubic-bezier(.3, .6, .4, 1) both; }
+.rs-confetti .c0 { background: var(--lx-lime); } .rs-confetti .c1 { background: var(--lx-hot); } .rs-confetti .c2 { background: var(--lx-sky); }
+.rs-confetti .c3 { background: var(--lx-sun); } .rs-confetti .c4 { background: var(--lx-pink); }
+@keyframes rs-drop { from { transform: translateY(0) rotate(0); opacity: 1; } to { transform: translateY(16rem) rotate(540deg); opacity: 0; } }

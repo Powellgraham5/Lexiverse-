@@ -1,3 +1,4 @@
+import { mySubjects, loadBankProgress, scoreHistory, subjectById } from '../../lib/bank.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { canGoBack } from '../../app/Shell.jsx';
 import { usePage } from '../../app/usePage.js';
@@ -116,6 +117,31 @@ function Archive({ daily, profile, reviews, start }) {
   );
 }
 
+// JAMB average score in each of the learner's subjects (only shown once they have practised).
+function JambBySubject() {
+  const [rows, setRows] = useState(null);
+  useEffect(() => {
+    const ids = mySubjects();
+    Promise.all(ids.map(async (id) => [id, scoreHistory(await loadBankProgress(id).catch(() => ({})), 30)]))
+      .then((r) => setRows(r.map(([id, h]) => ({ id, title: subjectById(id)?.title || id, avg: h.length ? Math.round(h.reduce((n, x) => n + x.pct, 0) / h.length) : null }))))
+      .catch(() => setRows([]));
+  }, []);
+  if (!rows || rows.every((r) => r.avg === null)) return null;
+  return (
+    <section class="pg-card lx-card pg-jamb lx-rise lx-d1" aria-labelledby="pg-jamb">
+      <div class="pg-card-head"><h2 id="pg-jamb">JAMB by subject</h2><span class="pg-total">average score</span></div>
+      <ul>
+        {rows.map((r) => (
+          <li key={r.id}>
+            <div class="pg-jamb-row"><span>{r.title}</span><b>{r.avg === null ? '–' : `${r.avg}%`}</b></div>
+            <span class="lx-bar" aria-hidden="true"><span style={{ width: `${r.avg || 0}%` }} /></span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export default function Progress() {
   usePage('Progress');
   const [data, setData] = useState(null);
@@ -125,7 +151,7 @@ export default function Progress() {
   }, []);
 
   const back = (ev) => { if (canGoBack()) { ev.preventDefault(); history.back(); } };
-  const top = <div class="lx-top pg-top"><a class="lx-round" href="/learn" aria-label="Back" onClick={back}><BackIcon /></a></div>;
+  const top = <div class="lx-top pg-top"><a class="lx-round" href="/me" aria-label="Back" onClick={back}><BackIcon /></a></div>;
   if (!data) return <>{top}<h1 class="lx-page-title">Progress</h1><span class="lx-skeleton pg-sk" aria-busy="true" /></>;
 
   const p = computeProgress(data);
@@ -139,7 +165,6 @@ export default function Progress() {
         <div class="lx-col lx-sticky">
           <header class="pg-head lx-rise">
             <h1 class="lx-page-title">Progress</h1>
-            <Universe lists={data.lists} words={p.words} />
             <p class="pg-sub">{p.words === 0 ? 'No words yet. Save your first one from the dictionary.' : `${p.words} word${p.words === 1 ? '' : 's'} saved in ${p.worlds} list${p.worlds === 1 ? '' : 's'}`}</p>
           </header>
           {fresh && (
@@ -157,6 +182,7 @@ export default function Progress() {
         </div>
 
         <div class="lx-col">
+          <JambBySubject />
           <Minutes days={p.minutes} />
           <section class="pg-card lx-card" aria-labelledby="pg-con">
             <div class="pg-card-head"><h2 id="pg-con">Milestones</h2><b class="pg-total">{p.constellations.filter((c) => c.done).length} / {p.constellations.length}</b></div>

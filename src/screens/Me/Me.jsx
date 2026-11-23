@@ -6,7 +6,10 @@ import { loadProfile, saveProfile } from '../../lib/profile.js';
 import { GOAL_FLOW, LEVEL_NAMES } from '../../lib/goals.js';
 import { useSettings } from '../../app/settings-context.jsx';
 import { Segmented, Switch, Range } from '../../components/controls.jsx';
-import { ChatIcon, ChevronIcon, StarIcon, WordsIcon, PenIcon } from '../../app/icons.jsx';
+import { ChatIcon, ChevronIcon, StarIcon, WordsIcon, PenIcon, MeIcon } from '../../app/icons.jsx';
+import { loadActivity, currentStreak } from '../../lib/streak.js';
+import { loadName } from '../../lib/challenge.js';
+import { dayKey } from '../../lib/daily.js';
 import './me.css';
 
 export default function Me() {
@@ -15,17 +18,29 @@ export default function Me() {
   const [profile, setProfile] = useState(() => loadProfile() || { goal: 'e', level: 2, done: true });
   const flow = GOAL_FLOW[profile.goal] || GOAL_FLOW.e;
   const update = (patch) => { const p = { ...profile, ...patch }; saveProfile(p); setProfile(p); };
+  const name = loadName();
+  const activity = loadActivity();
+  const streak = currentStreak(activity.days || []);
+  const weekMinutes = Math.round(Array.from({ length: 7 }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - k); return activity.minutes?.[dayKey(d)] || 0; }).reduce((a, b) => a + b, 0));
+  const focusText = (flow.options || []).find(([id]) => id === profile.focus)?.[1] || flow.name;
   return (
     <>
       <h1 class="lx-rise lx-page-title">Me</h1>
 
-      <section class="lx-me-hero lx-rise lx-d1">
-        <span class="lx-me-planet" aria-hidden="true"><span class="lx-me-ring"><span /></span></span>
+      <section class="me-profile lx-rise lx-d1" aria-label="Your profile">
+        <span class="me-avatar" aria-hidden="true">{name ? name.trim()[0].toUpperCase() : <MeIcon size={30} />}</span>
         <div>
-          <b>Learning on this device</b>
-          <span>Your words and progress are saved on this phone. Sign in to sync is coming soon.</span>
+          <b>{name || 'Your profile'}</b>
+          <span>{focusText} · {LEVEL_NAMES[profile.level] || 'Intermediate'}</span>
+          <span class="me-local">Saved on this phone. Sign in to sync is coming soon.</span>
         </div>
       </section>
+
+      <ul class="me-stats lx-rise lx-d1" aria-label="Your numbers">
+        <li class="sun"><b>{streak}</b><span>day streak</span></li>
+        <li class="sky"><b>{(activity.days || []).length}</b><span>days practised</span></li>
+        <li class="pink"><b>{weekMinutes}</b><span>minutes this week</span></li>
+      </ul>
 
       <Install />
 

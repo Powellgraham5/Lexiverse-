@@ -1,8 +1,10 @@
 /* Subject home pages (JAMB and courses), built on the paths styles. */
 .hm { display: flex; flex-direction: column; gap: 1rem; }
 .hm-head { display: flex; flex-direction: column; gap: .375rem; }
-.hm-title { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
-.hm-title-text { flex: 1 1 12rem; display: flex; flex-direction: column; min-width: 0; }
+.hm-title { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
+.hm-title .lx-streak-chip { flex: none; }
+.hm-eyebrow { font-size: .8125rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--lx-muted); }
+.hm-title-text { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
 .hm-hero .pd-prog { max-width: none; align-items: stretch; text-align: left; color: var(--lx-ink); }
 .hm-hero { display: flex; flex-direction: column; gap: .75rem; padding: 1.125rem; border-radius: 1.5rem; }
 .hm-hero h2 { font-size: 1.25rem; }
@@ -39,3 +41,25 @@
 @keyframes hm-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(8deg); } }
 @keyframes hm-spin { from { transform: rotate(-200deg) scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
 :root[data-large-text] .hm-mock-score b { font-size: 2.5rem; }
+
+/* Coloured number stickers */
+.hm-stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .625rem; }
+.hm-stats li { display: flex; flex-direction: column; padding: .75rem; border: 2px solid var(--lx-edge, #0D0B1F); border-radius: 18px; box-shadow: var(--lx-stick-sm, 3px 3px 0 #0D0B1F); color: #0D0B1F; animation: lx-pop .55s var(--lx-pop) both; }
+.hm-stats li:nth-child(2) { animation-delay: .1s; }
+.hm-stats li:nth-child(3) { animation-delay: .2s; }
+.hm-stats li.sky { background: var(--lx-sky); }
+.hm-stats li.pink { background: var(--lx-pink); }
+.hm-stats li.sun { background: var(--lx-sun); }
+.hm-stats b { font-family: var(--lx-font-display); font-size: 1.625rem; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.hm-stats span { font-size: .8125rem; font-weight: 700; }
+:root[data-large-text] .hm-stats { grid-template-columns: 1fr; }
+
+/* Course home: the blue hero card */
+:root .hm-hero.hm-blue { position: relative; overflow: clip; isolation: isolate; background: #1F5BFF; color: #FFFFFF; }
+.hm-blue::before { content: ''; position: absolute; z-index: -1; width: 7rem; height: 7rem; right: -2rem; top: -2.25rem; border-radius: 50%; background: var(--lx-lime); border: 2px solid #0D0B1F; animation: hm-float 6s ease-in-out infinite; }
+.hm-blue h2, .hm-blue .pd-prog, .hm-blue .pd-prog span { color: #FFFFFF; }
+.hm-blue .lx-bar { background: rgba(255, 255, 255, .25); }
+.hm-blue .lx-bar > span { background-color: var(--lx-lime); }
+:root .hm-blue .lx-btn:not(.secondary) { background: var(--lx-lime); color: #0D0B1F; }
+
+:root[data-large-text] .hm-title { flex-wrap: wrap; }

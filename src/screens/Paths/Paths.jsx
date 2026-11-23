@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { usePage } from '../../app/usePage.js';
 import { ChevronIcon, ChatIcon, LearnIcon, PenIcon, CaseIcon } from '../../app/icons.jsx';
-import { PATHS, isOpen, loadPath, loadProgress, pathProgress, pathHome } from '../../lib/paths.js';
+import { PATHS, isOpen, loadPath, loadProgress, pathProgress, pathHome, focusPath, pathById } from '../../lib/paths.js';
 import { loadProfile } from '../../lib/profile.js';
 import './paths.css';
 
@@ -25,14 +25,30 @@ export default function Paths() {
   }, []);
   // The learning section has three categories; Everyday English lives on Today and Learn.
   const ordered = CATEGORIES.filter((c) => c.goal !== 'e').sort((a, b) => (b.goal === mine) - (a.goal === mine));
+  const [show, setShow] = useState('all');
+  // The course to continue: the one furthest along but not finished, else the learner's own course.
+  const started = Object.entries(progress).filter(([, p]) => p && p.done > 0 && p.next).sort((a, b) => b[1].done - a[1].done)[0];
+  const contId = started?.[0] || focusPath(mine, profile?.focus);
+  const cont = contId && progress[contId] ? { meta: pathById(contId), p: progress[contId] } : null;
+  const FILTERS = [['all', 'All'], ['x', 'Exams'], ['w', 'Writing'], ['k', 'Work']];
 
   return (
     <>
-      <h1 class="lx-page-title lx-rise">Courses</h1>
-      <p class="pt-sub lx-rise lx-d1">12 courses with lessons, practice tests and certificates. Your goal comes first.</p>
-      <a class="pd-test lx-rise lx-d1" href="/learn/formats"><PenIcon /><span><b>Writing formats</b><span>Layouts for letters, essays, reports, stories, emails and exam tasks</span></span><ChevronIcon /></a>
+      <header class="pt-head"><p class="pt-eyebrow">12 courses · lessons, tests, certificates</p><h1 class="lx-page-title lx-rise">Courses</h1></header>
+      {cont?.p?.next && (
+        <section class="pt-continue lx-rise lx-d1" aria-labelledby="pt-cont">
+          <span class="pt-cont-tag">Continue</span>
+          <h2 id="pt-cont">{cont.meta.title}</h2>
+          <p>Lesson {cont.p.done + 1} of {cont.p.total} · {cont.p.next.title}</p>
+          <span class="lx-bar" aria-hidden="true"><span style={{ width: `${cont.p.percent}%` }} /></span>
+          <a class="pt-cont-btn" href={`/learn/path/${contId}/${cont.p.next.id}`}>Keep going</a>
+        </section>
+      )}
+      <div class="lx-seg pt-filter lx-rise lx-d1" role="group" aria-label="Show courses for">
+        {FILTERS.map(([id, label]) => <button key={id} type="button" aria-pressed={show === id} onClick={() => setShow(id)}>{label}</button>)}
+      </div>
       <div class="pt-cats">
-        {ordered.map((c, i) => (
+        {ordered.filter((c) => show === 'all' || c.goal === show).map((c, i) => (
           <section key={c.goal} class={`pt-cat lx-card lx-rise lx-d${Math.min(i + 1, 4)} ${c.goal === mine ? 'mine' : ''}`} aria-labelledby={`pt-${c.goal}`}>
             <div class="pt-cat-head">
               <span class="pt-planet" style={{ background: c.tint }} aria-hidden="true"><c.Icon size={22} /></span>
@@ -65,6 +81,7 @@ export default function Paths() {
           </section>
         ))}
       </div>
+      <a class="pd-test lx-rise lx-d2" href="/learn/formats"><PenIcon /><span><b>Writing formats</b><span>Layouts for letters, essays, reports, stories, emails and exam tasks</span></span><ChevronIcon /></a>
     </>
   );
 }

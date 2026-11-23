@@ -30,7 +30,7 @@ export default function Me() {
       <Install />
 
       <nav class="me-links lx-rise lx-d1" aria-label="Your words and progress">
-        <a href="/progress"><StarIcon /><span><b>Your universe</b><span>Streak, recall and the word archive</span></span><ChevronIcon /></a>
+        <a href="/progress"><StarIcon /><span><b>Progress</b><span>Streak, scores, milestones and the word archive</span></span><ChevronIcon /></a>
         <a href="/words"><WordsIcon /><span><b>My Words</b><span>Saved words, lists and your notebook</span></span><ChevronIcon /></a>
         <a href="/words?tab=notebook"><PenIcon /><span><b>Notebook</b><span>Your notes from lessons and formats</span></span><ChevronIcon /></a>
         <a href="/help"><ChatIcon /><span><b>Help and FAQs</b><span>Reminders, challenges, certificates and your data</span></span><ChevronIcon /></a>

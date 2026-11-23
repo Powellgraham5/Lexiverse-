@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { usePage } from '../../app/usePage.js';
-import { BackIcon, ChevronIcon, ChatIcon, LearnIcon, PenIcon, CaseIcon } from '../../app/icons.jsx';
+import { ChevronIcon, ChatIcon, LearnIcon, PenIcon, CaseIcon } from '../../app/icons.jsx';
 import { PATHS, isOpen, loadPath, loadProgress, pathProgress, pathHome } from '../../lib/paths.js';
 import { loadProfile } from '../../lib/profile.js';
 import './paths.css';
@@ -14,7 +14,7 @@ export const CATEGORIES = [
 ];
 
 export default function Paths() {
-  usePage('Learning paths');
+  usePage('Courses');
   const profile = loadProfile();
   const mine = profile?.goal || 'e';
   const [progress, setProgress] = useState({});
@@ -28,9 +28,8 @@ export default function Paths() {
 
   return (
     <>
-      <div class="lx-top"><a class="lx-round" href="/learn" aria-label="Back to Learn"><BackIcon /></a></div>
-      <h1 class="lx-page-title lx-rise">Learning paths</h1>
-      <p class="pt-sub lx-rise lx-d1">Three areas, each with complete courses: lessons, examples, practice, tests and feedback. Your goal comes first.</p>
+      <h1 class="lx-page-title lx-rise">Courses</h1>
+      <p class="pt-sub lx-rise lx-d1">12 courses with lessons, practice tests and certificates. Your goal comes first.</p>
       <a class="pd-test lx-rise lx-d1" href="/learn/formats"><PenIcon /><span><b>Writing formats</b><span>Layouts for letters, essays, reports, stories, emails and exam tasks</span></span><ChevronIcon /></a>
       <div class="pt-cats">
         {ordered.map((c, i) => (

@@ -80,7 +80,7 @@ export default function Today() {
         <>
           <div class="lx-split today-split">
           <div class="lx-col today-world">
-          <p class="lx-today-hint">Today's world · tap a word to travel there</p>
+          <p class="lx-today-hint">Word of the day · tap a related word to explore it</p>
           <section class="lx-orbit" aria-label={`Word of the day, ${word.w}, and its related words`}>
             <span class="lx-orbit-ring outer" aria-hidden="true" />
             <span class="lx-orbit-ring inner" aria-hidden="true" />

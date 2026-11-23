@@ -12,7 +12,7 @@ export const GOAL_FLOW = {
       ['media', 'Films, music and books', 'Understand more of what you enjoy'],
       ['school', 'School', 'Classes, homework and group work']
     ],
-    ready: (f) => ({ title: 'Your universe is ready', first: 'Your first word', lead: `One new word a day for ${f.toLowerCase()}. A few minutes of practice. Watch your world grow.` })
+    ready: (f) => ({ title: 'You’re all set', first: 'Your first word', lead: `One new word a day for ${f.toLowerCase()}. A few minutes of practice. Small steps add up.` })
   },
   x: {
     name: 'Exam preparation',
@@ -26,7 +26,7 @@ export const GOAL_FLOW = {
       ['sat', 'SAT', 'US college admission'],
       ['other', 'Another exam', 'Any test that needs strong vocabulary']
     ],
-    ready: (f) => ({ title: `Your ${f} universe is ready`, first: `Your first ${f} word`, lead: 'One exam word a day. A few minutes of practice. Walk in ready.' })
+    ready: (f) => ({ title: `You’re set for ${f}`, first: `Your first ${f} word`, lead: 'One exam word a day. A few minutes of practice. Walk in ready.' })
   },
   w: {
     name: 'Better writing',
@@ -38,7 +38,7 @@ export const GOAL_FLOW = {
       ['stories', 'Stories', 'Vivid, creative writing'],
       ['letters', 'Letters', 'Formal, informal and semi-formal']
     ],
-    ready: (f) => ({ title: 'Your writing universe is ready', first: 'Your first writing word', lead: `One word a day for your ${f.toLowerCase()}. A few minutes of practice. Watch your writing grow.` })
+    ready: (f) => ({ title: 'You’re set to write', first: 'Your first writing word', lead: `One word a day for your ${f.toLowerCase()}. A few minutes of practice. Watch your writing grow.` })
   },
   k: {
     name: 'Work and career',
@@ -49,7 +49,7 @@ export const GOAL_FLOW = {
       ['meetings', 'Meetings', 'Speak up and be understood'],
       ['interviews', 'Job interviews', 'Make a strong first impression']
     ],
-    ready: () => ({ title: 'Your career universe is ready', first: 'Your first work word', lead: 'One work word a day. A few minutes of practice. Sound like a pro.' })
+    ready: () => ({ title: 'You’re set for work', first: 'Your first work word', lead: 'One work word a day. A few minutes of practice. Sound like a pro.' })
   }
 };
 

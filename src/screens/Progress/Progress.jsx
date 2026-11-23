@@ -117,7 +117,7 @@ function Archive({ daily, profile, reviews, start }) {
 }
 
 export default function Progress() {
-  usePage('Your universe');
+  usePage('Progress');
   const [data, setData] = useState(null);
   useEffect(() => {
     Promise.all([loadReviews().catch(() => []), savedWords().catch(() => []), allLists().catch(() => []), loadDaily().catch(() => [])])
@@ -126,7 +126,7 @@ export default function Progress() {
 
   const back = (ev) => { if (canGoBack()) { ev.preventDefault(); history.back(); } };
   const top = <div class="lx-top pg-top"><a class="lx-round" href="/learn" aria-label="Back" onClick={back}><BackIcon /></a></div>;
-  if (!data) return <>{top}<h1 class="lx-page-title">Your universe</h1><span class="lx-skeleton pg-sk" aria-busy="true" /></>;
+  if (!data) return <>{top}<h1 class="lx-page-title">Progress</h1><span class="lx-skeleton pg-sk" aria-busy="true" /></>;
 
   const p = computeProgress(data);
   const start = startOf(data.profile, data.activity);
@@ -138,14 +138,14 @@ export default function Progress() {
       <div class="lx-split">
         <div class="lx-col lx-sticky">
           <header class="pg-head lx-rise">
-            <h1 class="lx-page-title">Your universe</h1>
+            <h1 class="lx-page-title">Progress</h1>
             <Universe lists={data.lists} words={p.words} />
-            <p class="pg-sub">{p.words === 0 ? 'No words yet. Your first one lights up a star.' : `${p.words} word${p.words === 1 ? '' : 's'} in ${p.worlds} world${p.worlds === 1 ? '' : 's'}`}</p>
+            <p class="pg-sub">{p.words === 0 ? 'No words yet. Save your first one from the dictionary.' : `${p.words} word${p.words === 1 ? '' : 's'} saved in ${p.worlds} list${p.worlds === 1 ? '' : 's'}`}</p>
           </header>
           {fresh && (
             <section class="pg-card lx-card pg-dayone lx-rise lx-d1" aria-labelledby="pg-d1">
               <h2 id="pg-d1">Day one</h2>
-              <p>Your universe starts with a single word. Meet today's word or take a quick quiz, and your stars appear here.</p>
+              <p>Your progress starts here. Meet today's word or take a quick quiz, and your scores appear.</p>
               <a class="lx-btn" href="/today">Meet today's word</a>
             </section>
           )}
@@ -159,7 +159,7 @@ export default function Progress() {
         <div class="lx-col">
           <Minutes days={p.minutes} />
           <section class="pg-card lx-card" aria-labelledby="pg-con">
-            <div class="pg-card-head"><h2 id="pg-con">Constellations</h2><b class="pg-total">{p.constellations.filter((c) => c.done).length} / {p.constellations.length}</b></div>
+            <div class="pg-card-head"><h2 id="pg-con">Milestones</h2><b class="pg-total">{p.constellations.filter((c) => c.done).length} / {p.constellations.length}</b></div>
             <ul class="pg-cons">
               {p.constellations.map((c) => (
                 <li key={c.id} class={c.done ? 'done' : ''}>

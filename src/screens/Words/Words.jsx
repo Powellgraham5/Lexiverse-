@@ -91,7 +91,7 @@ export default function Words() {
       {total === 0 && data.lists.length === 0 ? (
         <section class="lx-empty lx-card lx-rise lx-d1" aria-labelledby="mw-empty-h">
           <div class="lx-empty-orbit" aria-hidden="true"><span class="ring"><span class="moon" /></span><span class="core" /></div>
-          <h2 id="mw-empty-h">Your galaxy is empty</h2>
+          <h2 id="mw-empty-h">No saved words yet</h2>
           <p>Tap the bookmark on any word to save it here. Saved words come back for review so you remember them.</p>
           <a class="lx-btn" href="/today">Save today's word</a>
           <button type="button" class="lx-btn ghost" onClick={() => setCreating(true)}>Start a list</button>

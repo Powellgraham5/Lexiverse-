@@ -48,8 +48,8 @@ export async function drawCard(canvas, { word, ipa, pos, def, theme = 'light' })
   const ink = dark ? '#F3F1FF' : '#14123A';
   const muted = dark ? '#B4B0DA' : '#3B3866';
   let size = 104;
-  ctx.font = `700 ${size}px "Unbounded Variable", Unbounded, sans-serif`;
-  while (ctx.measureText(word).width > W - 160 && size > 48) { size -= 4; ctx.font = `700 ${size}px "Unbounded Variable", Unbounded, sans-serif`; }
+  ctx.font = `700 ${size}px "Space Grotesk Variable", "Space Grotesk", sans-serif`;
+  while (ctx.measureText(word).width > W - 160 && size > 48) { size -= 4; ctx.font = `700 ${size}px "Space Grotesk Variable", "Space Grotesk", sans-serif`; }
   ctx.fillStyle = ink;
   ctx.fillText(word, W / 2, 790);
   ctx.font = '500 40px "Inter Variable", Inter, sans-serif';
@@ -58,7 +58,7 @@ export async function drawCard(canvas, { word, ipa, pos, def, theme = 'light' })
   ctx.font = '600 46px "Inter Variable", Inter, sans-serif';
   ctx.fillStyle = ink;
   wrap(ctx, def, W - 200).slice(0, 4).forEach((l, i) => ctx.fillText(l, W / 2, 960 + i * 62));
-  ctx.font = '700 44px "Unbounded Variable", Unbounded, sans-serif';
+  ctx.font = '700 44px "Space Grotesk Variable", "Space Grotesk", sans-serif';
   ctx.fillStyle = ink;
   const mark = 'lexi', verse = 'verse';
   const mw = ctx.measureText(mark + verse).width;

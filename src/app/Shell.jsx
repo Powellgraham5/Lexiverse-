@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
-import { TodayIcon, SearchIcon, WordsIcon, LearnIcon, MeIcon } from './icons.jsx';
+import { HomeIcon, PracticeIcon, BookIcon, SearchIcon, MeIcon } from './icons.jsx';
 import { Starfield } from '../components/Starfield.jsx';
 import { OfflineBanner } from '../components/OfflineBanner.jsx';
 import { Toasts, toast } from '../components/toast.jsx';
@@ -12,18 +12,27 @@ import { loadProfile } from '../lib/profile.js';
 import './shell.css';
 
 const TABS = [
-  { href: '/', label: 'Home', Icon: TodayIcon },
-  { href: '/search', label: 'Search', Icon: SearchIcon },
-  { href: '/words', label: 'Words', Icon: WordsIcon },
-  { href: '/learn', label: 'Learn', Icon: LearnIcon },
+  { href: '/', label: 'Home', Icon: HomeIcon },
+  { href: '/practice', label: 'Practice', Icon: PracticeIcon },
+  { href: '/courses', label: 'Courses', Icon: BookIcon },
+  { href: '/dictionary', label: 'Dictionary', Icon: SearchIcon },
   { href: '/me', label: 'Me', Icon: MeIcon }
 ];
 
-// The word of the day (/today) is Home for Everyday English learners; for everyone else it lives under Learn.
+// Which tab each part of the app belongs to.
+const SECTIONS = {
+  '/practice': ['/practice', '/learn', '/learn/bank', '/learn/mock', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup', '/challenge'],
+  '/courses': ['/courses', '/learn/paths', '/learn/path', '/learn/formats', '/certificate'],
+  '/dictionary': ['/dictionary', '/search', '/words', '/word', '/translate', '/share'],
+  '/me': ['/me', '/progress', '/help']
+};
+// The word of the day (/today) is Home for Everyday English learners; for everyone else it is part of Practice.
 const todayIsHome = () => homeFor(loadProfile()).kind === 'today';
+const under = (path, base) => path === base || path.startsWith(base + '/');
 const isActive = (href, path) => {
-  if (path === '/today') return todayIsHome() ? href === '/' : href === '/learn';
-  return href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+  if (path === '/today') return todayIsHome() ? href === '/' : href === '/practice';
+  if (href === '/') return path === '/';
+  return (SECTIONS[href] || [href]).some((b) => b === '/learn' ? path === '/learn' : under(path, b));
 };
 
 // Focused flows (and path lessons) fill the screen without the tab bar.

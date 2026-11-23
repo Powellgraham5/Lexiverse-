@@ -64,7 +64,7 @@ function Rows({ rows, best, onPick }) {
 }
 
 export default function Search() {
-  usePage('Search');
+  usePage('Dictionary');
   const { route, query } = useLocation();
   const [settings] = useSettings();
   const [mode, setMode] = useState(query.mode && MODES.some((m) => m[0] === query.mode) ? query.mode : 'word');
@@ -118,7 +118,7 @@ export default function Search() {
 
   return (
     <>
-      <h1 class="lx-rise lx-page-title sr-title">Search</h1>
+      <h1 class="lx-rise lx-page-title sr-title">Dictionary</h1>
       <form role="search" class="sr-box lx-rise lx-d1" onSubmit={submit}>
         <SearchIcon />
         <label for="q" class="lx-sr">{label}</label>
@@ -167,6 +167,14 @@ export default function Search() {
                 <span class="sr-text"><span class="sr-kicker">Word of the day</span><b>{todayWord.w}</b></span>
               </a>
             )}
+            <a class="sr-row" href="/words">
+              <span class="sr-dot" style={{ background: DOTS[1 % DOTS.length] }} aria-hidden="true" />
+              <span class="sr-text"><span class="sr-kicker">Your words</span><b>Saved words and lists</b></span>
+            </a>
+            <a class="sr-row" href="/words?tab=notebook">
+              <span class="sr-dot" style={{ background: DOTS[2 % DOTS.length] }} aria-hidden="true" />
+              <span class="sr-text"><span class="sr-kicker">Your notes</span><b>Notebook</b></span>
+            </a>
           </section>
         </div>
       )}
@@ -200,7 +208,7 @@ export default function Search() {
       {active && req.state === 'empty' && (
         <section class="sr-state lx-card">
           <span class="sr-empty-orbit" aria-hidden="true">?</span>
-          <h2>“{q}” isn't in our universe yet</h2>
+          <h2>“{q}” isn't in the dictionary yet</h2>
           <p>{mode === 'word' ? 'Check the spelling, or try Meaning and describe what you are looking for.' : 'Try fewer letters or a different search type.'}</p>
           {mode === 'word' && <button type="button" class="lx-btn secondary small" onClick={() => setMode('meaning')}>Search by meaning</button>}
         </section>

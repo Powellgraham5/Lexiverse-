@@ -178,7 +178,7 @@ await check('theme setting applies, persists and survives reload without flashin
   assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
   await page.reload();
   assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
-  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(7, 6, 26)');
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(13, 11, 31)');
   assert.ok(await page.isVisible('.lx-starfield'));
   await page.click('button:text("Light")');
   assert.ok(!(await page.isVisible('.lx-starfield')));
@@ -260,7 +260,7 @@ await check('onboarding: a subject with a course opens straight away; other choi
   await p.click('button:text("Continue")');
   await p.waitForSelector('h1:text("Make it comfortable")');
   await p.click('button:text("Finish setup")');
-  await p.waitForSelector('h1:text("Your universe is ready")');
+  await p.waitForSelector('h1:text("You’re all set")');
   const first = (await p.textContent('.ob-first b')).trim();
   const word = DAILY.find((w) => w.w === first);
   assert.ok(word && word.goals.includes('e'), `first word ${first} is not an everyday word`);
@@ -359,7 +359,7 @@ await check('onboarding: goal is required, choices work by keyboard, setup lands
   assert.equal(await p.evaluate(() => document.documentElement.dataset.contrast), 'high');
   await p.click('[role=switch]:near(:text("High contrast"))');
   await p.click('button:text("Finish setup")');
-  await p.waitForSelector('h1:text("Your universe is ready")');
+  await p.waitForSelector('h1:text("You’re all set")');
   const first = await p.textContent('.ob-first b');
   assert.ok(first && first !== 'ready', 'first word shown');
   assert.deepEqual(JSON.parse(await p.evaluate(() => localStorage.getItem('lx-profile'))).level, 2);
@@ -407,7 +407,7 @@ await check('search: debounced results, did you mean, empty, error and Enter ope
   await p.fill('#q', 'serendipty');
   await p.waitForSelector('.sr-suggest a:text("serendipity")');
   await p.fill('#q', 'qwizzle');
-  await p.waitForSelector('.sr-state h2:has-text("isn\'t in our universe")');
+  await p.waitForSelector('.sr-state h2:has-text("isn\'t in the dictionary")');
   await p.fill('#q', 'fail');
   await p.waitForSelector('.lx-error-card:has-text("Search isn\'t responding")', { timeout: 8000 });
   assert.match(await p.textContent('.lx-error-card'), /DICT-503/);
@@ -950,7 +950,7 @@ await check('progress: numbers, chart text, constellations and the archive', asy
   await p.click('a.lx-streak-chip');
   await p.waitForURL('**/progress');
   await p.waitForSelector('.pg-tile');
-  assert.match(await p.textContent('.pg-sub'), /^3 words in 1 world$/);
+  assert.match(await p.textContent('.pg-sub'), /^3 words saved in 1 list$/);
   const tiles = await p.$$eval('.pg-tile b', (bs) => bs.map((b) => b.textContent));
   assert.deepEqual(tiles, ['3', '50%', '1']);
   assert.match(await p.textContent('#pg-min + .pg-total, .pg-total'), /10 min/);
@@ -1646,7 +1646,7 @@ await check('JAMB mock exam: sit, flag, leave, resume, submit and review', async
   await c.addInitScript(() => localStorage.setItem('lx-profile', JSON.stringify({ goal: 'x', focus: 'jamb', level: 2, done: true })));
   const p = await c.newPage();
   await p.goto(BASE + '/');
-  await p.click('a.mk-cta');
+  await p.click('a.hm-mock-btn');
   await p.waitForSelector('h1:text("JAMB mock exam")');
   await settle(p);
   assert.deepEqual(await overflow(p), [], 'setup overflow');

@@ -1,10 +1,11 @@
 import { render } from 'preact';
 import { LocationProvider, Router, Route, lazy, ErrorBoundary } from 'preact-iso';
 import '@fontsource-variable/inter/wght.css';
-import '@fontsource-variable/unbounded/wght.css';
+import '@fontsource-variable/space-grotesk/wght.css';
 import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import './styles/base.css';
+import './styles/sticker.css';
 import { SettingsProvider } from './app/settings-context.jsx';
 import { Shell } from './app/Shell.jsx';
 import { Crash } from './app/Crash.jsx';
@@ -39,6 +40,7 @@ const Translator = lazy(() => import('./screens/Translator/Translator.jsx'));
 const Share = lazy(() => import('./screens/Share/Share.jsx'));
 const Certificate = lazy(() => import('./screens/Certificate/Certificate.jsx'));
 const Mock = lazy(() => import('./screens/Mock/Mock.jsx'));
+const Practice = lazy(() => import('./screens/Practice/Practice.jsx'));
 const Help = lazy(() => import('./screens/Help/Help.jsx'));
 const NotFound = lazy(() => import('./screens/NotFound/NotFound.jsx'));
 
@@ -83,6 +85,9 @@ function App() {
               <Route path="/words/note/:id" component={Note} />
               <Route path="/me" component={Me} />
               <Route path="/help" component={Help} />
+              <Route path="/practice" component={Practice} />
+              <Route path="/courses" component={Paths} />
+              <Route path="/dictionary" component={Search} />
               <Route path="/learn/mock" component={Mock} />
               <Route path="/certificate/:id" component={CertRoute} />
               <Route path="/welcome" component={Onboarding} />

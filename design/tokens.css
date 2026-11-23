@@ -6,42 +6,42 @@
 
 :root {
   /* Ground and surfaces */
-  --lx-bg: #EEF0FF;
+  --lx-bg: #FFFCF5;
   --lx-surface: #FFFFFF;
-  --lx-raised: #EEF0FF;
-  --lx-line: #ECEAF8;
-  --lx-line-strong: #CFCAF2;
-  --lx-orbit: #B9B4F5;
+  --lx-raised: #F4F0E6;
+  --lx-line: #E7E1D4;
+  --lx-line-strong: #0D0B1F;
+  --lx-orbit: #CFC8B8;
 
   /* Text */
-  --lx-ink: #14123A;
-  --lx-muted: #3B3866;
+  --lx-ink: #0D0B1F;
+  --lx-muted: #4A4660;
   --lx-link: #4A2FE0;
 
   /* Brand */
-  --lx-primary: #4A2FE0;
-  --lx-primary-soft: #E4DFFF;
+  --lx-primary: #5B3DF5;
+  --lx-primary-soft: #E9E4FF;
   --lx-on-primary: #FFFFFF;
-  --lx-cta: #14123A;
+  --lx-cta: #5B3DF5;
   --lx-on-cta: #FFFFFF;
-  --lx-flame: #FF6B3D;
-  --lx-coral: #FF8A65;
+  --lx-flame: #FF5C39;
+  --lx-coral: #FF5C39;
 
   /* Meaning tints: always paired with an icon or symbol, never colour alone */
   --lx-similar-bg: #FFFFFF;     /* ≈ similar */
-  --lx-opposite-bg: #FFD9CC;    /* ≠ opposite */
+  --lx-opposite-bg: #FFD9CF;    /* ≠ opposite */
   --lx-opposite-ink: #9A2E0E;
-  --lx-family-bg: #D7F5E6;      /* + same family */
+  --lx-family-bg: #DDF7C2;      /* + same family */
   --lx-family-ink: #14613F;
-  --lx-note-bg: #FFF3B8;
+  --lx-note-bg: #FFEFC7;
   --lx-note-ink: #5C4605;
-  --lx-info-bg: #CFE8FF;
+  --lx-info-bg: #CFEFFF;
 
   /* Feedback */
   --lx-success: #1F9D63;
-  --lx-success-bg: #D7F5E6;
+  --lx-success-bg: #DDF7C2;
   --lx-error: #E2553A;
-  --lx-error-bg: #FFD9CC;
+  --lx-error-bg: #FFE0D9;
   --lx-error-ink: #9A2E0E;
   /* Solid fills behind white text: 4.5:1 or more (success 5.3:1, error 5.6:1). */
   --lx-success-strong: #157A4C;
@@ -49,12 +49,12 @@
   --lx-focus: #1D4ED8;
 
   /* Skeleton */
-  --lx-skeleton-a: #E2DEFA;
-  --lx-skeleton-b: #F4F2FF;
+  --lx-skeleton-a: #ECE6D8;
+  --lx-skeleton-b: #F7F3EA;
 
   /* Type */
   /* Self-hosted variable fonts (@fontsource-variable) register as "… Variable". */
-  --lx-font-display: "Unbounded Variable", "Unbounded", "Unbounded Fallback", system-ui, sans-serif;
+  --lx-font-display: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
   --lx-font-body: "Inter Variable", "Inter", system-ui, sans-serif;
   --lx-font-reading: "Atkinson Hyperlegible", system-ui, sans-serif;
   --lx-text-scale: 1;
@@ -77,19 +77,21 @@
 }
 
 :root[data-theme="dark"] {
-  --lx-bg: #07061A;
-  --lx-surface: #131130;
-  --lx-raised: #1C1A42;
-  --lx-line: #2A2752;
-  --lx-line-strong: #3A3670;
-  --lx-orbit: #3A3670;
-  --lx-ink: #F3F1FF;
-  --lx-muted: #B4B0DA;
-  --lx-link: #A99BFF;
+  --lx-bg: #0D0B1F;
+  --lx-surface: #1C1940;
+  --lx-raised: #26225A;
+  --lx-line: #36326A;
+  --lx-line-strong: #F4F2FF;
+  --lx-orbit: #4A4590;
+  --lx-ink: #F4F2FF;
+  --lx-muted: #C2BEE6;
+  --lx-link: #B5A8FF;
   --lx-primary: #5B43F0;
-  --lx-primary-soft: #2A2470;
+  --lx-primary-soft: #2B2566;
   --lx-cta: #5B43F0;
-  --lx-similar-bg: #131130;
+  --lx-on-cta: #FFFFFF;
+  --lx-on-primary: #FFFFFF;
+  --lx-similar-bg: #1C1940;
   --lx-opposite-bg: #3A1D14;
   --lx-opposite-ink: #FFB79E;
   --lx-family-bg: #0F3324;
@@ -101,26 +103,28 @@
   --lx-error-bg: #3A1D14;
   --lx-error-ink: #FFB79E;
   --lx-focus: #FFD23F;
-  --lx-skeleton-a: #1C1A42;
-  --lx-skeleton-b: #2A2752;
+  --lx-skeleton-a: #26225A;
+  --lx-skeleton-b: #36326A;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] {
-    --lx-bg: #07061A;
-    --lx-surface: #131130;
-    --lx-raised: #1C1A42;
-    --lx-line: #2A2752;
-    --lx-line-strong: #3A3670;
-    --lx-orbit: #3A3670;
-    --lx-ink: #F3F1FF;
-    --lx-muted: #B4B0DA;
-    --lx-link: #A99BFF;
+    --lx-bg: #0D0B1F;
+    --lx-surface: #1C1940;
+    --lx-raised: #26225A;
+    --lx-line: #36326A;
+    --lx-line-strong: #F4F2FF;
+    --lx-orbit: #4A4590;
+    --lx-ink: #F4F2FF;
+    --lx-muted: #C2BEE6;
+    --lx-link: #B5A8FF;
     --lx-primary: #5B43F0;
-    --lx-primary-soft: #2A2470;
+    --lx-primary-soft: #2B2566;
     --lx-cta: #5B43F0;
-    --lx-similar-bg: #131130;
+  --lx-on-cta: #FFFFFF;
+  --lx-on-primary: #FFFFFF;
+    --lx-similar-bg: #1C1940;
     --lx-opposite-bg: #3A1D14;
     --lx-opposite-ink: #FFB79E;
     --lx-family-bg: #0F3324;
@@ -132,8 +136,8 @@
     --lx-error-bg: #3A1D14;
     --lx-error-ink: #FFB79E;
     --lx-focus: #FFD23F;
-    --lx-skeleton-a: #1C1A42;
-    --lx-skeleton-b: #2A2752;
+    --lx-skeleton-a: #26225A;
+    --lx-skeleton-b: #36326A;
     color-scheme: dark;
   }
 }

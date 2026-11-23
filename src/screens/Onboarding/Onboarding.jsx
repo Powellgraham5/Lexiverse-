@@ -21,7 +21,6 @@ const GOAL_OPTIONS = [
 // Intermediate and can be changed in Me; picking a subject leads straight to its course.
 const STEP_NAMES = [null, 'welcome', 'goal', 'focus', 'comfort', 'ready'];
 const PROGRESS = [0, 0, 30, 65, 90, 100];
-const GREETINGS = [['bonjour', 'fr', 'top'], ['báwo', 'yo', 'right'], ['sannu', 'ha', 'bottom'], ['hola', 'es', 'left']];
 
 // Radio group with arrow-key movement, as screen reader and keyboard users expect.
 function Choices({ label, value, onChange, options, render }) {
@@ -105,21 +104,15 @@ export default function Onboarding() {
       {step === 1 && (
         <section class="ob-step">
           <p class="lx-wordmark lx-rise" aria-hidden="true">lexi<span>verse</span></p>
-          <div class="ob-orbit" aria-hidden="true">
-            <div class="ob-ring">
-              {GREETINGS.map(([w, lang, pos], i) => (
-                <span key={w} class={`ob-moon-wrap ${pos}`}><span class={`ob-moon tint-${i}`} lang={lang}>{w}</span></span>
-              ))}
-            </div>
-            <div class="ob-ring2">
-              <span class="ob-moon-wrap ne"><span class="ob-moon tint-2b" lang="ig">ndewo</span></span>
-              <span class="ob-moon-wrap sw"><span class="ob-moon" lang="zh">你好</span></span>
-            </div>
-            <div class="ob-sun">hello</div>
+          <div class="ob-stickers" aria-hidden="true">
+            <div class="ob-sticker lime"><small>JAMB</small><b>Mock exams</b><span>180 questions, out of 400</span></div>
+            <div class="ob-sticker sun"><small>Streak</small><b>Every day</b></div>
+            <div class="ob-sticker pink"><small>Word of the day</small><b>serendipity</b></div>
+            <div class="ob-sticker sky"><small lang="yo">Yoruba</small><b lang="yo">Ẹ ṣé o!</b></div>
           </div>
           <div class="ob-copy">
-            <h1 class="lx-rise lx-d1">Every word is a world.</h1>
-            <p class="ob-lead lx-rise lx-d2">Discover words, hear them, practise them and keep them, in English and the languages you love.</p>
+            <h1 class="lx-rise lx-d1">Pass JAMB. Write like a pro.</h1>
+            <p class="ob-lead lx-rise lx-d2">Free JAMB practice, 12 English courses and a dictionary with Yoruba, Hausa and Igbo. Works offline.</p>
             <div class="ob-actions lx-rise lx-d3">
               <button type="button" class="lx-btn" onClick={() => go(2)}>Let's go</button>
             </div>

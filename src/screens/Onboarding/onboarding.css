@@ -106,3 +106,17 @@
 
 .ob-kicker { font-size: .8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lx-link); }
 .ob-level .ob-focus-title { font-family: var(--lx-font-body); font-size: 1.0625rem; }
+
+/* Welcome: floating sticker cards */
+.ob-stickers { position: relative; height: 17rem; margin: 1rem 0; }
+.ob-sticker { position: absolute; display: flex; flex-direction: column; gap: .125rem; padding: .75rem .875rem; border: 2px solid var(--lx-edge, #0D0B1F); border-radius: 18px; box-shadow: var(--lx-stick, 4px 4px 0 #0D0B1F); color: #0D0B1F; animation: ob-float 6s ease-in-out infinite; }
+.ob-sticker small { font-size: .6875rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.ob-sticker b { font-family: var(--lx-font-display); font-size: 1.375rem; line-height: 1.1; letter-spacing: -.02em; }
+.ob-sticker span { font-size: .75rem; font-weight: 700; }
+.ob-sticker.lime { background: var(--lx-lime, #C8F560); left: 0; top: .5rem; --r: -6deg; }
+.ob-sticker.sun { background: var(--lx-sun, #FFC530); right: 0; top: 0; --r: 5deg; animation-delay: -1.5s; }
+.ob-sticker.pink { background: var(--lx-pink, #FF8AD0); left: 1.25rem; top: 9.5rem; --r: 3deg; animation-delay: -3s; }
+.ob-sticker.sky { background: var(--lx-sky, #39C6FF); right: .5rem; top: 8rem; --r: -8deg; animation-delay: -2.2s; }
+@keyframes ob-float { 0%, 100% { transform: rotate(var(--r)) translateY(0); } 50% { transform: rotate(calc(var(--r) * -.6)) translateY(-10px); } }
+:root[data-large-text] .ob-stickers { display: none; }
+@media (min-width: 900px) { .step-welcome .ob-stickers { width: min(100%, 30rem); height: 20rem; } }

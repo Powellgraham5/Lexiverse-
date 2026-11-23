@@ -1,7 +1,7 @@
 // Course certificate drawn on a canvas (landscape, print friendly), saved or shared as a PNG.
 const W = 1600, H = 1131;
 const C = { bg: '#FFFFFF', paper: '#F6F5FF', primary: '#4A2FE0', deep: '#2E17B0', coral: '#FF8A65', yellow: '#FFE08A', ink: '#14123A', muted: '#3B3866', orbit: '#B9B4F5' };
-const font = (w, size, fam = 'body') => `${w} ${size}px ${fam === 'display' ? '"Unbounded Variable", Unbounded' : '"Inter Variable", Inter'}, sans-serif`;
+const font = (w, size, fam = 'body') => `${w} ${size}px ${fam === 'display' ? '"Space Grotesk Variable", "Space Grotesk"' : '"Inter Variable", Inter'}, sans-serif`;
 
 function fit(ctx, text, max, w, size, fam) {
   let s = size;

@@ -8,6 +8,7 @@ import { loadProfile } from '../../lib/profile.js';
 import { loadPath, loadProgress, pathProgress, bestTest, lessonsOf } from '../../lib/paths.js';
 import { JAMB_SUBJECTS, mySubjects, saveMySubjects, loadBank, loadBankProgress, bestSession, seenCount, weakTopics, scoreHistory, BANK_NOTE } from '../../lib/bank.js';
 import { ticksToday } from '../../lib/plan.js';
+import { loadMocks, bestMock } from '../../lib/mock.js';
 import { DailyPlan } from '../../components/DailyPlan.jsx';
 import { ScoreChart, WeakTopics } from '../../components/ScoreChart.jsx';
 import { FORMAT_GROUP, Performance, weakLessons } from '../Paths/PathDetail.jsx';
@@ -39,6 +40,8 @@ function JambHome() {
   const [mine, setMine] = useState(mySubjects);
   const [info, setInfo] = useState({});
   const [picking, setPicking] = useState(false);
+  const [best, setBest] = useState(undefined);
+  useEffect(() => { loadMocks().then((h) => setBest(bestMock(h))).catch(() => setBest(null)); }, []);
   useEffect(() => {
     let live = true;
     // Only the learner's own subjects: the other banks load when they are opened.
@@ -67,6 +70,15 @@ function JambHome() {
   return (
     <div class="hm">
       <HomeHead cat={CATEGORIES.find((c) => c.goal === 'x')} eyebrow="JAMB (UTME)" title="Your JAMB practice" sub={mine.map(title).join(' · ')} />
+
+      <section class="hm-mock lx-rise lx-d1" aria-labelledby="hm-mock-h">
+        <p class="hm-mock-eyebrow" id="hm-mock-h">JAMB mock exam</p>
+        {best
+          ? <p class="hm-mock-score"><b>{best.total}</b><span>/ {best.max} best</span></p>
+          : <p class="hm-mock-score"><b>180</b><span>questions · 2 hours</span></p>}
+        <p class="hm-mock-sub">{best ? 'Sit a full paper and beat your best.' : 'Sit a full practice paper, scored out of 400 like the real UTME.'}</p>
+        <a class="hm-mock-btn" href="/learn/mock">{best ? 'Start a mock' : 'Try a mock exam'}</a>
+      </section>
 
       <div class="lx-rise lx-d1"><DailyPlan id="hm-plan" tasks={[
         { id: 'mix', label: 'Start today’s set', detail: '10 mixed questions across your subjects', href: '/learn/bank/jamb/mix', done: Boolean(ticks.mix) },
@@ -114,11 +126,6 @@ function JambHome() {
           {history.map(([id, h]) => <ScoreChart key={id} id={`hm-sc-${id}`} title={title(id)} points={h} />)}
         </section>
       )}
-
-      <a class="mk-cta lx-card lx-rise lx-d2" href="/learn/mock">
-        <span class="mk-cta-text"><b>JAMB mock exam</b><span>Full UTME practice: Use of English and your three subjects, 180 questions in 2 hours, scored out of 400</span></span>
-        <ChevronIcon />
-      </a>
 
       <div class="pd-tools lx-rise lx-d2">
         {lastId && <a class="pd-test" href={`/learn/bank/jamb/${lastId}`}><SlowIcon /><span><b>Continue {title(lastId)}</b><span>Pick up the subject you practised last</span></span><ChevronIcon /></a>}

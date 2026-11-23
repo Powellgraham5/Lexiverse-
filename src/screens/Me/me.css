@@ -44,3 +44,4 @@
 @keyframes hm-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(8deg); } }
 /* Link rows become sticker rows */
 :root .me-links a { border: 2px solid var(--lx-edge); box-shadow: var(--lx-stick-sm); border-radius: 18px; }
+.me-top { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }

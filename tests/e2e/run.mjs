@@ -25,7 +25,7 @@ const ROUTES = [
   ['/', 'today'], ['/search', 'search'], ['/search?q=seren', 'search-results'], ['/search?q=serendipty', 'search-did-you-mean'],
   ['/search?mode=letters&q=stone', 'search-letters'], ['/search?mode=rhymes&q=bright', 'search-rhymes'], ['/search?mode=pattern&q=c%3Ft', 'search-pattern'],
   ['/search?q=qwizzle', 'search-empty'], ['/search?q=fail', 'search-error'], ['/challenge', 'challenge'], ['/welcome', 'welcome'],
-  ['/words', 'words'], ['/learn', 'learn'], ['/me', 'me'], ['/nowhere', 'not-found'],
+  ['/words', 'words'], ['/learn', 'learn'], ['/me', 'me'], ['/settings', 'settings'], ['/nowhere', 'not-found'],
   ['/word/serendipity', 'word'], ['/word/serendipty', 'word-not-found'], ['/word/fail', 'word-error'], ['/word/defenestrate', 'word-partial'],
   ['/translate', 'translator'], ['/share/serendipity', 'share'],
   ['/progress', 'progress'], ['/words/list/saved', 'list-empty'],
@@ -136,7 +136,7 @@ for (const [w, h] of [[1280, 800], [1920, 1080]]) {
     await page.screenshot({ path: `${SHOTS}${name}-${w}-light.png`, fullPage: true });
     await check(`${name} ${w}px: no overflow`, async () => assert.deepEqual(await overflow(page), []));
   }
-  for (const [route, sel] of [['/', '.today-split'], ['/word/serendipity', '.wd-split'], ['/translate', '.tr-split'], ['/me', '.me-split'], ['/share/serendipity', '.sh-split']]) {
+  for (const [route, sel] of [['/', '.today-split'], ['/word/serendipity', '.wd-split'], ['/translate', '.tr-split'], ['/settings', '.me-split'], ['/share/serendipity', '.sh-split']]) {
     await check(`${route} ${w}px: uses the width in two columns`, async () => {
       await page.goto(BASE + route);
       await page.waitForSelector(`${sel} > :nth-child(2)`);
@@ -169,7 +169,7 @@ await check('nav marks the current tab and moves focus to the new heading', asyn
   await page.waitForSelector('#main h1:text("Me")');
   assert.equal(await page.getAttribute('.lx-nav a[href="/me"]', 'aria-current'), 'page');
   assert.equal(await page.evaluate(() => document.activeElement.tagName), 'H1');
-  assert.equal(await page.title(), 'Me & settings · Lexiverse');
+  assert.equal(await page.title(), 'Me · Lexiverse');
 });
 
 await check('Lexiverse is always light, even when the phone is set to dark', async () => {
@@ -185,7 +185,7 @@ await check('Lexiverse is always light, even when the phone is set to dark', asy
 });
 
 await check('high contrast, reading font and reduce motion switch on', async () => {
-  await page.goto(BASE + '/me');
+  await page.goto(BASE + '/settings');
   await page.click('[role=switch][aria-labelledby]:near(:text("High contrast"))');
   await page.click('button:text("Hyperlegible")');
   await page.click('[role=switch]:near(:text("Reduce motion"))');
@@ -320,7 +320,7 @@ await check('me: changing the goal changes Today\'s word and chip', async () => 
   await p.goto(BASE + '/');
   await p.waitForSelector('.lx-goal-chip');
   const before = (await p.textContent('.lx-orbit-planet b')).trim();
-  await p.goto(BASE + '/me');
+  await p.goto(BASE + '/settings');
   await p.selectOption('#me-goal', 'x');
   await p.selectOption('#me-focus', 'ielts');
   await p.goto(BASE + '/');
@@ -1444,7 +1444,7 @@ await check('critique: writing check moves focus to the results; a quick Back ke
 await check('critique: the Level control fits on one row on a phone, and Me has no build jargon', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
-  await p.goto(BASE + '/me');
+  await p.goto(BASE + '/settings');
   await p.waitForSelector('.lx-seg.stretch button');
   const tops = await p.$eval('.me-learning .lx-seg.stretch', (seg) => [...new Set([...seg.children].map((b) => Math.round(b.getBoundingClientRect().top)))]);
   assert.equal(tops.length, 1, 'all level buttons share one row');
@@ -1716,7 +1716,7 @@ await check('choice buttons never cut off or overlap their words (Level, Reading
     const c = await newContext({ viewport: { width: w, height: 900 } });
     await c.addInitScript((sc) => localStorage.setItem('lx-settings', JSON.stringify({ textScale: sc })), scale);
     const p = await c.newPage();
-    await p.goto(BASE + '/me');
+    await p.goto(BASE + '/settings');
     await p.waitForSelector('.lx-seg.stretch button');
     await settle(p);
     const bad = await p.$$eval('.lx-seg button', (bs) => bs.filter((b) => b.scrollWidth > b.clientWidth + 1).map((b) => b.textContent));

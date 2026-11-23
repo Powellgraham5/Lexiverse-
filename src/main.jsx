@@ -40,6 +40,7 @@ const Translator = lazy(() => import('./screens/Translator/Translator.jsx'));
 const Share = lazy(() => import('./screens/Share/Share.jsx'));
 const Certificate = lazy(() => import('./screens/Certificate/Certificate.jsx'));
 const Mock = lazy(() => import('./screens/Mock/Mock.jsx'));
+const Settings = lazy(() => import('./screens/Me/Settings.jsx'));
 const Practice = lazy(() => import('./screens/Practice/Practice.jsx'));
 const Help = lazy(() => import('./screens/Help/Help.jsx'));
 const NotFound = lazy(() => import('./screens/NotFound/NotFound.jsx'));
@@ -84,6 +85,7 @@ function App() {
               <Route path="/learn/formats" component={Formats} />
               <Route path="/words/note/:id" component={Note} />
               <Route path="/me" component={Me} />
+              <Route path="/settings" component={Settings} />
               <Route path="/help" component={Help} />
               <Route path="/practice" component={Practice} />
               <Route path="/courses" component={Paths} />

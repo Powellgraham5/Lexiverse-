@@ -23,7 +23,7 @@ const SECTIONS = {
   '/practice': ['/practice', '/learn', '/learn/bank', '/learn/mock', '/learn/flashcards', '/learn/quiz', '/learn/spell', '/learn/match', '/learn/setup', '/challenge'],
   '/courses': ['/courses', '/learn/paths', '/learn/path', '/learn/formats', '/certificate'],
   '/dictionary': ['/dictionary', '/search', '/words', '/word', '/translate', '/share'],
-  '/me': ['/me', '/progress', '/help']
+  '/me': ['/me', '/settings', '/progress', '/help']
 };
 // The word of the day (/today) is Home for Everyday English learners; for everyone else it is part of Practice.
 const todayIsHome = () => homeFor(loadProfile()).kind === 'today';

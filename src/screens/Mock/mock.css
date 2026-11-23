@@ -66,7 +66,12 @@
 :root .mk-clock b { font-family: var(--lx-font-display); font-size: 1.5rem; color: var(--lx-lime); }
 :root .mk-clock b.low { color: #FF8A73; animation: lx-pulse-red 1s ease-in-out infinite; }
 :root .mk-bar .ps-round { background: #1A2A5C; color: #FFFFFF; border: 2px solid #FFFFFF; }
-:root .mk-bar .mk-submit { background: var(--lx-lime); color: #0D0B1F; border-color: #FFFFFF; }
+:root .mk-bar .lx-btn.mk-submit { background: var(--lx-lime); color: #0D0B1F; border-color: #FFFFFF; }
 @keyframes lx-pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
 :root .mk-num.answered { background: #1F5BFF; border-color: var(--lx-edge); }
 :root .mk-num[aria-current="true"] { background: var(--lx-lime); color: #0D0B1F; outline: none; box-shadow: 3px 3px 0 var(--lx-edge); }
+/* Ring countdown beside the clock, as in the design */
+.mk-ring { --p: 100; flex: none; display: flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 50%; border: 2px solid #FFFFFF; background: conic-gradient(var(--lx-lime) calc(var(--p) * 1%), #1A2A5C 0); transition: background .5s linear; }
+.mk-ring span { display: flex; align-items: center; justify-content: center; width: 2.125rem; height: 2.125rem; border-radius: 50%; background: #0D0B1F; color: var(--lx-lime); font-size: .6875rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.mk-ring.low { background: conic-gradient(#FF8A73 calc(var(--p) * 1%), #1A2A5C 0); }
+.mk-ring.low span { color: #FF8A73; }

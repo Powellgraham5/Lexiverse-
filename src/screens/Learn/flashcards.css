@@ -53,3 +53,16 @@
 }
 /* Very narrow phones: less padding so the word and its meaning fit on the card. */
 @media (max-width: 360px) { .fc-face { padding: 1rem; } }
+
+/* Stacked deck, as in the design: two coloured cards peek out behind the one you are studying */
+:root .fc-card::before, :root .fc-card::after { content: ''; position: absolute; inset: 1rem .625rem -.625rem .625rem; border-radius: 26px; border: 2px solid var(--lx-edge); background: var(--lx-pink); transform: rotate(4deg); z-index: 0; }
+:root .fc-card::after { inset: .625rem .875rem -.375rem .875rem; background: var(--lx-sky); transform: rotate(-3deg); }
+:root .fc-inner { z-index: 1; }
+:root .fc-face { border: 2px solid var(--lx-edge); border-radius: 26px; box-shadow: 6px 6px 0 var(--lx-edge); }
+:root .fc-front { background: var(--lx-surface); }
+:root .fc-back { background: var(--lx-lime); color: #0D0B1F; }
+:root .fc-back .fc-kicker, :root .fc-back .fc-ex, :root .fc-back .fc-hint { color: #0D0B1F; }
+:root .fc-front::before { background: var(--lx-sun); border: 2px solid var(--lx-edge); }
+:root .fc-back::before { background: #FFFFFF; border: 2px solid var(--lx-edge); }
+:root .fc-card:not(.flipped) .fc-inner { animation: fc-deal .6s var(--lx-pop) both; }
+@keyframes fc-deal { from { transform: translateY(-30px) rotate(-4deg); opacity: 0; } to { transform: none; opacity: 1; } }

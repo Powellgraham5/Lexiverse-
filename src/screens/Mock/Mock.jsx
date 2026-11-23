@@ -179,6 +179,11 @@ function Paper({ run, byId, setRun, onSubmit }) {
     <div class="ps mk">
       <SessionTop done={done} total={total} label="JAMB mock exam" closeHref="/" confirm confirmTitle="Leave the mock exam?" confirmText="Your answers are saved and the clock pauses. Come back to the mock exam to resume." />
       <div class="mk-bar">
+        {run.clock.timed && (() => {
+          const totalSecs = MOCK_FORMATS[run.format]?.secs || 7200;
+          const pct = Math.max(0, Math.min(100, Math.round((100 * left) / totalSecs)));
+          return <span class={`mk-ring ${left <= 300 ? 'low' : ''}`} style={{ '--p': pct }} aria-hidden="true"><span>{pct}%</span></span>;
+        })()}
         <span role="timer" class="mk-clock">{run.clock.timed ? <><b class={left <= 300 ? 'low' : ''}>{hms(left)}</b> left{run.clock.paused ? ' (paused)' : ''}</> : 'Untimed'}</span>
         <button type="button" class="lx-btn small mk-submit" onClick={() => setAsking(true)}>Submit</button>
         {run.clock.timed && (

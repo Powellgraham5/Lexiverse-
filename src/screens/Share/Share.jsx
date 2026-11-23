@@ -14,8 +14,6 @@ import './share.css';
 // The router has usually decoded the word already; decoding again must not crash on a literal %.
 const safeDecode = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
 
-const isDark = () => document.documentElement.dataset.theme === 'dark'
-  || (document.documentElement.dataset.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
 
 export default function Share() {
   const { params } = useRoute();
@@ -32,7 +30,7 @@ export default function Share() {
   const m = e?.meanings[0];
   useEffect(() => {
     if (!e || !canvas.current) return;
-    drawCard(canvas.current, { word, ipa: e.ipa, pos: m?.pos, def: m?.def || '', theme: isDark() ? 'dark' : 'light' })
+    drawCard(canvas.current, { word, ipa: e.ipa, pos: m?.pos, def: m?.def || '', theme: 'light' })
       .then((c) => setImg(c.toDataURL('image/png')));
   }, [e]);
 

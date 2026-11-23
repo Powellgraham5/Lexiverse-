@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { HomeIcon, PracticeIcon, BookIcon, SearchIcon, MeIcon } from './icons.jsx';
-import { Starfield } from '../components/Starfield.jsx';
 import { OfflineBanner } from '../components/OfflineBanner.jsx';
 import { Toasts, toast } from '../components/toast.jsx';
 import { onDeviceVoice, isIOS } from '../lib/speech.js';
@@ -115,7 +114,6 @@ export function Shell({ children }) {
     <>
       <a class="lx-skip" href="#main">Skip to content</a>
       <AnnounceRegion />
-      <Starfield />
       <div class={`lx-app ${bare ? 'bare' : ''}`}>
         {!bare && <nav class="lx-nav" aria-label="Main">
           <a class="lx-brand" href="/" aria-label="Lexiverse home">

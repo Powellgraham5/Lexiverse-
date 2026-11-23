@@ -173,7 +173,7 @@ export default function Onboarding() {
       {step === 5 && (
         <section class="ob-step ob-ready">
           <div class="ob-burst" aria-hidden="true">
-            {['#FF6B3D', '#3DDC97', '#FFD23F', '#FF9ECF', '#7AD7FF', '#4A2FE0', '#FF6B3D', '#3DDC97'].map((c, i) => <span key={i} class={`ob-spark s${i}`} style={{ background: c }} />)}
+            {['#FF6B3D', '#3DDC97', '#FFD23F', '#FF9ECF', '#7AD7FF', '#1F5BFF', '#FF6B3D', '#3DDC97'].map((c, i) => <span key={i} class={`ob-spark s${i}`} style={{ background: c }} />)}
             <div class="ob-first">
               <span>{flow.ready(label).first}</span>
               <b>{firstWord || 'ready'}</b>

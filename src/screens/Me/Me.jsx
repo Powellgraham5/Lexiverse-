@@ -59,8 +59,6 @@ export default function Me() {
       <div class="lx-col">
       <h2 class="lx-me-h2 lx-rise lx-d2" id="seeing">Seeing &amp; reading</h2>
       <section class="lx-card lx-settings-group lx-rise lx-d2" aria-labelledby="seeing">
-        <Segmented label="Theme" value={s.theme} onChange={(theme) => set({ theme })}
-          options={[['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']]} />
         <Range label="Text size" min={1} max={2} step={0.1} value={s.textScale}
           onChange={(textScale) => set({ textScale })} format={(v) => `${Math.round(v * 100)}%`} />
         <Segmented stretch label="Reading font" value={s.font} onChange={(font) => set({ font })}

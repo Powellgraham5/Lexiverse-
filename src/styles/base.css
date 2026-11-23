@@ -1,18 +1,6 @@
 @import '../../design/tokens.css';
 
-/* Dark + high contrast: pure black and white, no tints */
-:root[data-theme="dark"][data-contrast="high"] {
-  --lx-bg: #000000; --lx-surface: #000000; --lx-raised: #000000;
-  --lx-line: #FFFFFF; --lx-line-strong: #FFFFFF; --lx-orbit: #FFFFFF;
-  --lx-ink: #FFFFFF; --lx-muted: #FFFFFF; --lx-link: #FFD23F;
-  --lx-primary: #FFFFFF; --lx-primary-soft: #000000; --lx-on-primary: #000000;
-  --lx-cta: #FFFFFF; --lx-on-cta: #000000;
-  --lx-opposite-bg: #000000; --lx-family-bg: #000000; --lx-note-bg: #000000; --lx-info-bg: #000000;
-  --lx-opposite-ink: #FFFFFF; --lx-family-ink: #FFFFFF; --lx-note-ink: #FFFFFF;
-  --lx-focus: #FFD23F;
-}
 :root[data-contrast="high"] { --lx-on-primary: #FFFFFF; --lx-primary-soft: #FFFFFF; }
-:root[data-theme="dark"][data-contrast="high"] { --lx-on-primary: #000000; --lx-primary-soft: #000000; }
 :root[data-font="system"] { --lx-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 
 /* Extra tokens the app shell needs */
@@ -23,8 +11,6 @@
   --lx-banner-bg: #14123A;
   --lx-banner-ink: #FFFFFF;
 }
-:root[data-theme="dark"] { --lx-nav-shadow: 0 8px 24px rgba(0, 0, 0, .45); --lx-banner-bg: #1C1A42; }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] { --lx-nav-shadow: 0 8px 24px rgba(0, 0, 0, .45); --lx-banner-bg: #1C1A42; } }
 :root[data-contrast="high"] { --lx-nav-shadow: none; --lx-card-shadow: none; }
 
 *, *::before, *::after { box-sizing: border-box; }

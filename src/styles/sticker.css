@@ -16,8 +16,6 @@
   --lx-pop: cubic-bezier(.3, 1.6, .5, 1);
   --lx-spring: cubic-bezier(.2, .9, .3, 1.15);
 }
-:root[data-theme="dark"] { --lx-edge: #F4F2FF; --lx-stick: 4px 4px 0 #8C77FF; --lx-stick-sm: 3px 3px 0 #8C77FF; }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] { --lx-edge: #F4F2FF; --lx-stick: 4px 4px 0 #8C77FF; --lx-stick-sm: 3px 3px 0 #8C77FF; } }
 :root[data-contrast="high"] { --lx-stick: none; --lx-stick-sm: none; }
 
 /* Headings: punchy and tight */
@@ -88,10 +86,8 @@
 /* Tab bar: a dark floating dock on phones, the current tab in lime */
 @media (max-width: 899px) {
   :root .lx-nav { background: #0D0B1F; border: 2px solid #0D0B1F; box-shadow: 0 10px 30px rgba(13, 11, 31, .3); border-radius: 26px; animation: lx-dock .6s var(--lx-spring) .1s both; }
-  :root[data-theme="dark"] .lx-nav { background: #1C1940; border-color: #F4F2FF; }
   :root .lx-nav li a { color: #D4D0EE; }
 }
-@media (max-width: 899px) and (prefers-color-scheme: dark) { :root[data-theme="auto"] .lx-nav { background: #1C1940; border-color: #F4F2FF; } }
 :root .lx-nav li a[aria-current="page"] { background: var(--lx-lime); color: #0D0B1F; animation: lx-pop .45s var(--lx-pop) both; }
 @media (min-width: 900px) {
   :root .lx-nav { background: #0D0B1F; border-right: 0; }

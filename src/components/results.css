@@ -6,7 +6,7 @@
   animation: rs-zoom .7s var(--lx-ease-out) both;
 }
 .rs-planet b { font-family: var(--lx-font-display); font-size: 2.25rem; }
-.rs-planet span { font-size: .8125rem; font-weight: 700; color: #F2F0FF; }
+.rs-planet span { font-size: .8125rem; font-weight: 700; color: #FFFFFF; }
 .rs h1 { font-size: 1.625rem; margin-top: .75rem; }
 .rs-sub { color: var(--lx-muted); }
 .rs-missed { display: flex; flex-direction: column; gap: .5rem; width: 100%; text-align: left; }

@@ -11,7 +11,7 @@ const memory = () => { const m = new Map(); return { getItem: (k) => m.get(k) ??
 test('normalize fills defaults and rejects bad values', () => {
   assert.deepEqual(normalize(), { ...DEFAULTS });
   const s = normalize({ theme: 'neon', font: 'comic', textScale: 5, speechRate: 0, accent: 'AU' });
-  assert.equal(s.theme, 'auto');
+  assert.equal(s.theme, 'light');
   assert.equal(s.font, 'inter');
   assert.equal(s.textScale, 2);
   assert.equal(s.speechRate, 1);
@@ -25,7 +25,7 @@ test('text scale rounds to one decimal', () => {
 test('applySettings sets and clears html attributes', () => {
   const root = fakeRoot();
   applySettings(root, normalize({ theme: 'dark', contrast: true, font: 'reading', motion: true, textScale: 1.5 }));
-  assert.deepEqual(root.dataset, { theme: 'dark', contrast: 'high', font: 'reading', motion: 'reduce', largeText: '' });
+  assert.deepEqual(root.dataset, { theme: 'light', contrast: 'high', font: 'reading', motion: 'reduce', largeText: '' });
   assert.equal(root.props['--lx-text-scale'], '1.5');
   applySettings(root, normalize({ theme: 'light' }));
   assert.deepEqual(root.dataset, { theme: 'light' });
@@ -35,7 +35,7 @@ test('settings round-trip through storage', () => {
   const store = memory();
   saveSettings(normalize({ theme: 'dark', textScale: 1.2 }), store);
   const s = loadSettings(store);
-  assert.equal(s.theme, 'dark');
+  assert.equal(s.theme, 'light');
   assert.equal(s.textScale, 1.2);
 });
 

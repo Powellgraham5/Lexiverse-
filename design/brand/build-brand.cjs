@@ -10,7 +10,7 @@ const ICONS = path.join(ROOT, 'public', 'icons');
 const SPLASH = path.join(ROOT, 'public', 'splash');
 [ICONS, SPLASH].forEach((d) => fs.mkdirSync(d, { recursive: true }));
 
-const C = { primary: '#4A2FE0', deep: '#2E17B0', light: '#6A52FF', coral: '#FF8A65', yellow: '#FFF3B8', soft: '#E4DFFF', night: '#07061A', bg: '#EEF0FF', ink: '#14123A' };
+const C = { primary: '#1F5BFF', deep: '#1440C9', light: '#4F86FF', coral: '#FF5C39', yellow: '#FFC530', soft: '#E3EBFF', night: '#0A0F1E', bg: '#FFFCF5', ink: '#14123A' };
 
 // The planet, its tilted ring and a moon. The ring's back half sits behind the planet, the front half in front.
 const orbit = (id) => `
@@ -68,12 +68,12 @@ const splashHtml = (w, h, dark, m = Math.min(w, h)) => `<!doctype html><html><he
 .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:${m * 0.04}px}
 .mark{width:${m * 0.42}px;height:${m * 0.42}px}
 .word{font-family:Unbounded,sans-serif;font-weight:700;font-size:${m * 0.1}px;letter-spacing:-0.02em;color:${dark ? '#F3F1FF' : C.ink}}
-.word span{color:${dark ? '#9C8CFF' : C.primary}}
+.word span{color:${dark ? '#8FB0FF' : C.primary}}
 .line{font-family:Inter,sans-serif;font-weight:500;font-size:${m * 0.037}px;color:${dark ? '#B4B0DA' : '#3B3866'}}
 .sky i{position:absolute;border-radius:50%;background:#FFFFFF}</style></head><body>
 ${dark ? `<div class="sky">${stars}</div>` : ''}
 <div class="wrap"><svg class="mark" viewBox="0 0 512 512">${dark ? sparkle(112, 116, 2.2, '#FFFFFF') + sparkle(404, 112, 1.3, C.yellow) : sparkle(112, 116, 2.2, C.primary) + sparkle(404, 112, 1.3, C.coral)}${orbit('s')}</svg>
-<div class="word">lexi<span>verse</span></div><div class="line">Learn a word a day. Watch your world grow.</div></div></body></html>`;
+<div class="word">lexi<span>verse</span></div><div class="line">Pass JAMB. Write like a pro.</div></div></body></html>`;
 
 // iOS launch images: [css width, css height, pixel ratio]
 const phones = [[375, 667, 2], [414, 896, 2], [375, 812, 3], [390, 844, 3], [393, 852, 3], [414, 896, 3], [428, 926, 3], [430, 932, 3], [402, 874, 3], [440, 956, 3]];
@@ -101,7 +101,7 @@ const ONLY_IPAD = process.env.IPAD_ONLY === '1';
   for (const [w, h, dpr, orient] of devices) {
     const land = orient === 'landscape';
     const pw = (land ? h : w) * dpr, ph = (land ? w : h) * dpr;
-    for (const dark of [false, true]) {
+    for (const dark of [false]) {
       const name = `splash-${pw}x${ph}${dark ? '-dark' : ''}.png`;
       const isPad = ipads.some(([a, b]) => a === w && b === h);
       if (!ONLY_IPAD || isPad) {
@@ -110,7 +110,7 @@ const ONLY_IPAD = process.env.IPAD_ONLY === '1';
         await page.evaluate(() => document.fonts.ready);
         await page.screenshot({ path: path.join(SPLASH, name) });
       }
-      links.push(`<link rel="apple-touch-startup-image" media="(device-width: ${w}px) and (device-height: ${h}px) and (-webkit-device-pixel-ratio: ${dpr}) and (orientation: ${orient}) and (prefers-color-scheme: ${dark ? 'dark' : 'light'})" href="/splash/${name}">`);
+      links.push(`<link rel="apple-touch-startup-image" media="(device-width: ${w}px) and (device-height: ${h}px) and (-webkit-device-pixel-ratio: ${dpr}) and (orientation: ${orient})" href="/splash/${name}">`);
     }
   }
   fs.writeFileSync(path.join(SPLASH, 'startup-links.html'), '<!-- Paste into <head> for iOS launch screens -->\n' + links.join('\n') + '\n');

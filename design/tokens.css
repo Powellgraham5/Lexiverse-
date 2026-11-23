@@ -15,14 +15,14 @@
 
   /* Text */
   --lx-ink: #0D0B1F;
-  --lx-muted: #4A4660;
-  --lx-link: #4A2FE0;
+  --lx-muted: #464C63;
+  --lx-link: #1747D6;
 
   /* Brand */
-  --lx-primary: #5B3DF5;
-  --lx-primary-soft: #E9E4FF;
+  --lx-primary: #1F5BFF;
+  --lx-primary-soft: #E3EBFF;
   --lx-on-primary: #FFFFFF;
-  --lx-cta: #5B3DF5;
+  --lx-cta: #1F5BFF;
   --lx-on-cta: #FFFFFF;
   --lx-flame: #FF5C39;
   --lx-coral: #FF5C39;
@@ -74,72 +74,6 @@
   --lx-slow: 600ms;
 
   color-scheme: light;
-}
-
-:root[data-theme="dark"] {
-  --lx-bg: #0D0B1F;
-  --lx-surface: #1C1940;
-  --lx-raised: #26225A;
-  --lx-line: #36326A;
-  --lx-line-strong: #F4F2FF;
-  --lx-orbit: #4A4590;
-  --lx-ink: #F4F2FF;
-  --lx-muted: #C2BEE6;
-  --lx-link: #B5A8FF;
-  --lx-primary: #5B43F0;
-  --lx-primary-soft: #2B2566;
-  --lx-cta: #5B43F0;
-  --lx-on-cta: #FFFFFF;
-  --lx-on-primary: #FFFFFF;
-  --lx-similar-bg: #1C1940;
-  --lx-opposite-bg: #3A1D14;
-  --lx-opposite-ink: #FFB79E;
-  --lx-family-bg: #0F3324;
-  --lx-family-ink: #8EE6B8;
-  --lx-note-bg: #3A3010;
-  --lx-note-ink: #F5D77A;
-  --lx-info-bg: #10284A;
-  --lx-success-bg: #0F3324;
-  --lx-error-bg: #3A1D14;
-  --lx-error-ink: #FFB79E;
-  --lx-focus: #FFD23F;
-  --lx-skeleton-a: #26225A;
-  --lx-skeleton-b: #36326A;
-  color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="auto"] {
-    --lx-bg: #0D0B1F;
-    --lx-surface: #1C1940;
-    --lx-raised: #26225A;
-    --lx-line: #36326A;
-    --lx-line-strong: #F4F2FF;
-    --lx-orbit: #4A4590;
-    --lx-ink: #F4F2FF;
-    --lx-muted: #C2BEE6;
-    --lx-link: #B5A8FF;
-    --lx-primary: #5B43F0;
-    --lx-primary-soft: #2B2566;
-    --lx-cta: #5B43F0;
-  --lx-on-cta: #FFFFFF;
-  --lx-on-primary: #FFFFFF;
-    --lx-similar-bg: #1C1940;
-    --lx-opposite-bg: #3A1D14;
-    --lx-opposite-ink: #FFB79E;
-    --lx-family-bg: #0F3324;
-    --lx-family-ink: #8EE6B8;
-    --lx-note-bg: #3A3010;
-    --lx-note-ink: #F5D77A;
-    --lx-info-bg: #10284A;
-    --lx-success-bg: #0F3324;
-    --lx-error-bg: #3A1D14;
-    --lx-error-ink: #FFB79E;
-    --lx-focus: #FFD23F;
-    --lx-skeleton-a: #26225A;
-    --lx-skeleton-b: #36326A;
-    color-scheme: dark;
-  }
 }
 
 /* High contrast: pure black and white, thick outlines, no tints */

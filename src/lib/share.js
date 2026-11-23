@@ -20,7 +20,7 @@ export async function drawCard(canvas, { word, ipa, pos, def, theme = 'light' })
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
   await document.fonts?.ready;
-  ctx.fillStyle = dark ? '#07061A' : '#EEF0FF';
+  ctx.fillStyle = dark ? '#0A0F1E' : '#FFFCF5';
   ctx.fillRect(0, 0, W, H);
   if (dark) {
     for (let i = 0; i < 90; i++) {
@@ -35,7 +35,7 @@ export async function drawCard(canvas, { word, ipa, pos, def, theme = 'light' })
   ctx.lineWidth = 4; ctx.setLineDash([14, 12]);
   ctx.beginPath(); ctx.arc(W / 2, 400, 250, 0, Math.PI * 2); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = dark ? '#5B43F0' : '#4A2FE0';
+  ctx.fillStyle = dark ? '#1F5BFF' : '#1F5BFF';
   ctx.beginPath(); ctx.arc(W / 2, 400, 175, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#FF8A65';
   ctx.beginPath(); ctx.arc(W / 2 + 250 * Math.cos(-0.6), 400 + 250 * Math.sin(-0.6), 26, 0, Math.PI * 2); ctx.fill();
@@ -64,7 +64,7 @@ export async function drawCard(canvas, { word, ipa, pos, def, theme = 'light' })
   const mw = ctx.measureText(mark + verse).width;
   ctx.textAlign = 'left';
   ctx.fillText(mark, W / 2 - mw / 2, H - 90);
-  ctx.fillStyle = dark ? '#A99BFF' : '#4A2FE0';
+  ctx.fillStyle = dark ? '#8FB0FF' : '#1F5BFF';
   ctx.fillText(verse, W / 2 - mw / 2 + ctx.measureText(mark).width, H - 90);
   return canvas;
 }

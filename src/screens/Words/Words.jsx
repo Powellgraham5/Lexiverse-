@@ -14,7 +14,7 @@ import { loadDaily } from '../../lib/daily.js';
 import './words.css';
 
 const SAVED = { id: 'saved', name: 'All saved words', colour: '#14123A' };
-const DOTS = ['#4A2FE0', '#1F9D63', '#FF8A65', '#E5B000', '#2F80ED'];
+const DOTS = ['#1F5BFF', '#1F9D63', '#FF8A65', '#E5B000', '#2F80ED'];
 
 function Badge({ stats }) {
   if (stats.due > 0) return <span class="mw-badge due">{stats.due} due</span>;

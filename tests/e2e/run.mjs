@@ -20,7 +20,7 @@ const SHOTS = new URL('./shots/', import.meta.url).pathname;
 mkdirSync(SHOTS, { recursive: true });
 
 const WIDTHS = [[390, 844], [768, 1024], [1024, 768], [1440, 900]];
-const THEMES = ['light', 'dark'];
+const THEMES = ['light'];
 const ROUTES = [
   ['/', 'today'], ['/search', 'search'], ['/search?q=seren', 'search-results'], ['/search?q=serendipty', 'search-did-you-mean'],
   ['/search?mode=letters&q=stone', 'search-letters'], ['/search?mode=rhymes&q=bright', 'search-rhymes'], ['/search?mode=pattern&q=c%3Ft', 'search-pattern'],
@@ -172,16 +172,16 @@ await check('nav marks the current tab and moves focus to the new heading', asyn
   assert.equal(await page.title(), 'Me & settings · Lexiverse');
 });
 
-await check('theme setting applies, persists and survives reload without flashing', async () => {
-  await page.goto(BASE + '/me');
-  await page.click('button:text("Dark")');
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
-  await page.reload();
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
-  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(13, 11, 31)');
-  assert.ok(await page.isVisible('.lx-starfield'));
-  await page.click('button:text("Light")');
-  assert.ok(!(await page.isVisible('.lx-starfield')));
+await check('Lexiverse is always light, even when the phone is set to dark', async () => {
+  const c = await newContext({ colorScheme: 'dark' });
+  await c.addInitScript(() => localStorage.setItem('lx-settings', JSON.stringify({ theme: 'dark' })));
+  const p = await c.newPage();
+  await p.goto(BASE + '/me');
+  await p.waitForSelector('#main h1:text("Me")');
+  assert.equal(await p.evaluate(() => document.documentElement.dataset.theme), 'light');
+  assert.equal(await p.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(255, 252, 245)');
+  assert.equal(await p.locator('button:text("Dark")').count(), 0, 'no theme switch in Me');
+  await c.close();
 });
 
 await check('high contrast, reading font and reduce motion switch on', async () => {

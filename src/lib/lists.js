@@ -3,7 +3,7 @@
 import { get, put, all, del } from './db.js';
 import { allWordRecords, setWordLists, getRecord } from './saved.js';
 
-export const COLOURS = ['#4A2FE0', '#FF8A65', '#1F9D63', '#E5B000', '#2F80ED', '#D6409F'];
+export const COLOURS = ['#1F5BFF', '#FF8A65', '#1F9D63', '#E5B000', '#2F80ED', '#D6409F'];
 export const ICONS = ['cap', 'pen', 'case', 'letter', 'star', 'heart'];
 export const MAX_NAME = 40;
 

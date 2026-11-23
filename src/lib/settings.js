@@ -4,7 +4,7 @@ import { local } from './store.js';
 // that design/tokens.css and src/styles/base.css read.
 
 export const DEFAULTS = Object.freeze({
-  theme: 'auto',        // 'auto' | 'light' | 'dark'
+  theme: 'light',       // Lexiverse has one light theme; high contrast is separate
   contrast: false,      // high contrast
   font: 'inter',        // 'inter' | 'reading' (Atkinson Hyperlegible) | 'system'
   textScale: 1,         // 1 to 2
@@ -20,7 +20,7 @@ const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 
 export function normalize(input = {}) {
   const s = { ...DEFAULTS, ...input };
-  if (!['auto', 'light', 'dark'].includes(s.theme)) s.theme = DEFAULTS.theme;
+  s.theme = 'light';
   if (!['inter', 'reading', 'system'].includes(s.font)) s.font = DEFAULTS.font;
   if (!['US', 'UK'].includes(s.accent)) s.accent = DEFAULTS.accent;
   s.textScale = Math.round(clamp(Number(s.textScale) || 1, 1, 2) * 10) / 10;
@@ -39,15 +39,6 @@ export function applySettings(root, s) {
   root.style.setProperty('--lx-text-scale', String(s.textScale));
   // Large text: playful absolute layouts (orbits) switch to simple flowing lists.
   if (s.textScale >= 1.4) root.dataset.largeText = ''; else delete root.dataset.largeText;
-  // The phone's status bar follows the app's own theme choice, not only the system setting.
-  const doc = root.ownerDocument;
-  if (doc?.querySelectorAll) {
-    for (const m of doc.querySelectorAll('meta[name="theme-color"]')) {
-      if (!m.dataset.media) m.dataset.media = m.getAttribute('media') || '';
-      if (s.theme === 'auto') m.setAttribute('media', m.dataset.media);
-      else m.setAttribute('media', m.dataset.media.includes(s.theme) ? 'all' : 'not all');
-    }
-  }
 }
 
 export function loadSettings(storage = local()) {

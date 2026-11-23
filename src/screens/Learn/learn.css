@@ -1,7 +1,5 @@
 .ln-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .ln-hero { display: flex; align-items: center; gap: 1rem; padding: 1.125rem; border-radius: 1.75rem; background: #14123A; color: #FFFFFF; flex-wrap: wrap; }
-:root[data-theme="dark"] .ln-hero { background: var(--lx-raised); }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .ln-hero { background: var(--lx-raised); } }
 :root[data-contrast="high"] .ln-hero { background: var(--lx-bg); color: var(--lx-ink); outline: 2px solid var(--lx-ink); }
 .ln-hero > div { flex: 1 1 10rem; display: flex; flex-direction: column; align-items: flex-start; gap: .625rem; }
 .ln-hero h2 { font-size: 1.125rem; display: flex; align-items: center; gap: .5rem; }

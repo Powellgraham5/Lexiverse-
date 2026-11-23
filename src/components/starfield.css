@@ -1,6 +1,4 @@
 .lx-starfield { display: none; position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-:root[data-theme="dark"]:not([data-contrast="high"]) .lx-starfield { display: block; }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"]:not([data-contrast="high"]) .lx-starfield { display: block; } }
 
 @keyframes lx-twinkle { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
 @keyframes lx-drift { from { transform: translateY(0); } to { transform: translateY(-40px); } }

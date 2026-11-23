@@ -7,7 +7,6 @@
 .wd-round.light { background: var(--lx-surface); }
 .wd-round.on { background: var(--lx-primary); color: var(--lx-on-primary); }
 .wd-round.soft { background: var(--lx-raised); color: var(--lx-link); }
-:root[data-theme="dark"] .wd-round.soft { background: var(--lx-raised); }
 
 /* Orbit header: the word as a planet inside a slowly turning dashed ring. Related words sit at
    four fixed points (kept inside the screen) and float gently. */
@@ -27,8 +26,6 @@
 }
 .wd-planet h1 { overflow-wrap: normal; white-space: nowrap; animation: wd-zoom .7s var(--lx-ease-out) both; }
 .wd-level { padding: .1875rem .625rem; border-radius: var(--lx-radius-pill); background: var(--lx-note-bg); color: var(--lx-note-ink); font-size: min(.75rem, 13px); font-weight: 700; white-space: nowrap; }
-:root[data-theme="dark"] .wd-level { background: #FFF3B8; color: #14123A; }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .wd-level { background: #FFF3B8; color: #14123A; } }
 .wd-moons { margin: 0; padding: 0; list-style: none; }
 .wd-moons li { position: absolute; animation: wd-float 4s ease-in-out infinite; }
 .wd-moons .p0 { left: 50%; top: 0; translate: -50% 0; }
@@ -92,8 +89,6 @@
 .wd-hint { font-size: .8125rem; color: var(--lx-note-ink); }
 
 .wd-lang { display: flex; flex-direction: column; gap: .75rem; padding: 1.125rem; border-radius: 1.5rem; background: #14123A; color: #FFFFFF; }
-:root[data-theme="dark"] .wd-lang { background: var(--lx-raised); }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .wd-lang { background: var(--lx-raised); } }
 :root[data-contrast="high"] .wd-lang { background: var(--lx-bg); color: var(--lx-ink); outline: 2px solid var(--lx-ink); }
 .wd-lang h2 { font-size: 1.125rem; }
 .wd-lang-tabs { display: flex; flex-wrap: wrap; gap: .5rem; }
@@ -102,7 +97,7 @@
 :root[data-contrast="high"] .wd-lang-tabs button[aria-pressed="true"] { background: var(--lx-ink); color: var(--lx-bg); }
 .wd-lang-result { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 3rem; }
 .wd-lang-result p { font-family: var(--lx-font-display); font-size: 1.375rem; }
-.wd-lang-result .wd-round { background: #4A2FE0; color: #FFFFFF; width: 3rem; height: 3rem; }
+.wd-lang-result .wd-round { background: #1F5BFF; color: #FFFFFF; width: 3rem; height: 3rem; }
 .wd-lang-missing { font-family: var(--lx-font-body) !important; font-size: 1rem !important; color: #DCD6FF; }
 .wd-lang-note { font-size: .8125rem; color: #C9C5F0; }
 :root[data-contrast="high"] :is(.wd-lang-note, .wd-lang-missing) { color: var(--lx-ink); }

@@ -16,7 +16,7 @@
 .pr-tile span { font-size: .875rem; font-weight: 600; }
 .pr-tile:hover { transform: rotate(-2deg) translateY(-3px); box-shadow: 6px 6px 0 var(--lx-edge); }
 .pr-tile:active { transform: translate(3px, 3px); box-shadow: none; }
-.pr-tile.violet { background: #5B3DF5; color: #FFFFFF; }
+.pr-tile.violet { background: #1F5BFF; color: #FFFFFF; }
 .pr-tile.lime { background: var(--lx-lime); }
 .pr-tile.sky { background: var(--lx-sky); }
 .pr-tile.pink { background: var(--lx-pink); }

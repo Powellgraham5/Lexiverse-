@@ -23,7 +23,7 @@
   background: var(--lx-primary); color: #FFFFFF; text-decoration: none; text-align: center;
   box-shadow: 0 12px 30px rgba(74, 47, 224, .35); animation: lx-zoom .7s var(--lx-ease-out) both;
 }
-.lx-orbit-planet span { font-size: min(.6875rem, 13px); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #F2F0FF; }
+.lx-orbit-planet span { font-size: min(.6875rem, 13px); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #FFFFFF; }
 .lx-orbit-planet b { font-family: var(--lx-font-display); white-space: nowrap; overflow-wrap: normal; }
 .lx-orbit-chips { margin: 0; padding: 0; list-style: none; }
 .lx-orbit-chips li { position: absolute; animation: lx-rise .5s var(--lx-ease-out) both; }
@@ -72,8 +72,6 @@
 .lx-today-card-icon { display: flex; align-items: center; justify-content: center; flex: none; width: 2.25rem; height: 2.25rem; border-radius: .75rem; background: var(--lx-opposite-bg); color: var(--lx-opposite-ink); }
 
 .lx-done { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; padding: 1.25rem; border-radius: var(--lx-radius-lg); background: #14123A; color: #FFFFFF; }
-:root[data-theme="dark"] .lx-done { background: var(--lx-raised); }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .lx-done { background: var(--lx-raised); } }
 :root[data-contrast="high"] .lx-done { background: var(--lx-bg); color: var(--lx-ink); outline: 2px solid var(--lx-ink); }
 .lx-done h2 { font-size: 1.25rem; }
 .lx-done p { color: #DCD6FF; }

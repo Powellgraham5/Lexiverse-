@@ -13,14 +13,14 @@
 
 .tr-result { display: flex; flex-direction: column; gap: .625rem; padding: 1.125rem; border-radius: 1.5rem; background: var(--lx-primary); color: #FFFFFF; }
 :root[data-contrast="high"] .tr-result { background: var(--lx-bg); color: var(--lx-ink); outline: 3px solid var(--lx-ink); }
-.tr-result .tr-label { color: #E4DFFF; }
+.tr-result .tr-label { color: #FFFFFF; }
 .tr-out { font-family: var(--lx-font-display); font-size: 1.5rem; line-height: 1.35; }
 .tr-out[dir="rtl"] { text-align: right; font-family: var(--lx-font-body); font-size: 1.625rem; }
 .tr-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .tr-chip { display: inline-flex; align-items: center; gap: .375rem; min-height: 2.75rem; padding: 0 1rem; border: 0; border-radius: var(--lx-radius-pill); background: #14123A; color: #FFFFFF; font-weight: 700; }
 .tr-chip.light { background: #FFFFFF; color: #14123A; }
-.tr-chip.dashed { background: transparent; border: 2px dashed #B7ABFF; color: #E4DFFF; }
-.tr-note { font-size: .8125rem; color: #E4DFFF; }
+.tr-chip.dashed { background: transparent; border: 2px dashed #FFFFFF; color: #FFFFFF; }
+.tr-note { font-size: .8125rem; color: #FFFFFF; }
 :root[data-contrast="high"] :is(.tr-note, .tr-result .tr-label) { color: var(--lx-ink); }
 @keyframes tr-shimmer { to { background-position: -200% 0; } }
 .tr-sk { height: 1.375rem; border-radius: .625rem; background: linear-gradient(90deg, #6A55F5 25%, #8C7BFF 50%, #6A55F5 75%); background-size: 200% 100%; animation: tr-shimmer 1.4s ease-in-out infinite; }
@@ -42,7 +42,7 @@
 .tr-wave { display: flex; align-items: center; gap: 6px; height: 44px; }
 .tr-wave span { width: 6px; height: 44px; border-radius: 6px; background: var(--lx-primary); animation: tr-wave .9s ease-in-out infinite; }
 
-.tr-empty p { color: #E4DFFF; font-size: 1.125rem; }
+.tr-empty p { color: #FFFFFF; font-size: 1.125rem; }
 @media (min-width: 1024px) {
   .tr-split { align-items: stretch; }
   .tr-input, .tr-result { min-height: 16rem; }

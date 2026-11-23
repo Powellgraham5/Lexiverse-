@@ -30,8 +30,6 @@
 }
 .lx-switch[aria-checked="true"] { background: var(--lx-primary); }
 .lx-switch[aria-checked="true"] span { transform: translateX(1.5rem); }
-:root[data-theme="dark"] .lx-switch:not([aria-checked="true"]) { background: #3A3670; }
-@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .lx-switch:not([aria-checked="true"]) { background: #3A3670; } }
 .lx-setting-hint { font-size: .8125rem; color: var(--lx-muted); }
 :root[data-contrast="high"] .lx-switch span { background: var(--lx-bg); outline: 2px solid var(--lx-ink); }
 :root[data-contrast="high"] .lx-switch[aria-checked="true"] { background: var(--lx-ink); }

@@ -202,3 +202,10 @@
 @keyframes pt-deal { 0% { opacity: 0; transform: translateY(-30px) rotate(var(--r, 0deg)) scale(.9); } 70% { opacity: 1; transform: translateY(4px) rotate(calc(var(--r, 0deg) * -.5)); } 100% { transform: none; } }
 :root[data-large-text] .pt-cat .pt-list { grid-template-columns: 1fr; }
 @media (max-width: 340px) { :root .pt-cat .pt-list { grid-template-columns: 1fr; } }
+
+/* Wide screens: course tiles flow into as many columns as fit. One category on its own (a filter) spans the full width. */
+@media (min-width: 1024px) {
+  :root .pt-cat .pt-list { grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); }
+  .pt-cats:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+}
+:root[data-large-text] .pt-cat .pt-list { grid-template-columns: 1fr; }

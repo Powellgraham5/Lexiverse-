@@ -51,6 +51,7 @@ export default function Help() {
         <h1 class="lx-page-title">Help and FAQs</h1>
         <p class="pt-sub">Quick answers about practice, progress, reminders and your data.</p>
       </header>
+      <div class="hp-groups">
       {GROUPS.map((g, gi) => (
         <section key={g.title} class={`hp-group lx-rise lx-d${Math.min(gi + 1, 3)}`} aria-labelledby={`hp-${gi}`}>
           <h2 id={`hp-${gi}`}>{g.title}</h2>
@@ -64,6 +65,7 @@ export default function Help() {
           </div>
         </section>
       ))}
+      </div>
     </>
   );
 }

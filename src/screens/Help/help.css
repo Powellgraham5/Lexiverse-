@@ -10,3 +10,10 @@
 .hp-item summary:focus-visible { outline: 3px solid var(--lx-primary); outline-offset: -3px; }
 .hp-item p { margin: 0; padding: 0 1rem 1rem; line-height: 1.6; max-width: 65ch; }
 @media (prefers-reduced-motion: reduce) { .hp-item summary::after { transition: none; } }
+
+/* Wide screens: the question groups sit in two columns, read top to bottom then across. */
+@media (min-width: 1200px) {
+  .hp-groups { columns: 2; column-gap: 2rem; }
+  .hp-group { break-inside: avoid; }
+}
+:root[data-large-text] .hp-groups { columns: 1; }

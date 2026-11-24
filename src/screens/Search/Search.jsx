@@ -164,7 +164,7 @@ export default function Search() {
               </ul>
             </section>
           )}
-          <section class="sr-section" aria-labelledby="explore">
+          <section class="sr-section sr-explore" aria-labelledby="explore">
             <h2 id="explore">Explore</h2>
             {todayWord && (
               <a class="sr-wotd" href={`/word/${todayWord.w}`}>

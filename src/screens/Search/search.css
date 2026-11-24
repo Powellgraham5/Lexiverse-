@@ -71,10 +71,14 @@
 
 .sr-idle { display: flex; flex-direction: column; gap: 1rem; }
 @media (min-width: 1024px) {
-  .sr-idle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: start; }
+  .sr-idle { gap: 1.5rem; }
+  /* Explore fills the width: the word of the day on the left, your words and notes on the right. */
+  .sr-explore { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-auto-rows: auto; gap: .75rem 1.5rem; align-items: stretch; }
+  .sr-explore > h2 { grid-column: 1 / -1; }
+  .sr-explore > .sr-wotd { grid-row: span 2; margin-bottom: 0; justify-content: center; }
   .sr-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
 }
-:root[data-large-text] .sr-rows, :root[data-large-text] .sr-idle { display: flex; flex-direction: column; }
+:root[data-large-text] .sr-rows, :root[data-large-text] .sr-idle, :root[data-large-text] .sr-explore { display: flex; flex-direction: column; }
 
 /* Dictionary sections and the word-of-the-day card, as in the design */
 .sr-tabs { display: flex; gap: 4px; padding: 4px; border: 2px solid var(--lx-edge); border-radius: 16px; background: var(--lx-surface); }

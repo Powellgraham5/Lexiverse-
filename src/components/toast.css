@@ -1,12 +1,12 @@
 .lx-toasts {
-  position: fixed; left: 50%; bottom: calc(104px + env(safe-area-inset-bottom)); z-index: 60;
+  position: fixed; left: 50%; top: calc(.75rem + env(safe-area-inset-top)); z-index: 60;
   display: flex; flex-direction: column; gap: .5rem; width: min(92vw, 420px); transform: translateX(-50%);
   pointer-events: none;
 }
 .lx-toast {
   display: flex; align-items: center; gap: .625rem; padding: .75rem 1rem; border-radius: 1rem;
   background: var(--lx-banner-bg); color: var(--lx-banner-ink); font-size: .9375rem; font-weight: 600;
-  box-shadow: var(--lx-nav-shadow); pointer-events: auto; animation: lx-rise .3s var(--lx-ease-out) both;
+  box-shadow: var(--lx-nav-shadow); pointer-events: auto; animation: lx-drop .35s var(--lx-ease-out) both;
 }
 .lx-toast.success svg { color: #8EE6B8; }
 .lx-toast.error svg { color: #FFB79E; }
@@ -15,4 +15,6 @@
   min-height: 2.75rem; padding: 0 .875rem; border: 0; border-radius: var(--lx-radius-pill);
   background: transparent; color: #C9BFFF; font-weight: 700;
 }
-@media (min-width: 900px) { .lx-toasts { bottom: 2rem; } }
+/* Notifications drop in from the top, like the phone's own. On laptops they centre over the content, beside the rail. */
+@keyframes lx-drop { from { opacity: 0; transform: translateY(-1.25rem); } to { opacity: 1; transform: none; } }
+@media (min-width: 900px) { .lx-toasts { top: 1.25rem; left: calc(50% + 7.5rem); } }

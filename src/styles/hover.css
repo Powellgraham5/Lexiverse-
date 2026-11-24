@@ -1,0 +1,42 @@
+/*
+ * Hover states for everything you can click. Only on devices with a mouse or trackpad,
+ * so taps on phones never leave a "stuck" hover look. Loaded after sticker.css.
+ */
+@media (hover: hover) and (pointer: fine) {
+  /* Sticker cards and buttons lift and grow their shadow, then sink when pressed. */
+  :root :is(
+    .lx-opt, .mk-opt, .fc-grade, .nb-card, .mw-card, .mt-tile, .ln-setup, .ln-flash, .sr-translator, .pr-item,
+    .wd-play button, a.lx-chip, button.lx-chip, .wd-moon, .hm-chip, .fm-chip, .tr-chip, .lx-goal-chip, .lx-streak-chip,
+    .pt-cont-btn, .sp-big, .sp-check, .ob-next, .mw-add, .nb-new, .ss-new, .ls-save, .wd-use-btn, a.lx-card
+  ) { transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease; }
+  :root :is(
+    .lx-opt, .mk-opt, .fc-grade, .nb-card, .mw-card, .mt-tile, .ln-setup, .ln-flash, .sr-translator, .pr-item,
+    .wd-play button, a.lx-chip, button.lx-chip, .wd-moon, .hm-chip, .fm-chip, .tr-chip, .lx-goal-chip, .lx-streak-chip,
+    .pt-cont-btn, .sp-big, .sp-check, .ob-next, .mw-add, .nb-new, .ss-new, .ls-save, .wd-use-btn, a.lx-card
+  ):not(:disabled):not([aria-disabled="true"]):not(.dim):hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--lx-edge); }
+  :root :is(
+    .lx-opt, .mk-opt, .fc-grade, .nb-card, .mw-card, .mt-tile, .ln-setup, .ln-flash, .sr-translator, .pr-item,
+    .wd-play button, a.lx-chip, button.lx-chip, .wd-moon, .hm-chip, .fm-chip, .tr-chip, .lx-goal-chip, .lx-streak-chip,
+    .pt-cont-btn, .sp-big, .sp-check, .ob-next, .mw-add, .nb-new, .ss-new, .ls-save, .wd-use-btn, a.lx-card
+  ):not(:disabled):not([aria-disabled="true"]):not(.dim):active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--lx-edge); }
+
+  /* Rows, tabs and icon buttons get a soft tint laid over their own colour, so text contrast holds. */
+  :root :is(
+    .sr-row, .mw-row, .ss-row, .lp-row, .pd-weak-row, .pd-lesson, .pg-day, .me-links a, .hp-item summary,
+    .lx-seg button:not([aria-pressed="true"]):not([aria-checked="true"]), .sr-tabs a:not([aria-current]),
+    .lx-round, .wd-round, .ps-round, .ld-icon, .tr-icon, .tr-swap, .tr-lang, .sr-mic, .sr-hear, .sr-clear,
+    .lx-sheet-close, .ch-close, .ps-close, .mk-tab, .mk-flag, .mk-num, .su-radio, .su-check, .sh-act, .pg-nav,
+    .lx-skip, .dp-time, .fm-head, .ls-part, .ob-icon-btn, .me-gear, .lx-listen, .fc-hear, .lx-btn.ghost, .lx-opt-row
+  ):not(:disabled):hover { background-image: linear-gradient(rgba(13, 11, 31, .07), rgba(13, 11, 31, .07)); }
+
+  /* On dark surfaces (the side menu, the language panel) the tint is light instead. */
+  :root .lx-nav li a:not([aria-current="page"]):hover { background: rgba(255, 255, 255, .1); color: #FFFFFF; }
+  :root .wd-lang-tabs button:not([aria-pressed="true"]):hover,
+  :root .wd-lang-play button:not(.on):hover { background: rgba(255, 255, 255, .14); }
+  :root .lx-brand:hover { opacity: .85; }
+
+  /* Plain text links: a thicker underline. */
+  #main a:not([class]):hover, .lx-link:hover { text-decoration-thickness: 3px; }
+
+  :root[data-contrast="high"] :is(.lx-opt, .mk-opt, .fc-grade, .nb-card, .mw-card, .wd-play button, a.lx-chip, button.lx-chip, a.lx-card):hover { outline: 3px solid var(--lx-ink); outline-offset: 2px; }
+}

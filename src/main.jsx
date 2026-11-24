@@ -6,6 +6,7 @@ import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import './styles/base.css';
 import './styles/sticker.css';
+import './styles/hover.css';
 import { SettingsProvider } from './app/settings-context.jsx';
 import { Shell } from './app/Shell.jsx';
 import { Crash } from './app/Crash.jsx';

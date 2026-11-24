@@ -578,6 +578,22 @@ await check('word page: Yorùbá turns the whole entry into Yoruba, with an on-d
   await c.close();
 });
 
+await check('hover: rows tint, cards lift and the side menu highlights on a laptop', async () => {
+  const c = await newContext({ viewport: { width: 1280, height: 800 } });
+  const p = await c.newPage();
+  await p.goto(BASE + '/dictionary');
+  await p.waitForSelector('.sr-explore .sr-row');
+  await p.hover('.sr-explore .sr-row');
+  assert.match(await p.$eval('.sr-explore .sr-row', (el) => getComputedStyle(el).backgroundImage), /gradient/, 'row tints');
+  await p.hover('.lx-nav li a[href="/me"]');
+  await p.waitForFunction(() => getComputedStyle(document.querySelector('.lx-nav li a[href="/me"]')).color === 'rgb(255, 255, 255)', null, { timeout: 3000 }); // after the colour fade
+  await p.goto(BASE + '/me');
+  await p.waitForSelector('.me-links a');
+  await p.hover('.me-links a');
+  assert.match(await p.$eval('.me-links a', (el) => getComputedStyle(el).backgroundImage), /gradient/);
+  await c.close();
+});
+
 await check('word page: read all speaks the word, then each meaning; slow is slower', async () => {
   const c = await newContext({ viewport: { width: 390, height: 844 } });
   await c.addInitScript(SPEECH_STUB);

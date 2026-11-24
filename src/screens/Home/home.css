@@ -19,6 +19,8 @@
 @media (min-width: 1024px) {
   .hm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 1rem 2rem; }
   .hm > .hm-head, .hm > .hm-hero, .hm > .pd-note { grid-column: 1 / -1; }
+  /* JAMB home: the plan spans two rows, so the number tiles sit straight under the mock card with no gap. */
+  .hm:has(> .hm-mock) > div:has(#hm-plan) { grid-row: span 2; }
 }
 [data-large-text] .hm { display: flex; }
 .mk-cta { display: flex; align-items: center; gap: .75rem; padding: 1rem 1.125rem; border-radius: 1.25rem; color: var(--lx-ink); text-decoration: none; background: var(--lx-family-bg); }

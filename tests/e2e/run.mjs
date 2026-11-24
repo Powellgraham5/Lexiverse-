@@ -554,7 +554,8 @@ await check('word page: Yorùbá turns the whole entry into Yoruba, with an on-d
   assert.ok(await p.isVisible('.wd-lang-play'), 'the language and the voice are remembered');
   await p.click('.wd-lang-tabs button:text("Igbo")');
   await p.waitForSelector('.wd-tr-word:text("[ig] serendipity")');
-  assert.match(await p.textContent('.wd-lang'), /no free Igbo voice yet/);
+  await p.click('button:text("Download Igbo voice (38 MB)")');
+  await p.waitForSelector('.wd-lang-play', { timeout: 15000 });
   assert.match(await p.textContent('.wd-meaning .wd-pos'), /Aha · noun/);
   await p.click('.wd-lang-tabs button:text("Hausa")');
   await p.waitForSelector('.wd-tr-word:text("[ha] serendipity")');

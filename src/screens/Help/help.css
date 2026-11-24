@@ -1,5 +1,5 @@
 .hp-head { display: flex; flex-direction: column; gap: .375rem; margin-bottom: 1.25rem; }
-.hp-group { margin-bottom: 1.5rem; max-width: 46rem; }
+.hp-group { margin-bottom: 1.5rem; }
 .hp-group h2 { font-size: 1.125rem; margin: 0 0 .5rem; }
 .hp-list { padding: 0; overflow: hidden; }
 .hp-item + .hp-item { border-top: 1px solid var(--lx-orbit); }

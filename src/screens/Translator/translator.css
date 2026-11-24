@@ -47,7 +47,6 @@
   .tr-split { align-items: stretch; }
   .tr-input, .tr-result { min-height: 16rem; }
   .tr-input textarea { min-height: 10rem; font-size: 1.5rem; }
-  .tr-langs { max-width: 40rem; }
 }
 /* Large text: the two languages stack, so “English” and “Yoruba” never split mid-word. */
 :root[data-large-text] .tr-langs { flex-direction: column; align-items: stretch; }

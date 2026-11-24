@@ -3,7 +3,8 @@
 export const LOCAL_VOICES = {
   yo: { model: 'Xenova/mms-tts-yor', size: '38 MB', name: 'Yoruba' },
   ha: { model: 'lexiverse/mms-tts-hau', size: '38 MB', name: 'Hausa' },
-  pcm: { model: 'lexiverse/mms-tts-pcm', size: '38 MB', name: 'Pidgin' }
+  pcm: { model: 'lexiverse/mms-tts-pcm', size: '38 MB', name: 'Pidgin' },
+  ig: { model: 'lexiverse/mms-tts-ibo', size: '38 MB', name: 'Igbo' }
 };
 // Voices that are planned but not ready yet, so the page can say so honestly.
 export const COMING_VOICES = [];
@@ -23,6 +24,9 @@ export function cleanForVoice(text, lang) {
   } else if (lang === 'ha') {
     // Hausa hooked letters stay; tone and length marks are dropped (the voice was trained without them).
     t = t.normalize('NFD').replace(/[̀-ͯ]/g, '').normalize('NFC').replace(/[.,;:!?()"“”‘’]/g, ' ').replace(/[^a-zƙɓɗ' -]/g, '');
+  } else if (lang === 'ig') {
+    // Igbo dotted vowels, ṅ and tone marks are kept: the voice was trained with them.
+    t = t.replace(/[.,;:!?()"“”‘’]/g, ' ').replace(/[^a-zàáèéìíòóùúńǹṅịọụẹ\u0300\u0301\u0323' -]/g, '');
   } else if (lang === 'pcm') {
     t = t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.,;:!?()"“”‘’]/g, ' ').replace(/[^a-z0-9' -]/g, '');
   }

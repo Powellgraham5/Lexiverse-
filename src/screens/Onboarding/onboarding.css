@@ -93,7 +93,7 @@
   .step-welcome .ob-step h1 { font-size: 3rem; }
   .step-welcome .ob-actions { margin-top: 1rem; }
   /* Setup steps: a comfortable centred column, choices in a grid. */
-  .ob-bar, .step-goal .ob-step, .step-focus .ob-step, .step-ready .ob-step, .step-comfort .ob-step, .step-ready .ob-step { width: 100%; max-width: 46rem; margin-left: auto; margin-right: auto; }
+  .ob-bar, .step-goal .ob-step, .step-focus .ob-step, .step-ready .ob-step, .step-comfort .ob-step, .step-ready .ob-step { width: 100%; }
   .ob-step h1 { font-size: 2.25rem; }
   :is(.step-goal, .step-focus) .ob-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .875rem; }
   :is(.step-goal, .step-focus) .ob-choice { min-height: 7rem; }

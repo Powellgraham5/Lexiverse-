@@ -20,6 +20,6 @@
 .ch-done { margin-top: auto; width: 100%; }
 
 @media (min-width: 1024px) {
-  .ch { max-width: 44rem; margin: 0 auto; width: 100%; }
+  .ch { width: 100%; }
   .ch h1 { font-size: 1.75rem; }
 }

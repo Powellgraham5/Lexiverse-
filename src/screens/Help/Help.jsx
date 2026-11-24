@@ -33,8 +33,8 @@ const GROUPS = [
   ] },
   { title: 'Languages and voices', items: [
     ['How do I read a word in Yoruba, Hausa or Igbo?', 'Open any word in the Dictionary and choose a language under “Read this word in”. The word, its first meanings, the examples and the word types change to that language, with the English kept underneath. Translations are made by a free machine translator and still need checking by a native speaker.'],
-    ['Why do I download a voice?', 'Most phones have no Yoruba, Hausa or Pidgin voice, so Lexiverse can download one (about 38 MB, once) that runs on your phone. After that it works offline. Igbo has no free voice yet, so Igbo is text only. Nigerian Pidgin has no free translator, so the words stay in English and the Pidgin voice reads them.'],
-    ['Where do the voices come from?', 'They are Meta’s Massively Multilingual Speech voices (MMS), shared under the CC BY-NC 4.0 licence, converted to run in your browser.']
+    ['Why do I download a voice?', 'Most phones have no Yoruba, Hausa, Igbo or Pidgin voice, so Lexiverse can download one (about 38 MB, once) that runs on your phone. After that it works offline. The Igbo voice is newer and less clear than the others. Nigerian Pidgin has no free translator, so the words stay in English and the Pidgin voice reads them.'],
+    ['Where do the voices come from?', 'They are Meta’s Massively Multilingual Speech voices (MMS), shared under the CC BY-NC 4.0 licence, converted to run in your browser. The Igbo voice is Soro-TTS, trained on Google’s WAXAL Igbo recordings by Media Trust, under the same licence.']
   ] },
   { title: 'Accessibility', items: [
     ['Can I make the text bigger or easier to read?', 'Yes. In Me, open Settings. Under “Seeing and reading” you can choose larger text, a reading font, high contrast and less motion.'],

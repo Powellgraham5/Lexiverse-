@@ -73,8 +73,6 @@
 @media (min-width: 1024px) {
   .sr-idle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: start; }
   .sr-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
-  .sr-box, .sr-modes, .sr-hint { max-width: 46rem; }
-  .sr-translator { max-width: 46rem; }
 }
 :root[data-large-text] .sr-rows, :root[data-large-text] .sr-idle { display: flex; flex-direction: column; }
 
